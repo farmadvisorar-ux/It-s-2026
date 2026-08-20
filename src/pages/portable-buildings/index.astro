@@ -2,12 +2,14 @@
 import Base from '../../layouts/Base.astro';
 import Placeholder from '../../components/Placeholder.astro';
 import pb from '../../data/portable-buildings.json';
+import { portableImage, detailImages, colorChart } from '../../lib/images';
 
 const { line, construction, categories, products } = pb as any;
 const stateNames: Record<string, string> = {
   TX: 'Texas', LA: 'Louisiana', MO: 'Missouri', IL: 'Illinois', TN: 'Tennessee', IN: 'Indiana',
 };
 const byCat = (slug: string) => products.filter((p: any) => p.category === slug);
+const details = detailImages();
 ---
 
 <Base
@@ -28,7 +30,7 @@ const byCat = (slug: string) => products.filter((p: any) => p.category === slug)
           <a class="btn btn--ghost" href="#construction">How they are built</a>
         </div>
       </div>
-      <Placeholder label="Wood portable building" variant="wide" />
+      <Placeholder label="Wood portable building" src={portableImage('barn-cabin')} alt="Wood portable building delivered and set on site" variant="wide" />
     </div>
   </section>
 
@@ -64,7 +66,7 @@ const byCat = (slug: string) => products.filter((p: any) => p.category === slug)
         <div class="grid grid--4">
           {byCat(c.slug).map((p: any) => (
             <a class="card" href={`/portable-buildings/${p.slug}/`}>
-              <Placeholder label={p.name} />
+              <Placeholder label={p.name} src={portableImage(p.slug)} alt={`${p.name} — ${p.headline}`} />
               <div class="card__body">
                 <h3 class="card__title">{p.name}</h3>
                 <p class="card__text">{p.headline}</p>
@@ -88,8 +90,9 @@ const byCat = (slug: string) => products.filter((p: any) => p.category === slug)
         Styling and layout change between models. What holds them up does not.
       </p>
       <div class="grid grid--2 build-grid">
-        {construction.map((c: any) => (
+        {construction.map((c: any, i: number) => (
           <div class="build">
+            {details[i] && <img class="build__img" src={details[i]} alt={`${c.area} construction detail`} loading="lazy" decoding="async" />}
             <p class="build__area">{c.area}</p>
             <h3>{c.heading}</h3>
             <ul>
@@ -98,6 +101,21 @@ const byCat = (slug: string) => products.filter((p: any) => p.category === slug)
           </div>
         ))}
       </div>
+    </div>
+  </section>
+
+  <!-- colours -->
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Finishes</p>
+      <h2 class="sec-title">Eleven paint colours, three shingles, five metal roofs</h2>
+      <p class="lede" style="margin-bottom:2rem">
+        Every building is painted and roofed at the shop, so it arrives finished. Pick the
+        combination when you order — it costs the same whichever you choose.
+      </p>
+      <figure class="colors">
+        <img src={colorChart()} alt="Paint, shingle and metal roof colour options" loading="lazy" decoding="async" />
+      </figure>
     </div>
   </section>
 
@@ -174,6 +192,9 @@ const byCat = (slug: string) => products.filter((p: any) => p.category === slug)
   .build__area { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); }
   .build h3 { font-size: 1.0625rem; margin: 0.25rem 0 0.75rem; }
   .build ul { margin: 0 0 0 1.125rem; padding: 0; color: var(--text-muted); font-size: 0.9375rem; }
+  .build__img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--radius); margin-bottom: 0.75rem; }
+  .colors { margin: 0; padding: 1.5rem; background: #fff; border: 1px solid var(--border); border-radius: var(--radius-lg); }
+  .colors img { width: 100%; height: auto; display: block; }
   .build li { margin-bottom: 0.375rem; }
 
   .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }

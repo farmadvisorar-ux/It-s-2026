@@ -6,7 +6,7 @@ import types from '../data/building-types.json';
 import models from '../data/models.json';
 import inventory from '../data/inventory.json';
 import pb from '../data/portable-buildings.json';
-import { typeImage, inventoryImage, heroImage } from '../lib/images';
+import { typeImage, inventoryImage, heroImage, portableImage } from '../lib/images';
 
 const featured = ['garages', 'workshops', 'barndominium', 'quonset-buildings', 'container-covers', 'agricultural-and-farm', 'commercial', 'storage'];
 const featuredTypes = featured.map((s) => types.find((t: any) => t.slug === s)).filter(Boolean) as any[];
@@ -120,7 +120,7 @@ const steps = [
       <div class="grid grid--4">
         {pbFeatured.map((x) => (
           <a class="card" href={`/portable-buildings/${x.slug}/`}>
-            <Placeholder label={x.name} />
+            <Placeholder label={x.name} src={portableImage(x.slug)} alt={`${x.name} — ${x.headline}`} />
             <div class="card__body">
               <span class="card__meta">{pbCats.find((c: any) => c.slug === x.category)?.name}</span>
               <h3 class="card__title">{x.name}</h3>

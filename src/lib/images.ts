@@ -4,6 +4,12 @@ type ImageMap = {
   types: Record<string, string[]>;
   inventory: Record<string, string>;
   options: Record<string, string>;
+  portable: {
+    products: Record<string, string[]>;
+    plans: Record<string, string>;
+    details: string[];
+    colors: string;
+  };
   hero: string | null;
 };
 
@@ -23,6 +29,22 @@ export const inventoryImage = (slug: string): string | undefined =>
 /** Photo for an option, keyed `${family}-${slug}`. Not every option has one. */
 export const optionImage = (family: string, slug: string): string | undefined =>
   map.options?.[`${family}-${slug}`];
+
+/** Every photo for a portable-building model, in display order. */
+export const portableImages = (slug: string): string[] => map.portable?.products[slug] ?? [];
+
+/** Lead photo for a portable-building model. */
+export const portableImage = (slug: string, index = 0): string | undefined =>
+  map.portable?.products[slug]?.[index];
+
+/** Floor plan drawing by plan number, e.g. "805". */
+export const planImage = (num: string): string | undefined => map.portable?.plans[num];
+
+/** Construction detail shots used on the "how it is built" sections. */
+export const detailImages = (): string[] => map.portable?.details ?? [];
+
+/** Paint, shingle and metal roof colour chart. */
+export const colorChart = (): string | undefined => map.portable?.colors;
 
 /** Homepage lead image. */
 export const heroImage = (): string | undefined => map.hero ?? undefined;

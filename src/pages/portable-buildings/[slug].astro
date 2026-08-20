@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Placeholder from '../../components/Placeholder.astro';
 import pb from '../../data/portable-buildings.json';
+import { portableImage, portableImages, planImage, detailImages } from '../../lib/images';
 
 export function getStaticPaths() {
   const { products } = pb as any;
@@ -25,6 +26,9 @@ const sqft = (s: string) => {
   return w * l;
 };
 const isSpecialty = product.warrantyClass === 'specialty';
+const gallery = portableImages(product.slug).slice(1);
+const planShots = product.plans.map((n: string) => ({ n, src: planImage(n) })).filter((x: any) => x.src);
+const details = detailImages();
 const stateNames: Record<string, string> = {
   TX: 'Texas', LA: 'Louisiana', MO: 'Missouri', IL: 'Illinois', TN: 'Tennessee', IN: 'Indiana',
 };
@@ -48,7 +52,7 @@ const stateNames: Record<string, string> = {
             <a class="btn btn--ghost" href="/portable-buildings/#construction">How it is built</a>
           </div>
         </div>
-        <Placeholder label={product.name} variant="wide" />
+        <Placeholder label={product.name} src={portableImage(product.slug)} alt={`${product.name} — ${product.headline}`} variant="wide" />
       </div>
     </section>
 
@@ -85,11 +89,21 @@ const stateNames: Record<string, string> = {
               </tbody>
             </table>
           </div>
-          <p class="fine">
-            Floor plan determines door and window placement. This model is offered in
-            {' '}{product.plans.length} plan{product.plans.length === 1 ? '' : 's'}
-            {' '}({product.plans.join(', ')}) — we will walk you through which suits your layout.
+          <h2>Floor plans</h2>
+          <p>
+            The floor plan sets where the doors and windows go. This model is offered in
+            {' '}{product.plans.length} plan{product.plans.length === 1 ? '' : 's'} — the same
+            building, laid out differently. Tell us how you will approach it and what goes
+            inside, and the right one is usually obvious.
           </p>
+          <div class="plans">
+            {planShots.map((x: any) => (
+              <figure class="plan">
+                <img src={x.src} alt={`Floor plan ${x.n} for the ${product.name}`} loading="lazy" decoding="async" />
+                <figcaption>Plan {x.n}</figcaption>
+              </figure>
+            ))}
+          </div>
         </div>
 
         <aside class="side">
@@ -145,12 +159,28 @@ const stateNames: Record<string, string> = {
       </div>
     </section>
 
+    {gallery.length > 0 && (
+      <section class="section gallery-sec">
+        <div class="wrap">
+          <h2 class="sec-title">More of the {product.name}</h2>
+          <div class="gallery">
+            {gallery.map((src: string, i: number) => (
+              <figure class="gallery__item">
+                <img src={src} alt={`${product.name} view ${i + 2}`} loading="lazy" decoding="async" />
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
     <section class="section section--sunken">
       <div class="wrap">
         <h2 class="sec-title">How it is built</h2>
         <div class="grid grid--4 build-grid">
-          {construction.map((c: any) => (
+          {construction.map((c: any, i: number) => (
             <div class="build">
+              {details[i] && <img class="build__img" src={details[i]} alt={`${c.area} construction detail`} loading="lazy" decoding="async" />}
               <p class="build__area">{c.area}</p>
               <ul>
                 {c.points.slice(0, 3).map((pt: string) => <li>{pt}</li>)}
@@ -168,7 +198,7 @@ const stateNames: Record<string, string> = {
           <div class="grid grid--4">
             {related.map((p: any) => (
               <a class="card" href={`/portable-buildings/${p.slug}/`}>
-                <Placeholder label={p.name} />
+                <Placeholder label={p.name} src={portableImage(p.slug)} alt={p.name} />
                 <div class="card__body">
                   <h3 class="card__title">{p.name}</h3>
                   <p class="card__text">{p.headline}</p>
@@ -214,6 +244,22 @@ const stateNames: Record<string, string> = {
   .fine { font-size: 0.8125rem; color: var(--text-faint); margin-top: 0.75rem; }
 
   .sec-title { font-size: clamp(1.375rem, 3vw, 1.875rem); margin-bottom: 1.5rem; }
+
+  .plans { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 1rem; margin: 1.25rem 0 1rem; }
+  .plan { margin: 0; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: #fff; }
+  .plan img { width: 100%; height: auto; display: block; background: #fff; }
+  .plan figcaption {
+    font-family: var(--font-mono); font-size: 0.75rem; text-align: center;
+    padding: 0.4375rem; background: var(--bg-sunken); color: var(--text-muted);
+    border-top: 1px solid var(--border);
+  }
+
+  .gallery-sec { padding-block: clamp(2rem, 5vw, 3.5rem); }
+  .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+  .gallery__item { margin: 0; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-raised); }
+  .gallery__item img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+
+  .build__img { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: var(--radius); margin-bottom: 0.75rem; }
   .build-grid { gap: 1.75rem; }
   .build { border-top: 2px solid var(--accent); padding-top: 0.875rem; }
   .build__area { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 0.5rem; }

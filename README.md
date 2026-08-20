@@ -83,10 +83,6 @@ All content lives in `src/data/` as JSON. No code changes needed to update the c
 - [ ] **Get the image permission in writing** if you have not already. The
       photos are the manufacturer's copyright and the permission is what makes
       their use here lawful; an email on file costs nothing and settles it.
-- [ ] **Portable building photos.** Every portable-building page currently uses
-      placeholders. The steel-line image permission does not extend to the
-      portable-building manufacturer — that is a separate company and needs its
-      own written approval before any of their photography goes on the site.
 - [ ] **Confirm the portable delivery states** (`portable-buildings.json` →
       `line.deliveryStates`). It is stated prominently on every product page and
       on the homepage, so it needs to be right.
@@ -107,7 +103,10 @@ is hotlinked, so the site has no runtime dependency on the manufacturer.
 | `public/img/types/` | 69 | Building-type heroes, cards, and per-page galleries |
 | `public/img/inventory/` | 52 | One photo per clearance listing |
 | `public/img/options/` | 8 | Options & finishes pages |
-| _(portable buildings)_ | 0 | **Placeholders only — see checklist above** |
+| `public/img/portable/` | 66 | Portable model heroes and galleries |
+| `public/img/portable/plans/` | 22 | Floor plan drawings, keyed by plan number |
+| `public/img/portable/details/` | 4 | Construction detail shots |
+| `public/img/portable/colors.webp` | 1 | Paint / shingle / metal roof chart |
 
 Four options pages (foundations, roof accessories, trim & flashing,
 straight-wall insulation) intentionally still use placeholders — see the
@@ -128,9 +127,20 @@ Every downloaded image was reviewed on a contact sheet before use. These were
 - **One photo with rental-company branding** on a lift (Sunbelt Rentals).
 - **Several unusable frames** — a cropped instructional graphic with cut-off
   text, pixelated gutter renders, and two blurry aerials.
+- From the portable-building set: the **manufacturer logo**, site UI chrome
+  (menu icon, slider arrows), and a **photo of a person**. 61 references in
+  total were skipped on those rules.
 
 If you add images later, screen for the same three things: identifiable
 people, third-party branding or signage, and any visible manufacturer mark.
+
+### Floor plans are flattened onto white — do not undo this
+
+The floor plan drawings arrived as PNGs with transparent backgrounds and black
+line art. Served as-is they are invisible in dark mode. They are flattened onto
+a white background at download time and their container is explicitly
+`background: #fff`, so they read correctly in both themes. If you replace them,
+flatten them the same way.
 
 ### Swapping in your own photography
 
