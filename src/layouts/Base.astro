@@ -24,6 +24,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://marshallshe
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
+    {/* Pre-launch: keep the site out of search results. Crawling stays ALLOWED
+        in robots.txt so engines can actually see this directive — blocking the
+        crawl instead would leave bare URLs indexable and harder to remove.
+        Flip `indexable` to true in site.json at launch. */}
+    {!site.indexable && <meta name="robots" content="noindex, nofollow" />}
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
