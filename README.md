@@ -1,9 +1,17 @@
 # Marshall Sheds
 
-Marketing and catalog site for Marshall Sheds, an authorized independent dealer of
-pre-engineered steel buildings.
+Marketing and catalog site for Marshall Sheds, an authorized independent dealer
+carrying two lines:
 
-Built with [Astro](https://astro.build) as a static site. 119 pages, no runtime
+- **Engineered steel buildings** — bolt-together kits, engineered per site, shipped nationwide.
+- **Wood portable buildings** — built complete and delivered finished, within a
+  six-state regional area (TX, LA, MO, IL, TN, IN).
+
+The two are kept deliberately separate throughout. They are different products
+sold to different buyers with different constraints, and conflating them in the
+copy would mislead people about delivery area, foundations and permitting.
+
+Built with [Astro](https://astro.build) as a static site. 136 pages, no runtime
 dependencies, deploys anywhere that serves static files.
 
 ---
@@ -55,7 +63,9 @@ All content lives in `src/data/` as JSON. No code changes needed to update the c
 | `models.json` | The 8 building profiles (A, B, C, R, S, T, X, M) |
 | `options.json` | Options & finishes catalog for arch and straight-wall |
 | `inventory.json` | 52 clearance listings with dimensions and regions |
-| `faqs.json` | 70 FAQ entries, grouped by category |
+| `portable-buildings.json` | The 16 portable models, construction spec, warranty, financing, delivery states |
+| `faqs.json` | 84 FAQ entries, grouped by category |
+| `images.json` | Maps content slugs to photo files |
 
 ### Before launch — required
 
@@ -73,6 +83,15 @@ All content lives in `src/data/` as JSON. No code changes needed to update the c
 - [ ] **Get the image permission in writing** if you have not already. The
       photos are the manufacturer's copyright and the permission is what makes
       their use here lawful; an email on file costs nothing and settles it.
+- [ ] **Portable building photos.** Every portable-building page currently uses
+      placeholders. The steel-line image permission does not extend to the
+      portable-building manufacturer — that is a separate company and needs its
+      own written approval before any of their photography goes on the site.
+- [ ] **Confirm the portable delivery states** (`portable-buildings.json` →
+      `line.deliveryStates`). It is stated prominently on every product page and
+      on the homepage, so it needs to be right.
+- [ ] **Confirm financing terms.** Rates and programs are the finance providers',
+      not ours, and they change. Verify before launch and re-check periodically.
 - [ ] **Update `site` in `astro.config.mjs`** to your real domain (currently
       `marshallsheds.com`) so canonical URLs and the sitemap are correct.
 
@@ -88,6 +107,7 @@ is hotlinked, so the site has no runtime dependency on the manufacturer.
 | `public/img/types/` | 69 | Building-type heroes, cards, and per-page galleries |
 | `public/img/inventory/` | 52 | One photo per clearance listing |
 | `public/img/options/` | 8 | Options & finishes pages |
+| _(portable buildings)_ | 0 | **Placeholders only — see checklist above** |
 
 Four options pages (foundations, roof accessories, trim & flashing,
 straight-wall insulation) intentionally still use placeholders — see the
@@ -144,6 +164,20 @@ rather than populated with borrowed reviews. Add real ones as customers give the
 **No photo shows an identifiable person or another company's branding.** See
 the screening notes under Images — this was checked deliberately, not by luck.
 
+**Component brands are named; manufacturer brands are not.** The portable
+buildings pages name LP SmartSide siding and Glidden paint, because those are
+factual component specs, they are what the buildings are actually built from,
+and buyers recognise them — LP SmartSide's 50-year warranty is a selling point.
+Neither building manufacturer is named anywhere. If you would rather drop the
+component names too, they live in `portable-buildings.json` under
+`construction` and are a one-line edit.
+
+**The two lines are never blurred.** Portable buildings state their six-state
+delivery area on every product page, the homepage and the line index. Specialty
+models flag their 1-year warranty rather than inheriting the 5-year term. Steel
+pages say kits ship nationwide. Keep those distinctions if you extend the site —
+they are the facts most likely to cause a complaint if they are wrong.
+
 ## Structure
 
 ```
@@ -152,7 +186,8 @@ src/
 ├── layouts/        Base.astro, Article.astro
 ├── components/     Header, Footer, Placeholder
 ├── pages/
-│   ├── building-types/   index + [...slug] → 24 pages
+│   ├── building-types/   index + [...slug] → 24 pages  (steel)
+│   ├── portable-buildings/  index + [slug] → 16 pages  (wood)
 │   ├── models/           index + [code] → 8 pages
 │   ├── inventory/        index + [slug] → 52 pages
 │   ├── options-and-finishes/  index + [family]/[slug] → 12 pages

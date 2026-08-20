@@ -1,11 +1,21 @@
 {
   "name": "Marshall Sheds",
-  "tagline": "Engineered Steel Buildings, Delivered Direct",
-  "description": "Authorized dealer of pre-engineered steel buildings — garages, workshops, barndominiums, quonset huts, container covers and commercial structures. Factory-direct pricing, engineer-stamped drawings, DIY bolt-together assembly.",
+  "tagline": "Steel Buildings and Portable Buildings, Delivered Direct",
+  "description": "Authorized dealer of engineered steel buildings and wood portable buildings \u2014 garages, workshops, barndominiums, quonset huts, sheds, cabins and specialty structures.",
   "phone": "",
   "email": "",
-  "address": { "street": "", "city": "", "region": "", "postal": "", "country": "USA" },
-  "hours": "Mon–Fri 8:00am–6:00pm",
-  "social": { "facebook": "", "instagram": "", "youtube": "" },
-  "dealerNotice": "Marshall Sheds is an authorized independent dealer of pre-engineered steel building systems. Buildings are produced by our manufacturing partner and shipped direct from the plant nearest your jobsite."
+  "address": {
+    "street": "",
+    "city": "",
+    "region": "",
+    "postal": "",
+    "country": "USA"
+  },
+  "hours": "Mon\u2013Fri 8:00am\u20136:00pm",
+  "social": {
+    "facebook": "",
+    "instagram": "",
+    "youtube": ""
+  },
+  "dealerNotice": "Marshall Sheds is an authorized independent dealer. Engineered steel buildings and wood portable buildings are produced by our manufacturing partners and shipped direct. Steel building kits ship nationwide; portable buildings are delivered finished within our regional delivery area."
 }

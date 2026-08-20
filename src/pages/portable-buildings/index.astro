@@ -1,0 +1,198 @@
+---
+import Base from '../../layouts/Base.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import pb from '../../data/portable-buildings.json';
+
+const { line, construction, categories, products } = pb as any;
+const stateNames: Record<string, string> = {
+  TX: 'Texas', LA: 'Louisiana', MO: 'Missouri', IL: 'Illinois', TN: 'Tennessee', IN: 'Indiana',
+};
+const byCat = (slug: string) => products.filter((p: any) => p.category === slug);
+---
+
+<Base
+  title="Portable Buildings"
+  description="Wood portable buildings delivered finished and ready to use — sheds, cabins, garages, greenhouses, coops and kennels. No assembly, no foundation required."
+  crumbs={[]}
+  current="Portable Buildings"
+>
+  <!-- header -->
+  <section class="head">
+    <div class="wrap head__inner">
+      <div>
+        <p class="eyebrow">Delivered, not assembled</p>
+        <h1 class="page-title">Portable Buildings</h1>
+        <p class="lede">{line.intro}</p>
+        <div class="head__actions">
+          <a class="btn btn--primary" href="/quote/?line=portable">Get a Quote</a>
+          <a class="btn btn--ghost" href="#construction">How they are built</a>
+        </div>
+      </div>
+      <Placeholder label="Wood portable building" variant="wide" />
+    </div>
+  </section>
+
+  <!-- delivery area — a real constraint, stated up front -->
+  <section class="notice-band">
+    <div class="wrap notice-band__inner">
+      <div>
+        <h2>Delivered in six states</h2>
+        <p>
+          Portable buildings are trucked complete from the shop, so the delivery area is
+          limited. Our steel building lines ship nationwide.
+        </p>
+      </div>
+      <ul class="states">
+        {line.deliveryStates.map((s: string) => (
+          <li><abbr title={stateNames[s]}>{s}</abbr></li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- categories -->
+  {categories.map((c: any) => (
+    <section class="section">
+      <div class="wrap">
+        <header class="sec-head">
+          <div>
+            <p class="eyebrow">{byCat(c.slug).length} model{byCat(c.slug).length === 1 ? '' : 's'}</p>
+            <h2>{c.name}</h2>
+          </div>
+        </header>
+        <p class="lede" style="margin-bottom:1.75rem">{c.blurb}</p>
+        <div class="grid grid--4">
+          {byCat(c.slug).map((p: any) => (
+            <a class="card" href={`/portable-buildings/${p.slug}/`}>
+              <Placeholder label={p.name} />
+              <div class="card__body">
+                <h3 class="card__title">{p.name}</h3>
+                <p class="card__text">{p.headline}</p>
+                <span class="card__meta">
+                  {p.sizes.length === 1 ? p.sizes[0].replace('x', "' × ") + "'" : `${p.sizes.length} sizes`}
+                </span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <!-- construction -->
+  <section class="section section--sunken" id="construction">
+    <div class="wrap">
+      <p class="eyebrow">How they are built</p>
+      <h2 class="sec-title">The same construction under every model</h2>
+      <p class="lede" style="margin-bottom:2.5rem">
+        Styling and layout change between models. What holds them up does not.
+      </p>
+      <div class="grid grid--2 build-grid">
+        {construction.map((c: any) => (
+          <div class="build">
+            <p class="build__area">{c.area}</p>
+            <h3>{c.heading}</h3>
+            <ul>
+              {c.points.map((pt: string) => <li>{pt}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- warranty + financing -->
+  <section class="section">
+    <div class="wrap two-col">
+      <div>
+        <p class="eyebrow">Warranty</p>
+        <h2 class="sec-title">What is covered</h2>
+        <div class="prose">
+          <ul>
+            <li><strong>Standard buildings</strong> — {line.warranty.standard}.</li>
+            <li><strong>Specialty buildings</strong> — {line.warranty.specialty}.</li>
+            <li><strong>Siding</strong> — {line.warranty.siding}.</li>
+            <li><strong>Shingles</strong> — {line.warranty.shingles}.</li>
+          </ul>
+          <p class="fine">{line.warranty.note}</p>
+        </div>
+      </div>
+      <div>
+        <p class="eyebrow">Paying for it</p>
+        <h2 class="sec-title">Financing options</h2>
+        <div class="fin">
+          <div class="fin__col">
+            <h3>Rent-to-own</h3>
+            <ul>{line.financing.rentToOwn.map((f: string) => <li>{f}</li>)}</ul>
+          </div>
+          <div class="fin__col">
+            <h3>Traditional financing</h3>
+            <ul>{line.financing.traditional.map((f: string) => <li>{f}</li>)}</ul>
+          </div>
+        </div>
+        <p class="fine">{line.financing.note}</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap cta__inner">
+      <div>
+        <h2>Not sure which model?</h2>
+        <p>Tell us what goes inside and where it is going. Size and style usually follow from that.</p>
+      </div>
+      <a class="btn btn--primary btn--lg" href="/quote/?line=portable">Request a Quote</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { padding-block: clamp(2rem, 5vw, 3.5rem); border-bottom: 1px solid var(--border); }
+  .head__inner { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
+  .head :global(.ph), .head :global(.ph-img) { border-radius: var(--radius-lg); border: 1px solid var(--border); }
+  .page-title { font-size: clamp(2rem, 5vw, 3rem); margin-block: 0.5rem 1rem; }
+  .head__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+
+  .notice-band { background: color-mix(in srgb, var(--accent) 8%, var(--bg-raised)); border-bottom: 1px solid var(--border); padding-block: 1.5rem; }
+  .notice-band__inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .notice-band h2 { font-size: 1.0625rem; margin-bottom: 0.25rem; }
+  .notice-band p { font-size: 0.875rem; color: var(--text-muted); max-width: 56ch; }
+  .states { list-style: none; padding: 0; display: flex; gap: 0.5rem; flex-wrap: wrap; }
+  .states li {
+    font-family: var(--font-mono); font-weight: 700; font-size: 0.875rem;
+    padding: 0.375rem 0.625rem; border-radius: var(--radius);
+    background: var(--bg-raised); border: 1px solid var(--border-strong); color: var(--accent);
+  }
+  .states abbr { text-decoration: none; }
+
+  .sec-head { margin-bottom: 0.5rem; }
+  .sec-head h2, .sec-title { font-size: clamp(1.5rem, 3.2vw, 2rem); }
+  .sec-title { margin-bottom: 1rem; }
+
+  .build-grid { gap: 2rem; }
+  .build { border-top: 2px solid var(--accent); padding-top: 1rem; }
+  .build__area { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); }
+  .build h3 { font-size: 1.0625rem; margin: 0.25rem 0 0.75rem; }
+  .build ul { margin: 0 0 0 1.125rem; padding: 0; color: var(--text-muted); font-size: 0.9375rem; }
+  .build li { margin-bottom: 0.375rem; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+  .fin { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; }
+  .fin__col { background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+  .fin__col h3 { font-size: 0.9375rem; margin-bottom: 0.625rem; }
+  .fin__col ul { margin: 0 0 0 1.125rem; padding: 0; font-size: 0.875rem; color: var(--text-muted); }
+  .fin__col li { margin-bottom: 0.3125rem; }
+  .fine { font-size: 0.8125rem; color: var(--text-faint); margin-top: 1rem; line-height: 1.6; }
+
+  .cta { background: var(--bg-inverse); color: var(--text-inverse); padding-block: clamp(2.5rem, 6vw, 4rem); }
+  .cta__inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .cta h2 { font-size: clamp(1.5rem, 3.4vw, 2rem); margin-bottom: 0.5rem; }
+  .cta p { color: color-mix(in srgb, currentColor 72%, transparent); max-width: 52ch; }
+  .btn--lg { padding: 0.9375rem 2rem; font-size: 1rem; }
+
+  @media (max-width: 900px) {
+    .head__inner, .two-col { grid-template-columns: 1fr; }
+    .head :global(.ph) { order: -1; }
+  }
+  @media (max-width: 560px) { .fin { grid-template-columns: 1fr; } }
+</style>

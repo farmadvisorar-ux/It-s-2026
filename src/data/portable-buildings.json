@@ -1,0 +1,287 @@
+{
+  "line": {
+    "name": "Portable Buildings",
+    "family": "wood",
+    "tagline": "Delivered finished, ready to use",
+    "intro": "Wood portable buildings arrive complete. They are built in a shop, trucked to your property, and set on your prepared spot in a single visit — no assembly, no kit, no crew. Because they sit on treated skids rather than a poured foundation, most sites need nothing more than level ground, and the building can be relocated later if you move.",
+    "deliveryStates": ["TX", "LA", "MO", "IL", "TN", "IN"],
+    "deliveryNote": "Portable buildings are delivered to Texas, Louisiana, Missouri, Illinois, Tennessee and Indiana. Outside those states, our steel building lines ship nationwide.",
+    "warranty": {
+      "standard": "5-year limited warranty on workmanship and materials",
+      "specialty": "1-year limited warranty on Greenhouse, K-9 Condo, Chicken Coop and Playhouse models",
+      "siding": "LP SmartSide siding and trim carries a 50-year manufacturer warranty",
+      "shingles": "Dimensional shingles carry a manufacturer lifetime warranty",
+      "note": "Warranty runs to the original purchaser and requires the original serial tag to remain attached and visible. It does not cover installation or reinstallation costs, or the natural tendency of wood to split, warp or twist."
+    },
+    "financing": {
+      "rentToOwn": ["Buildings up to $20,000", "No credit check", "Small deposit", "Trade-up policy", "Return policy"],
+      "traditional": ["6 months deferred interest, or fixed APR from 9.99%", "Credit check required", "10% down payment"],
+      "note": "Financing and lease-purchase programs are administered by third-party finance companies, and availability varies by area. Terms come from the finance provider, not from us."
+    }
+  },
+  "construction": [
+    {
+      "area": "Floor",
+      "heading": "Built not to sag or rot",
+      "points": [
+        "Treated skids and joists on 16\" centers, rated for ground contact",
+        "4x6 notched floor skids — two on 8' wide buildings, four on 10' and 12' wide",
+        "5/8\" LP ProStruct treated floor decking with interlocking SmartFinish",
+        "Pulling blocks at the centermost skids so the building can be moved without damage"
+      ]
+    },
+    {
+      "area": "Walls",
+      "heading": "Finished, painted, warranted",
+      "points": [
+        "LP SmartSide engineered wood siding and trim, treated against water and insects",
+        "2x4 studs on 16\" centers",
+        "Metal hurricane straps tying wall framing to rafters, rated to 160 mph",
+        "Glidden exterior paint in a choice of eleven colors",
+        "Ring-shank coated nails throughout"
+      ]
+    },
+    {
+      "area": "Roof",
+      "heading": "Shed water, vent heat",
+      "points": [
+        "2x4 rafters joined with steel plates",
+        "7/16\" OSB roof decking",
+        "Aluminum drip edge protecting decking and eaves",
+        "Ridge vent to let heat escape at the peak",
+        "Choice of dimensional shingles or a metal roof"
+      ]
+    },
+    {
+      "area": "Doors",
+      "heading": "Hardware that survives daily use",
+      "points": [
+        "6\" heavy-duty zinc-plated hinges and handle",
+        "Adjustable tension rods to stop the doors sagging",
+        "Aluminum threshold protecting the floor edge",
+        "Storm chains to prevent wind damage",
+        "Takes a standard padlock without modification"
+      ]
+    }
+  ],
+  "categories": [
+    { "slug": "sheds", "name": "Sheds", "blurb": "Storage in eight styles, from a compact tool shed to a barn with a full loft." },
+    { "slug": "cabins", "name": "Cabins", "blurb": "Covered porch, residential door and windows — a building you would actually sit in." },
+    { "slug": "garages", "name": "Garages", "blurb": "Portable vehicle storage sized for cars, bikes, mowers and ATVs." },
+    { "slug": "specialty", "name": "Specialty Buildings", "blurb": "Purpose-built structures — growing, poultry, dogs and play." }
+  ],
+  "products": [
+    {
+      "slug": "barn",
+      "name": "The Barn",
+      "category": "sheds",
+      "headline": "The best-seller, and the one with a real loft",
+      "intro": "The Barn is the most-ordered building in the line, and the reason is vertical space. The gambrel roof shape that makes it look like a barn is doing structural work — it lifts the sidewalls of the loft high enough that the space above is genuinely usable rather than a crawl.",
+      "detail": "If you are storing anything seasonal — decorations, camping gear, off-season furniture — the loft is where it goes, and it frees the entire floor for the things you actually reach for weekly. Available with single or double doors, and with the widest size range in the lineup.",
+      "sizes": ["8x12", "10x12", "10x14", "10x16", "10x20", "12x16", "12x20", "12x24", "12x28", "12x32"],
+      "plans": ["800", "801", "804", "805", "806", "807", "809", "810"],
+      "height": "Approximately 11'6\" overall on a 12' wide building",
+      "features": ["Overhead storage loft", "Gambrel barn roof", "Single or double doors", "Eight floor plans"],
+      "uses": ["General storage", "Workshop", "Seasonal and bulk storage", "Yard and garden equipment"]
+    },
+    {
+      "slug": "tool-shed",
+      "name": "Tool Shed",
+      "category": "sheds",
+      "headline": "The economical one, and often the right one",
+      "intro": "A compact ranch-style building with shorter walls and a lower overall height. It is the least expensive way into the line, and for a mower, a wheelbarrow and a wall of hand tools it is frequently all anyone needs.",
+      "detail": "Interior walls run about 6'3\", so this is not the choice if you plan to stand tall shelving against them or work inside for long stretches. If that matters, the Tool Shed Tall is the same building with the height added.",
+      "sizes": ["8x12", "10x12"],
+      "plans": ["800", "801", "805", "806"],
+      "height": "Shorter overall height; interior walls approximately 6'3\"",
+      "features": ["Ranch-style roof", "Compact footprint", "Four floor plans", "Lowest cost in the line"],
+      "uses": ["Mower and yard tools", "Garden storage", "Small backyard storage"]
+    },
+    {
+      "slug": "tool-shed-tall",
+      "name": "Tool Shed Tall",
+      "category": "sheds",
+      "headline": "Ranch styling with the wall height added back",
+      "intro": "The most popular ranch-style building in the line. Same clean single-ridge roof as the Tool Shed, with taller sidewalls — which is the difference between a building you store things in and one you can work in.",
+      "detail": "The extra wall height is what makes shelving, pegboard and a bench worth installing. It also covers the full size range up to 12' x 32', so it scales from a backyard shed to something closer to a workshop.",
+      "sizes": ["8x12", "10x12", "10x14", "10x16", "10x20", "12x16", "12x20", "12x24", "12x28", "12x32"],
+      "plans": ["800", "801", "804", "805", "806", "807", "809", "810"],
+      "height": "Approximately 10'6\" overall on a 10' wide building",
+      "features": ["Taller sidewalls", "Ranch-style roof", "Full size range", "Eight floor plans"],
+      "uses": ["Workshop", "Storage with wall shelving", "Equipment storage", "Hobby space"]
+    },
+    {
+      "slug": "cottage-shed",
+      "name": "Cottage Shed",
+      "category": "sheds",
+      "headline": "The one that suits a front-yard-visible spot",
+      "intro": "A distinctive roof profile that reads more like a small cottage than a utility building. If your shed will be visible from the house or the street — or if a covenant has opinions about outbuildings — this is the one that tends to pass without argument.",
+      "detail": "The roof shape sheds weather well and gives the building a finished look without costing more than a plain gable. Practical storage capacity is comparable to a ranch-style building of the same footprint.",
+      "sizes": ["8x12", "10x12", "10x16"],
+      "plans": ["800", "801", "805", "806", "813", "814", "850"],
+      "height": "Approximately 9'8\" overall on a 10' wide building",
+      "features": ["Distinctive cottage roof", "Seven floor plans", "Curb-appeal styling"],
+      "uses": ["Visible backyard storage", "Garden storage", "Neighbourhood-sensitive sites"]
+    },
+    {
+      "slug": "cottage-shed-tall",
+      "name": "Cottage Shed Tall",
+      "category": "sheds",
+      "headline": "Cottage styling, more usable wall",
+      "intro": "The Cottage Shed with additional wall height and two more floor plans. You keep the styling that made the shorter version worth choosing and gain the headroom that makes the interior properly usable.",
+      "detail": "Worth the step up if the building will be entered daily, or if you intend to line the walls. The roof profile also gives slightly more protection at the eave than a flat gable.",
+      "sizes": ["8x12", "10x12", "10x16"],
+      "plans": ["813", "814", "815", "816", "850"],
+      "height": "Approximately 11'4\" overall on a 10' wide building",
+      "features": ["Added wall height", "Five floor plans", "Cottage roof profile"],
+      "uses": ["Storage plus light work", "Garden and potting space", "Hobby storage"]
+    },
+    {
+      "slug": "slim-shed",
+      "name": "Slim Shed",
+      "category": "sheds",
+      "headline": "For the gap beside the house",
+      "intro": "A narrow lean-to profile with a single-slope roof, built for the strip of ground alongside an existing structure or fence line where nothing else fits. The 6' wide model in particular solves a problem most sheds cannot.",
+      "detail": "The single slope means water runs off one side, so plan which way it faces relative to a path or a neighbouring wall. Double doors sit on the front sidewall, giving full-width access despite the narrow footprint.",
+      "sizes": ["6x12", "8x12"],
+      "plans": ["809", "817"],
+      "height": "Single-slope lean-to profile",
+      "features": ["Lean-to single-slope roof", "Double doors on the front sidewall", "Fits tight side yards", "Two floor plans"],
+      "uses": ["Side-yard storage", "Bin and tool storage", "Narrow lot storage"]
+    },
+    {
+      "slug": "utility-handyman",
+      "name": "Utility Handyman",
+      "category": "sheds",
+      "headline": "Two rooms, one building",
+      "intro": "An interior partition splits this building into two separate spaces with their own access. One side becomes the workshop; the other stays storage — and the sawdust, the mess and the half-finished project stay on their own side of the wall.",
+      "detail": "The partition is the whole point, and it is worth thinking about which side gets the window and which gets the wider door before you order. Ranch-style roofline with the taller utility sidewalls.",
+      "sizes": ["12x24", "12x32"],
+      "plans": ["812"],
+      "height": "Approximately 11'6\" overall",
+      "features": ["Interior partition wall", "Two separate spaces", "Independent access", "Utility roofline"],
+      "uses": ["Workshop plus storage", "Home business", "Tool and material separation"]
+    },
+    {
+      "slug": "barn-handyman",
+      "name": "Barn Handyman",
+      "category": "sheds",
+      "headline": "The partitioned workshop, with a loft on top",
+      "intro": "Same two-room layout as the Utility Handyman, built under a barn roof. You get the interior partition dividing workshop from storage, plus the overhead loft that the gambrel shape makes possible.",
+      "detail": "This is the most storage-dense building in the range — two usable ground-floor rooms and a loft above both. If you are trying to get a workshop and a season's worth of storage onto one pad, this is the one that does it.",
+      "sizes": ["12x24", "12x32"],
+      "plans": ["812"],
+      "height": "Approximately 11'6\" overall",
+      "features": ["Interior partition wall", "Overhead loft", "Barn roof profile", "Two ground-floor rooms"],
+      "uses": ["Workshop plus bulk storage", "Hobby and equipment", "Small business storage"]
+    },
+    {
+      "slug": "utility-cabin",
+      "name": "Utility Cabin",
+      "category": "cabins",
+      "headline": "A covered porch changes what the building is for",
+      "intro": "Add a covered front porch, a residential entry door, three windows and taller sidewalls, and a storage building stops being storage. The Utility Cabin is built to be occupied — as a studio, an office, a guest space or a retreat at the back of the property.",
+      "detail": "It arrives as a finished shell with the porch, door and windows in place. Insulation, wiring, interior finishes and anything else needed for regular occupancy are local work, and whether that requires a permit depends entirely on your jurisdiction and how you intend to use it.",
+      "sizes": ["12x24", "12x32"],
+      "plans": ["818"],
+      "height": "Approximately 11'5\" overall on a 12' wide building",
+      "features": ["Covered front porch", "Residential access door", "Three windows", "Taller sidewalls"],
+      "uses": ["Home office or studio", "Guest space", "Hunting or lake cabin", "Backyard retreat"]
+    },
+    {
+      "slug": "barn-cabin",
+      "name": "Barn Cabin",
+      "category": "cabins",
+      "headline": "Cabin below, loft above",
+      "intro": "The cabin package — covered porch, residential door, three windows, tall sidewalls — under a barn roof, which adds a loft over the living space. The loft is what makes a small footprint feel like more than one room.",
+      "detail": "The gambrel roof gives real standing room upstairs rather than a token shelf, so a 12' x 32' Barn Cabin has meaningfully more usable volume than the same footprint under a ranch roof. Same caveats apply on insulation, utilities and permits.",
+      "sizes": ["12x24", "12x32"],
+      "plans": ["819"],
+      "height": "Barn profile with overhead loft",
+      "features": ["Covered front porch", "Overhead loft", "Residential door and three windows", "Barn roof profile"],
+      "uses": ["Cabin or guest quarters", "Studio with storage above", "Recreational property"]
+    },
+    {
+      "slug": "utility-garage",
+      "name": "Utility Garage",
+      "category": "garages",
+      "headline": "Vehicle storage that arrives finished",
+      "intro": "A portable garage delivered complete and set on your prepared ground. There is no slab to pour and no crew to schedule — which is most of the appeal when the alternative is a construction project.",
+      "detail": "Sized for a car, a truck, a boat, motorcycles, mowers or ATVs, and equally useful as workshop or hobby space. Because it sits on skids rather than a foundation, check with your building department about how a portable garage is classified locally — the answer varies and it affects permitting.",
+      "sizes": ["12x24", "12x32"],
+      "plans": ["811"],
+      "height": "Approximately 10'8\" overall",
+      "features": ["Ranch-style roof", "Vehicle-width doors", "No foundation required", "Relocatable"],
+      "uses": ["Car and truck storage", "Boat and ATV storage", "Workshop", "Hobby space"]
+    },
+    {
+      "slug": "barn-garage",
+      "name": "Barn Garage",
+      "category": "garages",
+      "headline": "Park below, store overhead",
+      "intro": "Vehicle storage under a barn roof, which buys you an overhead loft the ranch-style garage does not have. Park the vehicle, put everything else upstairs.",
+      "detail": "For anyone storing a seasonal vehicle — a boat, a bike, a classic — the loft usually ends up holding the covers, the spares and the gear that would otherwise crowd the floor around it.",
+      "sizes": ["12x24", "12x32"],
+      "plans": ["811"],
+      "height": "Approximately 11'6\" overall",
+      "features": ["Overhead loft", "Barn roof profile", "Vehicle-width doors", "No foundation required"],
+      "uses": ["Vehicle plus equipment storage", "Boat and motorcycle storage", "Garage with overhead storage"]
+    },
+    {
+      "slug": "chicken-coop",
+      "name": "Chicken Coop",
+      "category": "specialty",
+      "headline": "Built around egg collection and cleaning out",
+      "intro": "A purpose-built wooden coop designed around the two jobs you do most: getting the eggs out and cleaning the thing. Latching doors and a ridge vent handle security and airflow, which are the two variables that decide whether a coop works.",
+      "detail": "Ventilation matters more than most first-time keepers expect — a sealed coop holds moisture and ammonia, and that is what causes respiratory problems in a flock. The ridge vent lets that escape at the peak while the latching doors keep predators out.",
+      "sizes": ["6x6"],
+      "plans": ["001"],
+      "height": "Compact coop profile",
+      "features": ["Ridge vent", "Latching doors", "Egg access", "Clean-out access"],
+      "uses": ["Backyard flock", "Small-scale poultry"],
+      "warrantyClass": "specialty"
+    },
+    {
+      "slug": "k9-condo",
+      "name": "K-9 Condo",
+      "category": "specialty",
+      "headline": "Enclosed inside, fenced run outside",
+      "intro": "An 8' x 4' fully enclosed interior for warmth and shelter, opening through a large dog door onto a fully fenced, covered 8' x 8' porch. The dog moves between the two freely — sheltered when it wants to be, outside and in air when it does not.",
+      "detail": "The covered run is the part that matters in practice. A kennel with no shade is unusable half the year in most of the delivery region, and one with no enclosed space is unusable the other half.",
+      "sizes": ["8x12"],
+      "plans": ["140"],
+      "height": "Kennel profile with covered run",
+      "features": ["8' x 4' enclosed interior", "8' x 8' fenced covered porch", "Large dog door", "Full roof over both"],
+      "uses": ["Dog housing", "Kennel and run", "Working dog shelter"],
+      "warrantyClass": "specialty"
+    },
+    {
+      "slug": "greenhouse",
+      "name": "Greenhouse",
+      "category": "specialty",
+      "headline": "Extend the growing season at both ends",
+      "intro": "A bright, roomy greenhouse with interior shelving on three sides and hooks overhead for hanging plants. Built to the same standard as the rest of the line rather than as a seasonal kit, which is the difference between a structure that lasts a decade and one that lasts two winters.",
+      "detail": "Shelving on three walls plus overhead hooks gives you far more growing surface than the 8' x 12' footprint suggests. Think about orientation before it is set — which way it faces determines how much light it gets through the shoulder seasons.",
+      "sizes": ["8x12"],
+      "plans": ["820"],
+      "height": "Greenhouse profile",
+      "features": ["Interior shelving on three sides", "Overhead plant hooks", "Bright glazed structure", "Permanent construction"],
+      "uses": ["Season extension", "Seed starting", "Overwintering plants", "Propagation"],
+      "warrantyClass": "specialty"
+    },
+    {
+      "slug": "playhouse",
+      "name": "Playhouse",
+      "category": "specialty",
+      "headline": "A real building, scaled for the people using it",
+      "intro": "An 8' x 12' structure with a four-foot-deep covered front porch, built to the same standards as every other building in the range — the same treated floor, the same siding, the same warranted roof.",
+      "detail": "That construction standard is the point. A playhouse built like a toy lasts a couple of seasons outdoors; this one is built like a shed, which means it survives the weather and converts easily into storage or a garden room once the kids outgrow it.",
+      "sizes": ["8x12"],
+      "plans": ["002"],
+      "height": "Playhouse profile with covered porch",
+      "features": ["Four-foot covered front porch", "Full-standard construction", "Treated floor", "Converts to storage later"],
+      "uses": ["Children's playhouse", "Garden room", "Future storage building"],
+      "warrantyClass": "specialty"
+    }
+  ]
+}

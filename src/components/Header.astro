@@ -1,9 +1,13 @@
 ---
 import site from '../data/site.json';
 import types from '../data/building-types.json';
+import pb from '../data/portable-buildings.json';
 
 const groups = [...new Set(types.map((t: any) => t.group))];
 const byGroup = (g: string) => types.filter((t: any) => t.group === g && !t.parent);
+
+const pbCats = (pb as any).categories;
+const pbByCat = (slug: string) => (pb as any).products.filter((x: any) => x.category === slug);
 ---
 
 <header class="site-header">
@@ -26,7 +30,7 @@ const byGroup = (g: string) => types.filter((t: any) => t.group === g && !t.pare
 
     <nav id="primary-nav" class="nav" aria-label="Primary">
       <div class="nav__item has-menu">
-        <button class="nav__link" aria-expanded="false">Building Types</button>
+        <button class="nav__link" aria-expanded="false">Steel Buildings</button>
         <div class="mega">
           <div class="mega__inner">
             {groups.map((g) => (
@@ -39,6 +43,31 @@ const byGroup = (g: string) => types.filter((t: any) => t.group === g && !t.pare
                 </ul>
               </div>
             ))}
+            <div class="mega__col mega__col--all">
+              <a class="mega__all" href="/building-types/">All steel building types &rarr;</a>
+              <p class="mega__note">Engineered kits, stamped for your jurisdiction, shipped nationwide.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="nav__item has-menu">
+        <button class="nav__link" aria-expanded="false">Portable Buildings</button>
+        <div class="mega">
+          <div class="mega__inner mega__inner--pb">
+            {pbCats.map((c: any) => (
+              <div class="mega__col">
+                <h3 class="mega__head">{c.name}</h3>
+                <ul>
+                  {pbByCat(c.slug).map((x: any) => (
+                    <li><a href={`/portable-buildings/${x.slug}/`}>{x.name}</a></li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+            <div class="mega__col mega__col--all">
+              <a class="mega__all" href="/portable-buildings/">All portable buildings &rarr;</a>
+              <p class="mega__note">Delivered finished in TX, LA, MO, IL, TN and IN.</p>
+            </div>
           </div>
         </div>
       </div>
@@ -91,7 +120,11 @@ const byGroup = (g: string) => types.filter((t: any) => t.group === g && !t.pare
     padding: 1.5rem; width: max-content; max-width: 90vw;
   }
   .has-menu:hover .mega, .has-menu:focus-within .mega { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
-  .mega__inner { display: grid; grid-template-columns: repeat(5, minmax(150px, 1fr)); gap: 1.75rem; }
+  .mega__inner { display: grid; grid-template-columns: repeat(6, minmax(140px, 1fr)); gap: 1.75rem; }
+  .mega__inner--pb { grid-template-columns: repeat(5, minmax(140px, 1fr)); }
+  .mega__col--all { border-left: 1px solid var(--border); padding-left: 1.25rem; }
+  .mega__all { font-size: 0.875rem; font-weight: 600; color: var(--accent); text-decoration: none; display: block; margin-bottom: 0.5rem; }
+  .mega__note { font-size: 0.75rem; color: var(--text-faint); line-height: 1.5; }
   .mega__head { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.625rem; }
   .mega ul { list-style: none; padding: 0; }
   .mega li { margin-bottom: 0.375rem; }
@@ -128,7 +161,8 @@ const byGroup = (g: string) => types.filter((t: any) => t.group === g && !t.pare
       box-shadow: none; border: none; padding: 0.5rem 0 1rem; width: auto; display: none;
     }
     .has-menu[data-open="true"] .mega { display: block; }
-    .mega__inner { grid-template-columns: 1fr; gap: 1rem; }
+    .mega__inner, .mega__inner--pb { grid-template-columns: 1fr; gap: 1rem; }
+    .mega__col--all { border-left: none; padding-left: 0; }
   }
 </style>
 

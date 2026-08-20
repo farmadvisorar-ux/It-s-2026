@@ -2,6 +2,7 @@
 import Base from '../layouts/Base.astro';
 import types from '../data/building-types.json';
 import models from '../data/models.json';
+import pb from '../data/portable-buildings.json';
 
 /**
  * Form delivery
@@ -16,6 +17,7 @@ import models from '../data/models.json';
  */
 const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
 const timelines = ['As soon as possible', 'Within 3 months', '3–6 months', '6–12 months', 'Still researching'];
+const pbProducts = (pb as any).products;
 ---
 
 <Base
@@ -92,6 +94,25 @@ const timelines = ['As soon as possible', 'Within 3 months', '3–6 months', '6�
           </fieldset>
 
           <fieldset>
+            <legend>Which line</legend>
+            <div class="field">
+              <label for="line">Type of building</label>
+              <select id="line" name="line">
+                <option value="">Not sure — help me choose</option>
+                <option value="steel">Engineered steel building (kit, ships nationwide)</option>
+                <option value="portable">Wood portable building (delivered finished, 6 states)</option>
+              </select>
+            </div>
+            <div class="field" id="pb-field" hidden>
+              <label for="pb_model">Portable building model</label>
+              <select id="pb_model" name="pb_model">
+                <option value="">Not sure yet</option>
+                {pbProducts.map((x: any) => <option value={x.slug}>{x.name}</option>)}
+              </select>
+            </div>
+          </fieldset>
+
+          <fieldset id="steel-fields">
             <legend>The building</legend>
             <div class="field">
               <label for="building">What are you building?</label>
@@ -233,6 +254,30 @@ const timelines = ['As soon as possible', 'Within 3 months', '3–6 months', '6�
   };
   setIf('building', params.get('building'));
   setIf('model', params.get('model'));
+  setIf('line', params.get('line'));
+
+  // portable-building deep links arrive as ?line=portable&model=<slug>
+  const lineSel = document.getElementById('line');
+  const pbField = document.getElementById('pb-field');
+  const steelFields = document.getElementById('steel-fields');
+  const pbModel = document.getElementById('pb_model');
+
+  if (params.get('line') === 'portable') {
+    const slug = params.get('model');
+    if (slug && pbModel && [...pbModel.options].some((o) => o.value === slug)) {
+      pbModel.value = slug;
+      const m = document.getElementById('model');
+      if (m) m.value = '';
+    }
+  }
+
+  function syncLine() {
+    const v = lineSel?.value;
+    if (pbField) pbField.hidden = v !== 'portable';
+    if (steelFields) steelFields.hidden = v === 'portable';
+  }
+  lineSel?.addEventListener('change', syncLine);
+  syncLine();
 
   const kit = params.get('kit');
   const opt = params.get('option');

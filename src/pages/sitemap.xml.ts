@@ -3,6 +3,7 @@ import types from '../data/building-types.json';
 import models from '../data/models.json';
 import options from '../data/options.json';
 import inventory from '../data/inventory.json';
+import pb from '../data/portable-buildings.json';
 
 /**
  * Sitemap generated from the same data the pages are built from, so it cannot
@@ -17,6 +18,7 @@ type Entry = { path: string; priority: number; changefreq: string };
 const staticPages: Entry[] = [
   { path: '/', priority: 1.0, changefreq: 'weekly' },
   { path: '/building-types/', priority: 0.9, changefreq: 'monthly' },
+  { path: '/portable-buildings/', priority: 0.9, changefreq: 'monthly' },
   { path: '/inventory/', priority: 0.9, changefreq: 'weekly' },
   { path: '/options-and-finishes/', priority: 0.8, changefreq: 'monthly' },
   { path: '/models/', priority: 0.8, changefreq: 'monthly' },
@@ -59,6 +61,11 @@ export const GET: APIRoute = () => {
         changefreq: 'monthly',
       }))
     ),
+    ...((pb as any).products as any[]).map((x) => ({
+      path: `/portable-buildings/${x.slug}/`,
+      priority: 0.8,
+      changefreq: 'monthly',
+    })),
     ...(inventory as any[]).map((i) => ({
       path: `/inventory/${i.slug}/`,
       priority: 0.7,

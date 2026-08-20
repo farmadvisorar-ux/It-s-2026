@@ -1,11 +1,16 @@
 ---
 import site from '../data/site.json';
 import types from '../data/building-types.json';
+import pb from '../data/portable-buildings.json';
 
 const year = new Date().getFullYear();
 const popular = ['garages', 'workshops', 'barndominium', 'quonset-buildings', 'container-covers', 'agricultural-and-farm'];
 const popularTypes = popular
   .map((s) => types.find((t: any) => t.slug === s))
+  .filter(Boolean) as any[];
+
+const pbPopular = ['barn', 'tool-shed-tall', 'utility-cabin', 'barn-garage', 'greenhouse']
+  .map((s) => (pb as any).products.find((x: any) => x.slug === s))
   .filter(Boolean) as any[];
 ---
 
@@ -25,12 +30,22 @@ const popularTypes = popular
       </div>
 
       <div class="foot-col">
-        <h3>Buildings</h3>
+        <h3>Steel Buildings</h3>
         <ul>
           {popularTypes.map((t) => (
             <li><a href={`/building-types/${t.slug}/`}>{t.name}</a></li>
           ))}
-          <li><a href="/building-types/">All building types</a></li>
+          <li><a href="/building-types/">All steel types</a></li>
+        </ul>
+      </div>
+
+      <div class="foot-col">
+        <h3>Portable Buildings</h3>
+        <ul>
+          {pbPopular.map((x) => (
+            <li><a href={`/portable-buildings/${x.slug}/`}>{x.name}</a></li>
+          ))}
+          <li><a href="/portable-buildings/">All portable buildings</a></li>
         </ul>
       </div>
 
@@ -87,7 +102,7 @@ const popularTypes = popular
   }
   .foot-grid {
     display: grid;
-    grid-template-columns: 1.6fr repeat(4, 1fr);
+    grid-template-columns: 1.5fr repeat(5, 1fr);
     gap: 2.5rem;
   }
   .brand { display: flex; align-items: center; gap: 0.625rem; color: var(--text); }
@@ -120,6 +135,7 @@ const popularTypes = popular
   .foot-bottom a { color: var(--text-faint); text-decoration: none; }
   .foot-bottom a:hover { color: var(--accent); }
 
-  @media (max-width: 960px) { .foot-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 1100px) { .foot-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 760px) { .foot-grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 560px) { .foot-grid { grid-template-columns: 1fr; gap: 2rem; } }
 </style>

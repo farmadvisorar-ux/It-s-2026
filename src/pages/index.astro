@@ -5,11 +5,18 @@ import site from '../data/site.json';
 import types from '../data/building-types.json';
 import models from '../data/models.json';
 import inventory from '../data/inventory.json';
+import pb from '../data/portable-buildings.json';
 import { typeImage, inventoryImage, heroImage } from '../lib/images';
 
 const featured = ['garages', 'workshops', 'barndominium', 'quonset-buildings', 'container-covers', 'agricultural-and-farm', 'commercial', 'storage'];
 const featuredTypes = featured.map((s) => types.find((t: any) => t.slug === s)).filter(Boolean) as any[];
 const deals = (inventory as any[]).filter((i) => i.featured).slice(0, 3);
+const pbLine = (pb as any).line;
+const pbCats = (pb as any).categories;
+const pbCount = (pb as any).products.length;
+const pbFeatured = ['barn', 'tool-shed-tall', 'utility-cabin', 'barn-garage']
+  .map((s2) => (pb as any).products.find((x: any) => x.slug === s2))
+  .filter(Boolean) as any[];
 const dealCount = (inventory as any[]).length;
 
 const advantages = [
@@ -45,11 +52,12 @@ const steps = [
     <div class="wrap hero__inner">
       <div class="hero__copy">
         <p class="eyebrow">Authorized Steel Building Dealer</p>
-        <h1 class="hero__title">Steel buildings that go up fast and stay up for decades</h1>
+        <h1 class="hero__title">Buildings that go up fast and stay up for decades</h1>
         <p class="lede">
-          Garages, workshops, barndominiums, quonset huts and commercial structures —
-          pre-engineered, factory-direct, and shipped as a bolt-together kit with
-          stamped drawings for your local code.
+          Two lines, one dealer. Engineered <strong>steel building kits</strong> — garages,
+          workshops, barndominiums, commercial — shipped nationwide with stamped drawings.
+          And wood <strong>portable buildings</strong> delivered finished and ready to use,
+          with no assembly and no foundation.
         </p>
         <div class="hero__actions">
           <a class="btn btn--primary" href="/quote/">Get a Free Quote</a>
@@ -57,8 +65,8 @@ const steps = [
         </div>
         <dl class="hero__stats">
           <div><dt>Clear spans to</dt><dd>100'+</dd></div>
-          <div><dt>Building types</dt><dd>{types.length}</dd></div>
-          <div><dt>Assembly</dt><dd>No welding</dd></div>
+          <div><dt>Steel types</dt><dd>{types.length}</dd></div>
+          <div><dt>Portable models</dt><dd>{pbCount}</dd></div>
         </dl>
       </div>
       <div class="hero__media">
@@ -72,8 +80,8 @@ const steps = [
     <div class="wrap">
       <header class="sec-head">
         <div>
-          <p class="eyebrow">What we build</p>
-          <h2>Pick the building that matches the job</h2>
+          <p class="eyebrow">Line one — steel kits</p>
+          <h2>Steel buildings, engineered to your site</h2>
         </div>
         <a class="btn btn--ghost" href="/building-types/">All {types.length} types</a>
       </header>
@@ -90,6 +98,43 @@ const steps = [
           </a>
         ))}
       </div>
+    </div>
+  </section>
+
+  <!-- ================= PORTABLE BUILDINGS ================= -->
+  <section class="section section--sunken">
+    <div class="wrap">
+      <header class="sec-head">
+        <div>
+          <p class="eyebrow">Line two — portable buildings</p>
+          <h2>Delivered finished, ready to use</h2>
+        </div>
+        <a class="btn btn--ghost" href="/portable-buildings/">All {pbCount} models</a>
+      </header>
+      <p class="lede" style="margin-bottom:2rem">
+        Built in a shop and trucked to your property complete. No kit to assemble, no slab
+        to pour — they sit on treated skids, so level ground is usually all the site prep
+        you need, and the building can move if you do.
+      </p>
+
+      <div class="grid grid--4">
+        {pbFeatured.map((x) => (
+          <a class="card" href={`/portable-buildings/${x.slug}/`}>
+            <Placeholder label={x.name} />
+            <div class="card__body">
+              <span class="card__meta">{pbCats.find((c: any) => c.slug === x.category)?.name}</span>
+              <h3 class="card__title">{x.name}</h3>
+              <p class="card__text">{x.headline}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <p class="pb-note">
+        <strong>Delivered in {pbLine.deliveryStates.join(', ')}.</strong>
+        Portable buildings are trucked complete, so the delivery area is regional.
+        Steel building kits ship nationwide.
+      </p>
     </div>
   </section>
 
@@ -216,6 +261,14 @@ const steps = [
   .sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
   .sec-head h2, .sec-title { font-size: clamp(1.5rem, 3.4vw, 2.125rem); }
   .sec-title { margin-bottom: 2rem; }
+
+  .pb-note {
+    margin-top: 2rem; padding: 0.875rem 1rem;
+    background: color-mix(in srgb, var(--accent) 8%, var(--bg-raised));
+    border-left: 3px solid var(--accent); border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 0.875rem; color: var(--text-muted);
+  }
+  .pb-note strong { color: var(--text); }
 
   /* advantages */
   .adv-grid { gap: 2rem; }
