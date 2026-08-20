@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Placeholder from '../../components/Placeholder.astro';
 import options from '../../data/options.json';
+import { optionImage } from '../../lib/images';
 ---
 
 <Base
@@ -27,7 +28,7 @@ import options from '../../data/options.json';
           <div class="grid grid--3">
             {fam.items.map((o: any) => (
               <a class="card" href={`/options-and-finishes/${fam.family}/${o.slug}/`}>
-                <Placeholder label={o.name} />
+                <Placeholder label={o.name} src={optionImage(fam.family, o.slug)} alt={`${o.name} — ${o.summary}`} />
                 <div class="card__body">
                   <h3 class="card__title">{o.name}</h3>
                   <p class="card__text">{o.summary}</p>

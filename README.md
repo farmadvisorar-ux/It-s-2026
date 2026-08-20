@@ -70,27 +70,55 @@ All content lives in `src/data/` as JSON. No code changes needed to update the c
 - [ ] **Set your own pricing.** Inventory pages currently say "Request pricing".
       As a dealer you set your own margins — add a `price` field to
       `inventory.json` and surface it if you want prices shown publicly.
+- [ ] **Get the image permission in writing** if you have not already. The
+      photos are the manufacturer's copyright and the permission is what makes
+      their use here lawful; an email on file costs nothing and settles it.
 - [ ] **Update `site` in `astro.config.mjs`** to your real domain (currently
       `marshallsheds.com`) so canonical URLs and the sitemap are correct.
 
 ## Images
 
-Every image on the site is a styled placeholder rendered by
-`src/components/Placeholder.astro`. Nothing is hotlinked and no third-party
-photography is used.
+Photos come from the manufacturer's media library and are used with their
+permission (confirmed by the dealer). They are downloaded, resized and
+converted to WebP at build-prep time and served from `public/img/` — nothing
+is hotlinked, so the site has no runtime dependency on the manufacturer.
 
-To add real photos:
+| Folder | Count | Used for |
+|---|---|---|
+| `public/img/types/` | 69 | Building-type heroes, cards, and per-page galleries |
+| `public/img/inventory/` | 52 | One photo per clearance listing |
+| `public/img/options/` | 8 | Options & finishes pages |
 
-```astro
-<!-- before -->
-<Placeholder label="Steel Garages" />
+Four options pages (foundations, roof accessories, trim & flashing,
+straight-wall insulation) intentionally still use placeholders — see the
+screening notes below.
 
-<!-- after -->
-<Placeholder label="Steel Garages" src="/img/garages.jpg" alt="30x40 steel garage" />
-```
+### Screening
 
-Drop files in `public/img/`. Layout does not change — the placeholder and the real
-image occupy the same box.
+Every downloaded image was reviewed on a contact sheet before use. These were
+**deliberately excluded** and should not be reinstated without a good reason:
+
+- **Four photos of identifiable people** — three of the same man in a blazer
+  with a logo lapel pin, plus one selfie. Publishing them here implies those
+  people represent Marshall Sheds.
+- **Two photos carrying another company's identity** — service vans liveried
+  for an unrelated firm, and a building with "HARRISON DISTRIBUTING" signage
+  across the front, which would imply a customer relationship that does not
+  exist.
+- **One photo with rental-company branding** on a lift (Sunbelt Rentals).
+- **Several unusable frames** — a cropped instructional graphic with cut-off
+  text, pixelated gutter renders, and two blurry aerials.
+
+If you add images later, screen for the same three things: identifiable
+people, third-party branding or signage, and any visible manufacturer mark.
+
+### Swapping in your own photography
+
+`src/data/images.json` maps content to files. Replace a file in `public/img/`
+keeping the same name and nothing else needs to change. To add a photo where
+one is missing, drop the file in and add its path to `images.json` — the
+`Placeholder` component falls back to a styled placeholder whenever a path is
+absent, so partial coverage always renders cleanly.
 
 ---
 
@@ -112,6 +140,9 @@ add pages.
 
 **There are no testimonials.** A testimonials section was deliberately left out
 rather than populated with borrowed reviews. Add real ones as customers give them.
+
+**No photo shows an identifiable person or another company's branding.** See
+the screening notes under Images — this was checked deliberately, not by luck.
 
 ## Structure
 

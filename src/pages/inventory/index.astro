@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Placeholder from '../../components/Placeholder.astro';
 import inventory from '../../data/inventory.json';
 import models from '../../data/models.json';
+import { inventoryImage } from '../../lib/images';
 
 const items = inventory as any[];
 const regions = [...new Set(items.flatMap((i) => i.regions))].sort();
@@ -65,7 +66,7 @@ const modelName = (c: string) => (models as any[]).find((m) => m.code === c)?.na
             data-model={i.model ?? ''}
             data-sqft={i.sqft ?? 0}
           >
-            <Placeholder label={i.title} />
+            <Placeholder label={i.title} src={inventoryImage(i.slug)} alt={`${i.title} steel building kit`} />
             <div class="card__body">
               <div class="inv__tags">
                 {i.featured && <span class="tag tag--accent">Top pick</span>}

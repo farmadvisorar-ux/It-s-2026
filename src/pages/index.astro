@@ -5,6 +5,7 @@ import site from '../data/site.json';
 import types from '../data/building-types.json';
 import models from '../data/models.json';
 import inventory from '../data/inventory.json';
+import { typeImage, inventoryImage, heroImage } from '../lib/images';
 
 const featured = ['garages', 'workshops', 'barndominium', 'quonset-buildings', 'container-covers', 'agricultural-and-farm', 'commercial', 'storage'];
 const featuredTypes = featured.map((s) => types.find((t: any) => t.slug === s)).filter(Boolean) as any[];
@@ -61,7 +62,7 @@ const steps = [
         </dl>
       </div>
       <div class="hero__media">
-        <Placeholder label="Hero — steel building exterior" variant="wide" />
+        <Placeholder label="Steel building exterior" src={heroImage()} alt="Engineered steel building on a finished site" variant="wide" />
       </div>
     </div>
   </section>
@@ -80,7 +81,7 @@ const steps = [
       <div class="grid grid--4">
         {featuredTypes.map((t) => (
           <a class="card" href={`/building-types/${t.slug}/`}>
-            <Placeholder label={t.name} />
+            <Placeholder label={t.name} src={typeImage(t.slug)} alt={`${t.name} — ${t.headline}`} />
             <div class="card__body">
               <span class="card__meta">{t.group}</span>
               <h3 class="card__title">{t.name}</h3>
@@ -155,7 +156,7 @@ const steps = [
         <div class="grid grid--3">
           {deals.map((d) => (
             <a class="card" href={`/inventory/${d.slug}/`}>
-              <Placeholder label={d.title} />
+              <Placeholder label={d.title} src={inventoryImage(d.slug)} alt={`${d.title} steel building kit`} />
               <div class="card__body">
                 <span class="tag tag--accent">Clearance</span>
                 <h3 class="card__title">{d.title}</h3>

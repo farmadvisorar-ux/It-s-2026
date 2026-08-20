@@ -4,6 +4,7 @@ import Placeholder from '../../components/Placeholder.astro';
 import models from '../../data/models.json';
 import types from '../../data/building-types.json';
 import inventory from '../../data/inventory.json';
+import { modelImage, inventoryImage } from '../../lib/images';
 
 export function getStaticPaths() {
   return (models as any[]).map((m) => ({
@@ -32,7 +33,7 @@ const others = (models as any[]).filter((m) => m.code !== model.code && m.family
         <p class="head__line">{model.profile} · {model.spanRange}</p>
         <a class="btn btn--primary" href={`/quote/?model=${model.code}`} style="margin-top:1.5rem">Quote a {model.name}</a>
       </div>
-      <Placeholder label={`${model.name} profile diagram`} variant="wide" />
+      <Placeholder label={`${model.name} profile`} src={modelImage(model.code, types as any)} alt={`${model.name} — ${model.profile}`} variant="wide" />
     </div>
   </section>
 
@@ -97,6 +98,7 @@ const others = (models as any[]).filter((m) => m.code !== model.code && m.family
         <div class="grid grid--4">
           {kits.map((k) => (
             <a class="card" href={`/inventory/${k.slug}/`}>
+              <Placeholder label={k.title} src={inventoryImage(k.slug)} alt={k.title} />
               <div class="card__body">
                 <span class="tag tag--accent">Clearance</span>
                 <h3 class="card__title">{k.title}</h3>

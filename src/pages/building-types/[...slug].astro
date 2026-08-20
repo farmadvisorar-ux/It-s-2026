@@ -4,6 +4,7 @@ import Placeholder from '../../components/Placeholder.astro';
 import types from '../../data/building-types.json';
 import models from '../../data/models.json';
 import inventory from '../../data/inventory.json';
+import { typeImage, typeImages, inventoryImage } from '../../lib/images';
 
 export function getStaticPaths() {
   return (types as any[]).map((t) => ({
@@ -22,6 +23,8 @@ const related = (types as any[])
 const matches = (inventory as any[])
   .filter((i) => i.model && type.models.includes(i.model))
   .slice(0, 4);
+
+const gallery = typeImages(type.slug).slice(1);
 
 const parentCrumb = type.parent
   ? [{ label: 'Building Types', href: '/building-types/' },
@@ -48,7 +51,7 @@ const parentCrumb = type.parent
             <a class="btn btn--ghost" href="/inventory/">See ready-to-ship kits</a>
           </div>
         </div>
-        <Placeholder label={`${type.name} — primary photo`} variant="wide" />
+        <Placeholder label={type.name} src={typeImage(type.slug)} alt={`${type.name} — ${type.headline}`} variant="wide" />
       </div>
     </section>
 
@@ -121,6 +124,21 @@ const parentCrumb = type.parent
       </div>
     </section>
 
+    {gallery.length > 0 && (
+      <section class="section gallery-sec">
+        <div class="wrap">
+          <h2 class="sec-title">More {type.name.toLowerCase()}</h2>
+          <div class="gallery">
+            {gallery.map((src, i) => (
+              <figure class="gallery__item">
+                <img src={src} alt={`${type.name} example ${i + 2}`} loading="lazy" decoding="async" width="1000" height="750" />
+              </figure>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
     {matches.length > 0 && (
       <section class="section section--sunken">
         <div class="wrap">
@@ -128,6 +146,7 @@ const parentCrumb = type.parent
           <div class="grid grid--4">
             {matches.map((d) => (
               <a class="card" href={`/inventory/${d.slug}/`}>
+                <Placeholder label={d.title} src={inventoryImage(d.slug)} alt={d.title} />
                 <div class="card__body">
                   <span class="tag tag--accent">Model {d.model}</span>
                   <h3 class="card__title">{d.title}</h3>
@@ -147,7 +166,7 @@ const parentCrumb = type.parent
           <div class="grid grid--3">
             {related.map((t) => (
               <a class="card" href={`/building-types/${t.slug}/`}>
-                <Placeholder label={t.name} />
+                <Placeholder label={t.name} src={typeImage(t.slug)} alt={t.name} />
                 <div class="card__body">
                   <h3 class="card__title">{t.name}</h3>
                   <p class="card__text">{t.headline}</p>
@@ -205,6 +224,11 @@ const parentCrumb = type.parent
   .model-row__body span { font-size: 0.8125rem; color: var(--text-faint); }
 
   .sec-title { font-size: clamp(1.375rem, 3vw, 1.875rem); margin-bottom: 1.5rem; }
+
+  .gallery-sec { padding-block: clamp(2rem, 5vw, 3.5rem); }
+  .gallery { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; }
+  .gallery__item { margin: 0; border: 1px solid var(--border); border-radius: var(--radius-lg); overflow: hidden; background: var(--bg-raised); }
+  .gallery__item img { width: 100%; height: 100%; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
 
   @media (max-width: 900px) {
     .head__inner { grid-template-columns: 1fr; }

@@ -2,6 +2,7 @@
 import Base from '../../../layouts/Base.astro';
 import Placeholder from '../../../components/Placeholder.astro';
 import options from '../../../data/options.json';
+import { optionImage } from '../../../lib/images';
 
 export function getStaticPaths() {
   return (options as any[]).flatMap((fam) =>
@@ -32,7 +33,7 @@ const siblings = fam.items.filter((o: any) => o.slug !== option.slug);
         <h1 class="page-title">{option.name}</h1>
         <p class="lede">{option.summary}</p>
 
-        <Placeholder label={`${option.name} — detail photo`} variant="wide" class="hero-img" />
+        <Placeholder label={option.name} src={optionImage(fam.family, option.slug)} alt={`${option.name} — ${option.summary}`} variant="wide" class="hero-img" />
 
         <div class="prose">
           <h2>How it works</h2>

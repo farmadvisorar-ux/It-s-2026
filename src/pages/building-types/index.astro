@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Placeholder from '../../components/Placeholder.astro';
 import types from '../../data/building-types.json';
+import { typeImage } from '../../lib/images';
 
 const groups = [...new Set((types as any[]).map((t) => t.group))];
 ---
@@ -28,7 +29,7 @@ const groups = [...new Set((types as any[]).map((t) => t.group))];
           <div class="grid grid--3">
             {(types as any[]).filter((t) => t.group === g).map((t) => (
               <a class="card" href={`/building-types/${t.slug}/`}>
-                <Placeholder label={t.name} />
+                <Placeholder label={t.name} src={typeImage(t.slug)} alt={`${t.name} — ${t.headline}`} />
                 <div class="card__body">
                   <h3 class="card__title">{t.name}</h3>
                   <p class="card__text">{t.headline}</p>

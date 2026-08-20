@@ -2,6 +2,7 @@
 import Base from '../../layouts/Base.astro';
 import Placeholder from '../../components/Placeholder.astro';
 import site from '../../data/site.json';
+import { typeImage } from '../../lib/images';
 
 const links = [
   { href: '/about/our-advantage/', title: 'Our Advantage', blurb: 'What buying through a dealer gets you that a web form does not.' },
@@ -66,7 +67,7 @@ const links = [
       </div>
 
       <aside class="side">
-        <Placeholder label="Marshall Sheds" variant="square" />
+        <Placeholder label="Marshall Sheds" src={typeImage('agricultural-and-farm')} alt="Steel building supplied by Marshall Sheds" variant="square" />
         <div class="panel">
           <h2 class="panel__head">Dealer notice</h2>
           <p class="panel__note">{site.dealerNotice}</p>

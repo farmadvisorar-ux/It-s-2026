@@ -2,16 +2,17 @@
 import Base from '../../layouts/Base.astro';
 import Placeholder from '../../components/Placeholder.astro';
 import faqs from '../../data/faqs.json';
+import { typeImage } from '../../lib/images';
 
 const guides = [
-  { href: '/resources/arch-vs-straight-wall/', title: 'Arch vs. Straight Wall', blurb: 'The single decision that shapes everything else about your building — and the honest trade-off between them.' },
-  { href: '/resources/galvalume-steel/', title: 'Galvalume Steel Explained', blurb: 'What the coating actually does, why it outlasts plain galvanizing, and what shortens its life.' },
-  { href: '/resources/building-codes/', title: 'Building Codes by State', blurb: 'Why your address determines your engineering, and what your building department will want to see.' },
-  { href: '/resources/assembly/', title: 'Assembly Guide', blurb: 'What raising a kit actually involves — crew size, tools, sequence, and the mistake that causes most problems.' },
-  { href: '/resources/foundations/', title: 'Foundation Basics', blurb: 'Slab, footing or pier — how soil, frost depth and load determine what you pour.' },
-  { href: '/resources/condensation/', title: 'Condensation & Ventilation', blurb: 'Why metal buildings sweat, and the three fixes that actually work.' },
-  { href: '/resources/faq/', title: `FAQ — ${(faqs as any[]).length} Answers`, blurb: 'Pricing, permits, delivery, insulation, maintenance and everything else people ask before ordering.' },
-  { href: '/sizes/', title: 'Popular Sizes', blurb: 'Common footprints with square footage and what typically fits in each.' },
+  { img: typeImage('quonset-buildings'), href: '/resources/arch-vs-straight-wall/', title: 'Arch vs. Straight Wall', blurb: 'The single decision that shapes everything else about your building — and the honest trade-off between them.' },
+  { img: typeImage('straight-wall'), href: '/resources/galvalume-steel/', title: 'Galvalume Steel Explained', blurb: 'What the coating actually does, why it outlasts plain galvanizing, and what shortens its life.' },
+  { img: typeImage('commercial'), href: '/resources/building-codes/', title: 'Building Codes by State', blurb: 'Why your address determines your engineering, and what your building department will want to see.' },
+  { img: typeImage('roofing-systems'), href: '/resources/assembly/', title: 'Assembly Guide', blurb: 'What raising a kit actually involves — crew size, tools, sequence, and the mistake that causes most problems.' },
+  { img: typeImage('garages'), href: '/resources/foundations/', title: 'Foundation Basics', blurb: 'Slab, footing or pier — how soil, frost depth and load determine what you pour.' },
+  { img: typeImage('storage'), href: '/resources/condensation/', title: 'Condensation & Ventilation', blurb: 'Why metal buildings sweat, and the three fixes that actually work.' },
+  { img: typeImage('workshops'), href: '/resources/faq/', title: `FAQ — ${(faqs as any[]).length} Answers`, blurb: 'Pricing, permits, delivery, insulation, maintenance and everything else people ask before ordering.' },
+  { img: typeImage('large-storage-buildings'), href: '/sizes/', title: 'Popular Sizes', blurb: 'Common footprints with square footage and what typically fits in each.' },
 ];
 ---
 
@@ -33,7 +34,7 @@ const guides = [
       <div class="grid grid--3" style="margin-top:2.5rem">
         {guides.map((g) => (
           <a class="card" href={g.href}>
-            <Placeholder label={g.title} />
+            <Placeholder label={g.title} src={g.img} alt={g.title} />
             <div class="card__body">
               <h2 class="card__title">{g.title}</h2>
               <p class="card__text">{g.blurb}</p>

@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Placeholder from '../../components/Placeholder.astro';
 import inventory from '../../data/inventory.json';
 import models from '../../data/models.json';
+import { inventoryImage } from '../../lib/images';
 
 export function getStaticPaths() {
   return (inventory as any[]).map((i) => ({
@@ -35,12 +36,7 @@ const dims = [
   <section class="section">
     <div class="wrap detail">
       <div class="detail__media">
-        <Placeholder label={`${item.title} — photo`} />
-        <div class="thumbs">
-          <Placeholder label="Interior" variant="square" />
-          <Placeholder label="Endwall" variant="square" />
-          <Placeholder label="Site" variant="square" />
-        </div>
+        <Placeholder label={item.title} src={inventoryImage(item.slug)} alt={`${item.title} steel building kit`} />
       </div>
 
       <div class="detail__info">
@@ -111,6 +107,7 @@ const dims = [
         <div class="grid grid--4">
           {similar.map((s) => (
             <a class="card" href={`/inventory/${s.slug}/`}>
+              <Placeholder label={s.title} src={inventoryImage(s.slug)} alt={s.title} />
               <div class="card__body">
                 {s.model && <span class="tag">Model {s.model}</span>}
                 <h3 class="card__title">{s.title}</h3>
@@ -127,7 +124,6 @@ const dims = [
 <style>
   .detail { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(2rem, 5vw, 3.5rem); align-items: start; }
   .detail__media :global(.ph), .detail__media :global(.ph-img) { border-radius: var(--radius-lg); border: 1px solid var(--border); }
-  .thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-top: 0.75rem; }
   .page-title { font-size: clamp(1.75rem, 4vw, 2.5rem); margin-block: 0.75rem 0.5rem; }
   .dims { font-family: var(--font-mono); font-size: 0.9375rem; color: var(--text-muted); margin-bottom: 1.5rem; }
   .inv__tags { display: flex; flex-wrap: wrap; gap: 0.375rem; }
