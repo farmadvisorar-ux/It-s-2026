@@ -1,0 +1,100 @@
+[
+  {
+    "family": "arch",
+    "familyName": "Arch Building Options",
+    "familyIntro": "Options and accessories for self-supporting arch and quonset structures. Because the arch is both frame and skin, every opening cut into it has to be framed and reinforced — which is why openings are specified at order time rather than added later.",
+    "items": [
+      {
+        "slug": "foundation",
+        "name": "Foundations",
+        "summary": "Concrete slab, continuous footing, pier, or engineered alternatives sized to your soil and frost depth.",
+        "detail": "The foundation is the one component that is genuinely local. Frost depth, bearing capacity and drainage vary street to street, and the anchor design that transfers the arch's thrust into the ground depends on all three. Your stamped drawings specify the anchor requirement; a local contractor sizes and pours to it.",
+        "points": ["Concrete slab-on-grade", "Continuous perimeter footing", "Pier and grade beam", "Frost-depth dependent — verify locally"]
+      },
+      {
+        "slug": "insulation",
+        "name": "Insulation",
+        "summary": "Blanket, batt and spray foam systems for arch profiles, plus vapor control to manage condensation.",
+        "detail": "In a metal building, insulation does two jobs: it slows heat transfer and it keeps warm interior air away from cold steel. The second job is the one people forget. Without a vapor barrier, moisture condenses on the underside of the roof and rains back down on whatever is stored below.",
+        "points": ["Blanket systems shaped to the arch", "Spray foam for continuous coverage", "Vapor barrier — required in most climates", "Reflective radiant barriers"]
+      },
+      {
+        "slug": "man-doors",
+        "name": "Man Doors",
+        "summary": "Walk-through steel entry doors, pre-framed into the endwall or arch.",
+        "detail": "A standard walk door means you are not opening a large overhead door every time you need a tool. In an arch structure the door opening must be framed and the surrounding ribs reinforced, so placement is specified at order rather than cut in afterward.",
+        "points": ["Standard 3' x 6'8\" steel", "Pre-framed opening", "Lockable, weather-sealed", "Endwall or sidewall placement"]
+      },
+      {
+        "slug": "overhead-doors",
+        "name": "Overhead Doors",
+        "summary": "Sectional roll-up doors sized for vehicles and equipment, with framed and reinforced openings.",
+        "detail": "Size the opening to the largest thing that will ever pass through it, then add clearance. Height is the dimension people under-order — a truck with a roof rack, a raised tractor loader or a boat on a trailer all need more clear height than the vehicle alone suggests.",
+        "points": ["Sectional and roll-up types", "Common widths 8' – 20'+", "Manual or motorized operation", "Header reinforcement included"]
+      },
+      {
+        "slug": "sliding-doors",
+        "name": "Sliding Doors",
+        "summary": "Track-mounted sliding doors for wide agricultural and equipment openings.",
+        "detail": "Sliding doors open very wide spans without the overhead track and headroom a sectional door consumes, which makes them the traditional choice for agricultural buildings where the opening is the full endwall and the clearance above it is limited.",
+        "points": ["Very wide openings possible", "No overhead track required", "Manual operation", "Common on agricultural endwalls"]
+      },
+      {
+        "slug": "skylights",
+        "name": "Skylights",
+        "summary": "Translucent panels set into the arch for daylight without electrical load.",
+        "detail": "Translucent panels replace steel panels in the roof line, so they are planned into the panel layout rather than cut in. A modest run of skylight can light a storage building through the working day with no power at all.",
+        "points": ["Panel-for-panel replacement", "No wiring or power required", "Distributes daylight along the arch", "Specify position at order"]
+      },
+      {
+        "slug": "turbine-vents",
+        "name": "Turbine Vents",
+        "summary": "Wind-driven roof ventilators that exhaust hot, moist air without power.",
+        "detail": "Turbines are the simplest answer to the condensation problem — they pull warm moist air out of the peak using nothing but wind. Pair them with intake at the low side of the building so there is a path for replacement air, otherwise they cannot move anything.",
+        "points": ["No electrical connection", "Reduces summer heat buildup", "Manages condensation", "Pair with low intake venting"]
+      }
+    ]
+  },
+  {
+    "family": "straight-wall",
+    "familyName": "Straight Wall Building Options",
+    "familyIntro": "Finishes and accessories for straight-wall structures. Vertical walls accept standard doors, windows and trim in conventional positions, which makes straight-wall buildings considerably easier to customize than arches.",
+    "items": [
+      {
+        "slug": "color-my-building",
+        "name": "Color Options",
+        "summary": "Factory-finish color for roof, walls and trim, coordinated as a single scheme.",
+        "detail": "Factory-applied finishes are baked onto the panel rather than painted after the fact, so they hold color far longer than a field coat. Roof, wall and trim are usually specified as three coordinated choices — many owners run a darker trim against a lighter wall to break up a large elevation.",
+        "points": ["Factory-applied panel finish", "Separate roof, wall, and trim selection", "Lighter roofs reduce heat gain", "Finish warranty applies to coating"]
+      },
+      {
+        "slug": "insulation",
+        "name": "Insulation",
+        "summary": "Blanket, batt and spray foam packages for straight-wall assemblies.",
+        "detail": "Straight walls take insulation more conventionally than arches — the cavity is regular and the assembly is closer to standard construction. For conditioned space, insulate the full envelope including the roof, and detail the vapor barrier continuously.",
+        "points": ["Faced blanket systems", "Batt insulation between girts", "Spray foam for continuous seal", "Full envelope for conditioned space"]
+      },
+      {
+        "slug": "roof-accessories",
+        "name": "Roof Accessories",
+        "summary": "Ridge vents, gutters, downspouts, snow retention and roof curbs.",
+        "detail": "Gutters matter more on steel than people expect. A metal roof sheds water fast and concentrates it at the eave, and without gutters that volume lands in one line against the foundation. In snow country, retention devices keep accumulated snow from releasing over a doorway all at once.",
+        "points": ["Ridge ventilation", "Gutters and downspouts", "Snow retention for cold climates", "Curbs for roof-mounted equipment"]
+      },
+      {
+        "slug": "trim-flashing",
+        "name": "Trim & Flashing",
+        "summary": "Corner, eave, rake and base trim that closes and weatherproofs every panel junction.",
+        "detail": "Trim is the difference between a building that looks finished and one that looks assembled, but it is doing real work underneath the appearance — every trim piece closes a joint where water and pests would otherwise get in. Base trim in particular keeps rodents out of the wall cavity.",
+        "points": ["Corner, eave, rake, and base trim", "Closes panel joints against weather", "Rodent exclusion at base", "Color-matched to panels"]
+      },
+      {
+        "slug": "wall-accessories",
+        "name": "Wall Accessories",
+        "summary": "Windows, louvers, wainscot, liner panels and wall-mounted openings.",
+        "detail": "Wall openings are framed into the girt layout, so their positions are part of the engineering rather than a field decision. Liner panels finish the interior face to a wipe-clean surface, which is worth having anywhere the building will be occupied or worked in daily.",
+        "points": ["Framed window openings", "Wall louvers for intake air", "Wainscot panels at the base", "Interior liner panels"]
+      }
+    ]
+  }
+]

@@ -1,0 +1,72 @@
+---
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import site from '../data/site.json';
+
+interface Props {
+  title: string;
+  description?: string;
+  /** Breadcrumb trail, excluding Home and the current page. */
+  crumbs?: { label: string; href: string }[];
+  current?: string;
+}
+
+const { title, description = site.description, crumbs = [], current } = Astro.props;
+const fullTitle = title === site.name ? `${site.name} — ${site.tagline}` : `${title} | ${site.name}`;
+const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://marshallsheds.com').href;
+---
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={site.name} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <Header />
+    <main id="main">
+      {crumbs.length > 0 && (
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <div class="wrap">
+            <ol>
+              <li><a href="/">Home</a></li>
+              {crumbs.map((c) => (
+                <li><a href={c.href}>{c.label}</a></li>
+              ))}
+              {current && <li aria-current="page">{current}</li>}
+            </ol>
+          </div>
+        </nav>
+      )}
+      <slot />
+    </main>
+    <Footer />
+
+    <style>
+      .crumbs { border-bottom: 1px solid var(--border); background: var(--bg-raised); }
+      .crumbs ol {
+        display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
+        list-style: none; padding: 0.75rem 0; margin: 0;
+        font-size: 0.8125rem; color: var(--text-faint);
+      }
+      .crumbs li + li::before { content: '/'; margin-right: 0.5rem; color: var(--border-strong); }
+      .crumbs a { color: var(--text-muted); text-decoration: none; }
+      .crumbs a:hover { color: var(--accent); }
+      .crumbs [aria-current='page'] { color: var(--text); font-weight: 500; }
+    </style>
+  </body>
+</html>

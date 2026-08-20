@@ -1,0 +1,89 @@
+---
+import Base from '../../layouts/Base.astro';
+import models from '../../data/models.json';
+
+const families = [
+  { key: 'arch', name: 'Arch Profiles', blurb: 'The arch is both frame and skin. Least steel per square foot, completely column-free inside, and the walls curve in at the base.' },
+  { key: 'straight-wall', name: 'Straight Wall Profiles', blurb: 'Vertical sidewalls with an arched or sloped roof. Usable floor right to the wall line, and doors can sit in the sidewall.' },
+  { key: 'container', name: 'Container Roof Systems', blurb: 'Cold-formed roof spanning between shipping containers. The containers carry the load; the roof can be dismantled and relocated.' },
+];
+---
+
+<Base
+  title="Building Models"
+  description="Compare steel building profiles — A, B, C, R, S, T, X and M models. Span ranges, best uses, and the trade-offs between arch and straight-wall construction."
+  crumbs={[]}
+  current="Models"
+>
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Reference</p>
+      <h1 class="page-title">Building Models</h1>
+      <p class="lede">
+        The model letter tells you how the building carries its load, which determines the
+        span it can reach and how much of the floor you actually get to use. Everything else —
+        size, doors, insulation, finish — is specified on top of that choice.
+      </p>
+
+      <div class="table-scroll compare">
+        <table class="spec">
+          <thead>
+            <tr>
+              <th scope="col">Model</th>
+              <th scope="col">Profile</th>
+              <th scope="col">Span</th>
+              <th scope="col">Best for</th>
+            </tr>
+          </thead>
+          <tbody>
+            {(models as any[]).map((m) => (
+              <tr>
+                <td><a class="mlink" href={`/models/${m.code.toLowerCase()}/`}><span class="mcode">{m.code}</span> {m.name}</a></td>
+                <td>{m.profile}</td>
+                <td class="mono">{m.spanRange}</td>
+                <td>{m.bestFor.slice(0, 2).join(', ')}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {families.map((f) => (
+        <div class="fam">
+          <h2 class="fam__head">{f.name}</h2>
+          <p class="fam__blurb">{f.blurb}</p>
+          <div class="grid grid--3">
+            {(models as any[]).filter((m) => m.family === f.key).map((m) => (
+              <a class="card" href={`/models/${m.code.toLowerCase()}/`}>
+                <div class="card__body">
+                  <span class="mcode mcode--lg">{m.code}</span>
+                  <h3 class="card__title">{m.name}</h3>
+                  <span class="card__meta">{m.spanRange}</span>
+                  <p class="card__text">{m.summary}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page-title { font-size: clamp(2rem, 5vw, 3rem); margin-block: 0.5rem 1rem; }
+  .compare { margin-top: 2.5rem; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg-raised); }
+  .compare thead th { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); background: var(--bg-sunken); }
+  .mono { font-family: var(--font-mono); font-size: 0.875rem; }
+  .mlink { text-decoration: none; font-weight: 600; display: inline-flex; align-items: center; gap: 0.5rem; }
+  .mlink:hover { color: var(--accent); }
+  .mcode {
+    display: inline-grid; place-items: center; width: 1.625rem; height: 1.625rem;
+    background: var(--bg-sunken); border: 1px solid var(--border-strong); border-radius: 3px;
+    font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 700; color: var(--accent);
+  }
+  .mcode--lg { width: 2.25rem; height: 2.25rem; font-size: 1rem; margin-bottom: 0.5rem; }
+  .fam { margin-top: 3.5rem; }
+  .fam__head { font-size: clamp(1.25rem, 2.6vw, 1.625rem); margin-bottom: 0.5rem; }
+  .fam__blurb { color: var(--text-muted); max-width: 62ch; margin-bottom: 1.5rem; }
+</style>

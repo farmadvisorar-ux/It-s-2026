@@ -1,0 +1,82 @@
+[
+  {
+    "code": "A",
+    "name": "A Model",
+    "family": "arch",
+    "profile": "Compact full arch",
+    "summary": "A tight-radius full arch built for smaller spans. The curve carries the load to the base without interior columns, so a modest footprint still gives you completely open floor space.",
+    "spanRange": "12' – 30' wide",
+    "bestFor": ["Backyard storage", "Single-vehicle garages", "Equipment lockups", "Workshops"],
+    "notes": "The most economical profile per square foot. Sidewalls curve inward near the base, so plan tall shelving toward the centerline."
+  },
+  {
+    "code": "B",
+    "name": "B Model",
+    "family": "straight-wall",
+    "profile": "Straight sidewall",
+    "summary": "Vertical sidewalls with a low-slope roof. Usable floor area runs right to the wall line, which makes this the practical choice when you are lining walls with benches, racking or parked equipment.",
+    "spanRange": "20' – 60' wide",
+    "bestFor": ["Two-car garages", "Shops with wall benches", "Retail and light commercial", "Storage with racking"],
+    "notes": "Full-height walls mean standard overhead doors can be placed anywhere along the sidewall, not just the endwall."
+  },
+  {
+    "code": "C",
+    "name": "C Model",
+    "family": "arch",
+    "profile": "Small-span arch",
+    "summary": "The smallest profile in the lineup — a compact arch sized for garden equipment, tools and seasonal storage where a full garage would be overkill.",
+    "spanRange": "10' – 16' wide",
+    "bestFor": ["Garden and tool storage", "Mower and ATV shelters", "Pump and well housing"],
+    "notes": "Ships as a light kit that two people can raise over a weekend."
+  },
+  {
+    "code": "R",
+    "name": "R Model",
+    "family": "arch",
+    "profile": "Low-profile round arch",
+    "summary": "A shallow, rounded arch that keeps overall height down. Useful where a height restriction, a covenant or a sightline matters more than headroom at the walls.",
+    "spanRange": "16' – 30' wide",
+    "bestFor": ["Height-restricted lots", "Boat and RV covers", "Livestock shelters", "Low-clearance storage"],
+    "notes": "The low crown sheds snow well and presents a smaller wind profile than taller arches."
+  },
+  {
+    "code": "S",
+    "name": "S Model",
+    "family": "straight-wall",
+    "profile": "Straight wall with arched roof",
+    "summary": "Straight vertical sidewalls carrying an arched roof — the hybrid that solves the classic quonset complaint. You get usable wall height for doors and storage, plus the clear-span efficiency of an arch overhead.",
+    "spanRange": "20' – 75' wide",
+    "bestFor": ["Workshops", "Barndominiums", "Agricultural buildings", "Commercial shops"],
+    "notes": "The most versatile profile in the range, and the usual recommendation when a buyer is torn between arch and straight-wall."
+  },
+  {
+    "code": "T",
+    "name": "T Model",
+    "family": "straight-wall",
+    "profile": "Wide-span structural",
+    "summary": "The heavy end of the lineup. Engineered for wide clear spans and long runs where nothing can interrupt the floor — aircraft, production lines, indoor arenas and bulk storage.",
+    "spanRange": "40' – 100'+ wide",
+    "bestFor": ["Aviation hangars", "Warehouses", "Manufacturing", "Riding arenas", "Bulk commodity storage"],
+    "notes": "Sidewall heights to 20'+ and lengths past 200' are routine. Larger spans generally warrant a professionally poured engineered slab."
+  },
+  {
+    "code": "X",
+    "name": "X Model",
+    "family": "arch",
+    "profile": "High-clearance arch",
+    "summary": "A taller, steeper arch that lifts the crown well above the door line. Built for the jobs where vertical clearance is the whole point — lifts, tall equipment, stacked inventory.",
+    "spanRange": "22' – 45' wide",
+    "bestFor": ["Shops with vehicle lifts", "RV and coach storage", "Tall equipment", "Multi-level mezzanines"],
+    "notes": "The extra crown height buys room for a mezzanine over part of the floor without losing drive-through clearance."
+  },
+  {
+    "code": "M",
+    "name": "M Model",
+    "family": "container",
+    "profile": "Cold-formed container roof",
+    "summary": "A cold-formed steel roof system that spans between shipping containers, turning two containers and open air into covered, weather-tight working space. The containers carry the load — no separate foundation for the roof itself.",
+    "spanRange": "20' – 40' between containers",
+    "bestFor": ["Container covers", "Jobsite shelters", "Equipment yards", "Temporary and relocatable cover"],
+    "notes": "Containers are not included in a roof-system kit. Assembly is bolt-together and the system can be dismantled and relocated."
+  }
+]

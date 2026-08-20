@@ -1,0 +1,145 @@
+---
+import Base from '../../layouts/Base.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import models from '../../data/models.json';
+import types from '../../data/building-types.json';
+import inventory from '../../data/inventory.json';
+
+export function getStaticPaths() {
+  return (models as any[]).map((m) => ({
+    params: { code: m.code.toLowerCase() },
+    props: { model: m },
+  }));
+}
+
+const { model } = Astro.props;
+const suited = (types as any[]).filter((t) => t.models.includes(model.code));
+const kits = (inventory as any[]).filter((i) => i.model === model.code);
+const others = (models as any[]).filter((m) => m.code !== model.code && m.family === model.family);
+---
+
+<Base
+  title={`${model.name} — ${model.profile}`}
+  description={model.summary.slice(0, 155)}
+  crumbs={[{ label: 'Models', href: '/models/' }]}
+  current={model.name}
+>
+  <section class="head">
+    <div class="wrap head__inner">
+      <div>
+        <span class="mcode">{model.code}</span>
+        <h1 class="page-title">{model.name}</h1>
+        <p class="head__line">{model.profile} · {model.spanRange}</p>
+        <a class="btn btn--primary" href={`/quote/?model=${model.code}`} style="margin-top:1.5rem">Quote a {model.name}</a>
+      </div>
+      <Placeholder label={`${model.name} profile diagram`} variant="wide" />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap body-grid">
+      <div class="prose">
+        <p class="lede">{model.summary}</p>
+
+        <h2>Worth knowing</h2>
+        <p>{model.notes}</p>
+
+        <h2>Best suited to</h2>
+        <ul>
+          {model.bestFor.map((b: string) => <li>{b}</li>)}
+        </ul>
+
+        {suited.length > 0 && (
+          <>
+            <h2>Building types using this profile</h2>
+            <div class="chips">
+              {suited.map((t) => (
+                <a class="chip" href={`/building-types/${t.slug}/`}>{t.name}</a>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
+      <aside class="side">
+        <div class="panel">
+          <h2 class="panel__head">At a glance</h2>
+          <div class="table-scroll">
+            <table class="spec">
+              <tbody>
+                <tr><th scope="row">Model</th><td>{model.code}</td></tr>
+                <tr><th scope="row">Family</th><td>{model.family.replace('-', ' ')}</td></tr>
+                <tr><th scope="row">Profile</th><td>{model.profile}</td></tr>
+                <tr><th scope="row">Span range</th><td>{model.spanRange}</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {others.length > 0 && (
+          <div class="panel">
+            <h2 class="panel__head">Other {model.family.replace('-', ' ')} profiles</h2>
+            <ul class="plain">
+              {others.map((m) => (
+                <li><a href={`/models/${m.code.toLowerCase()}/`}>{m.name} — {m.spanRange}</a></li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </aside>
+    </div>
+  </section>
+
+  {kits.length > 0 && (
+    <section class="section section--sunken">
+      <div class="wrap">
+        <h2 class="sec-title">{model.name} kits in stock</h2>
+        <div class="grid grid--4">
+          {kits.map((k) => (
+            <a class="card" href={`/inventory/${k.slug}/`}>
+              <div class="card__body">
+                <span class="tag tag--accent">Clearance</span>
+                <h3 class="card__title">{k.title}</h3>
+                {k.sqft && <span class="card__meta">{k.sqft.toLocaleString()} sq ft</span>}
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .head { padding-block: clamp(2rem, 5vw, 3.5rem); border-bottom: 1px solid var(--border); }
+  .head__inner { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
+  .head :global(.ph), .head :global(.ph-img) { border-radius: var(--radius-lg); border: 1px solid var(--border); }
+  .page-title { font-size: clamp(1.875rem, 4.5vw, 3rem); margin-block: 0.75rem 0.5rem; }
+  .head__line { color: var(--text-muted); font-size: 1.0625rem; }
+  .mcode {
+    display: inline-grid; place-items: center; width: 2.75rem; height: 2.75rem;
+    background: var(--bg-sunken); border: 1px solid var(--border-strong); border-radius: var(--radius);
+    font-family: var(--font-mono); font-size: 1.25rem; font-weight: 700; color: var(--accent);
+  }
+  .body-grid { display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: clamp(2rem,5vw,4rem); align-items: start; }
+  .side { display: grid; gap: 1.25rem; position: sticky; top: 88px; }
+  .panel { background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+  .panel__head { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 0.875rem; }
+  .panel .spec th, .panel .spec td { padding: 0.5rem 0; font-size: 0.875rem; }
+  .plain { list-style: none; padding: 0; }
+  .plain li { margin-bottom: 0.5rem; font-size: 0.875rem; }
+  .plain a { color: var(--text-muted); text-decoration: none; }
+  .plain a:hover { color: var(--accent); }
+  .chips { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .chip {
+    font-size: 0.8125rem; padding: 0.3125rem 0.625rem; text-decoration: none;
+    border: 1px solid var(--border); border-radius: 3px;
+    background: var(--bg-raised); color: var(--text-muted);
+  }
+  .chip:hover { border-color: var(--accent); color: var(--accent); }
+  .sec-title { font-size: clamp(1.375rem,3vw,1.875rem); margin-bottom: 1.5rem; }
+  @media (max-width: 900px) {
+    .head__inner, .body-grid { grid-template-columns: 1fr; }
+    .side { position: static; }
+  }
+</style>

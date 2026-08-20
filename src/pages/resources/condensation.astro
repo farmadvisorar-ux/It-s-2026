@@ -1,0 +1,89 @@
+---
+import Article from '../../layouts/Article.astro';
+
+const toc = [
+  { id: 'why', label: 'Why it happens' },
+  { id: 'fixes', label: 'The three fixes' },
+  { id: 'vent', label: 'Getting ventilation right' },
+  { id: 'unheated', label: 'Unheated buildings' },
+];
+---
+
+<Article
+  title="Condensation & Ventilation"
+  eyebrow="Guide"
+  description="Why metal buildings sweat, and the three fixes that work — vapor barrier, insulation and ventilation."
+  lede="A metal building that drips on your equipment is not defective. It is doing exactly what physics requires, and there are three well-understood ways to stop it."
+  crumbs={[{ label: 'Resources', href: '/resources/' }]}
+  toc={toc}
+>
+  <h2 id="why">Why it happens</h2>
+  <p>
+    Air holds water vapor, and warm air holds more of it than cold air. When warm humid air
+    touches a surface below its dew point, it cannot hold that moisture any more and the water
+    condenses out onto the surface.
+  </p>
+  <p>
+    A steel roof panel is an almost perfect version of that surface. It is thin, it conducts
+    heat readily, and on a cold clear night it can drop below the temperature of the air
+    inside the building. The moisture in that air condenses on the underside of the roof and
+    eventually falls.
+  </p>
+  <p>
+    The humidity does not have to come from anywhere exotic. A concrete slab releases moisture
+    for a long time after it is poured. A vehicle driven in wet brings water with it. So does
+    stored hay, damp ground under a partial floor, and any unvented combustion heater.
+  </p>
+
+  <h2 id="fixes">The three fixes</h2>
+  <h3>1. Vapor barrier</h3>
+  <p>
+    Stop the moist air reaching the cold steel. A continuous vapor barrier on the warm side of
+    the assembly is the most direct fix, and it is the one most often compromised in
+    installation — a barrier with gaps at the seams and penetrations is not continuous, and
+    moisture finds the gaps.
+  </p>
+  <h3>2. Insulation</h3>
+  <p>
+    Keep the steel from getting cold enough to condense on in the first place. Insulation
+    raises the interior surface temperature toward the air temperature, which moves it above
+    the dew point. Faced blanket insulation is the common approach; spray foam is the most
+    effective because it delivers insulation and a continuous air seal at once.
+  </p>
+  <h3>3. Ventilation</h3>
+  <p>
+    Move the humid air out before it can condense. This is the cheapest of the three, works
+    in unheated buildings where insulation is hard to justify, and is the one people install
+    incorrectly.
+  </p>
+
+  <h2 id="vent">Getting ventilation right</h2>
+  <p>
+    Ventilation needs a path. Air has to come in somewhere for air to go out somewhere else —
+    an exhaust vent with no intake is trying to pull a vacuum, and it moves very little.
+  </p>
+  <ul>
+    <li><strong>Exhaust high.</strong> Ridge vents or turbine vents at the peak, where warm moist air collects.</li>
+    <li><strong>Intake low.</strong> Wall louvers, eave vents or gable intakes near the bottom of the building.</li>
+    <li><strong>Balance the two.</strong> Roughly matched intake and exhaust area. Undersized intake is the usual failure.</li>
+    <li><strong>Keep the path clear.</strong> Stacked inventory against a wall louver stops it working.</li>
+  </ul>
+  <p>
+    Turbine vents are worth noting because they need no power at all — wind spins them and
+    they exhaust continuously. Paired with adequate low intake, they solve a great many
+    condensation problems on their own.
+  </p>
+
+  <h2 id="unheated">Unheated buildings</h2>
+  <p>
+    A common assumption is that condensation is only a heated-building problem. It is not.
+    Unheated storage buildings sweat readily, because the temperature swing between day and
+    night is exactly what drives the effect, and there is usually a moisture source inside —
+    a slab, damp ground, or wet equipment.
+  </p>
+  <p>
+    For unheated storage, ventilation plus a vapor barrier is normally the sensible package.
+    Full insulation is hard to justify if you are not conditioning the space, but doing
+    nothing at all means finding rust on whatever you stored.
+  </p>
+</Article>

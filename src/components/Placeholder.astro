@@ -1,0 +1,28 @@
+---
+/**
+ * Image slot. Renders a styled placeholder until a real asset is supplied.
+ *
+ * To swap in real photography later, drop files into /public/img/ and pass
+ * `src`. Nothing else in the layout needs to change.
+ */
+interface Props {
+  label: string;
+  src?: string;
+  alt?: string;
+  variant?: 'default' | 'wide' | 'square';
+  class?: string;
+}
+const { label, src, alt, variant = 'default', class: cls = '' } = Astro.props;
+const variantClass = variant === 'wide' ? 'ph--wide' : variant === 'square' ? 'ph--square' : '';
+---
+{src ? (
+  <img class={`ph-img ${cls}`} src={src} alt={alt ?? label} loading="lazy" decoding="async" />
+) : (
+  <div class={`ph ${variantClass} ${cls}`} role="img" aria-label={`Placeholder image: ${label}`}>
+    <span class="ph__label">{label}</span>
+  </div>
+)}
+
+<style>
+  .ph-img { width: 100%; object-fit: cover; aspect-ratio: 4 / 3; border-bottom: 1px solid var(--border); }
+</style>

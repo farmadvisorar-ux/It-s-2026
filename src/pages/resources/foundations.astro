@@ -1,0 +1,94 @@
+---
+import Article from '../../layouts/Article.astro';
+
+const toc = [
+  { id: 'job', label: 'What the foundation does' },
+  { id: 'types', label: 'Foundation types' },
+  { id: 'frost', label: 'Frost depth' },
+  { id: 'slab', label: 'Slab thickness' },
+  { id: 'anchors', label: 'Anchors' },
+];
+---
+
+<Article
+  title="Foundation Basics"
+  eyebrow="Guide"
+  description="Choosing a steel building foundation — slab, perimeter footing or pier — and how soil, frost depth and loads determine what you pour."
+  lede="The foundation is the one part of the project that is entirely local. Your kit is engineered in a factory; your footing is engineered for your dirt."
+  crumbs={[{ label: 'Resources', href: '/resources/' }]}
+  toc={toc}
+>
+  <h2 id="job">What the foundation does</h2>
+  <p>
+    It does two things, and the second one catches people out. It carries the building's
+    weight down into the ground, which is obvious. It also <strong>resists the forces the
+    structure pushes outward and upward</strong> — arch buildings exert outward thrust at the
+    base, and wind tries to lift any roof off its walls.
+  </p>
+  <p>
+    That second job is why anchoring is engineered rather than improvised, and why a
+    foundation that would happily hold the weight can still be inadequate.
+  </p>
+
+  <h2 id="types">Foundation types</h2>
+  <h3>Concrete slab-on-grade</h3>
+  <p>
+    A single poured slab serving as both foundation and floor. The default for garages,
+    workshops and anything with vehicles or equipment inside. Most expensive of the common
+    options, and the one you want for occupied or finished space.
+  </p>
+  <h3>Continuous perimeter footing</h3>
+  <p>
+    A footing around the perimeter carrying the walls, with the interior floor handled
+    separately — gravel, a separate slab, or left as dirt. Sensible where the building
+    encloses space that does not need a finished floor, such as equipment or hay storage.
+  </p>
+  <h3>Piers and grade beam</h3>
+  <p>
+    Individual piers at load points tied by a grade beam. Useful on sloping sites, poor soils,
+    or where a full slab is not justified. Requires more engineering attention than the others.
+  </p>
+  <h3>Gravel or compacted base</h3>
+  <p>
+    Possible for some open or lightweight structures where anchoring is engineered for it.
+    Generally not acceptable for enclosed, permanent or occupied buildings, and your building
+    department will usually say so.
+  </p>
+
+  <h2 id="frost">Frost depth</h2>
+  <p>
+    In any climate that freezes, footings must extend below the frost line. If they do not,
+    the ground lifts them as it freezes and drops them as it thaws — repeatedly, every year,
+    unevenly. Over a few seasons that racks the structure, and the damage shows up as doors
+    that stop closing and panels that stop lining up.
+  </p>
+  <p>
+    Frost depth is published locally and varies from a foot or so in mild regions to several
+    feet in the northern tier. Your building department has the number for your address.
+  </p>
+
+  <h2 id="slab">Slab thickness</h2>
+  <p>
+    Determined by what sits and drives on it, not by the building above. A slab for passenger
+    vehicles is a different specification than one carrying a loaded forklift, a combine, or
+    racking with concentrated point loads.
+  </p>
+  <p>
+    Tell your concrete contractor the heaviest thing that will ever be on that floor, including
+    equipment that only visits. Reinforcement, thickness and control joint layout all follow
+    from that number, and it is not something to revisit later.
+  </p>
+
+  <h2 id="anchors">Anchors</h2>
+  <p>
+    Anchor placement is not approximate. Your stamped drawings specify the type, size and
+    position of every base connection, and the building is engineered on the assumption that
+    they are where the drawings say.
+  </p>
+  <ul>
+    <li>Pour from the drawings, not from the nominal building dimensions.</li>
+    <li>Give your concrete contractor the anchor plan before the pour, not on the day.</li>
+    <li>Verify positions and squareness before the concrete sets — this is the last cheap moment to fix anything.</li>
+    <li>Check the diagonals. A rectangle that measures correctly on all four sides can still be a parallelogram.</li>
+  </ul>
+</Article>

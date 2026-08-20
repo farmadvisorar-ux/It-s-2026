@@ -1,0 +1,403 @@
+[
+  {
+    "slug": "garages",
+    "name": "Steel Garages",
+    "group": "Residential",
+    "headline": "Garages that outlast the vehicles in them",
+    "intro": "A steel garage kit arrives as a numbered set of panels and fasteners and bolts together on a slab you pour or contract locally. There is no framing lumber to warp, nothing for termites to eat, and nothing that needs repainting every few seasons. For most owners the appeal is simple: it goes up fast, it does not rot, and it holds its shape.",
+    "detail": "Sizing is driven less by the vehicle than by what happens around it. A car occupies roughly 8' x 16', but a door you can open fully, a workbench along one wall and room to walk behind the bumper push a comfortable single-car build closer to 20' x 24'. Two vehicles side by side with the same allowances land near 30' x 30'.",
+    "useCases": ["Daily-driver parking", "Project and restoration space", "Boat and RV storage", "Combined garage and workshop"],
+    "commonSizes": ["20' x 20'", "20' x 24'", "20' x 30'", "30' x 30'", "30' x 40'"],
+    "models": ["A", "B", "S", "X"],
+    "specs": [
+      ["Framing", "Cold-formed or arch steel, pre-punched"],
+      ["Assembly", "Bolt-together, no welding required"],
+      ["Foundation", "Concrete slab, pier, or engineered alternative"],
+      ["Doors", "Overhead, sliding, or hinged man doors"]
+    ]
+  },
+  {
+    "slug": "single-garage-kits",
+    "name": "Single Garage Kits",
+    "group": "Residential",
+    "headline": "One bay, sized properly",
+    "intro": "The most common regret on a single garage is building it to the dimensions of the car rather than the dimensions of using the car. A bay that fits the vehicle and nothing else means squeezing past mirrors and storing everything somewhere other than the garage.",
+    "detail": "Plan for the door swing and the walk-around before you settle on a width. Twenty feet of clear width gives you a parked vehicle plus a genuine three-foot working aisle on one side. Depth past 24' starts to buy you a real bench wall behind the vehicle rather than a shelf.",
+    "useCases": ["Single vehicle", "Motorcycle and ATV storage", "Compact home workshop", "Secure equipment lockup"],
+    "commonSizes": ["12' x 20'", "16' x 20'", "20' x 20'", "20' x 24'"],
+    "models": ["A", "C", "B"],
+    "specs": [
+      ["Typical door", "9' or 10' wide overhead"],
+      ["Clear width", "12' – 20'"],
+      ["Assembly", "Two-person weekend build on smaller kits"]
+    ]
+  },
+  {
+    "slug": "multi-door-garage-kits",
+    "name": "Multi-Door Garage Kits",
+    "group": "Residential",
+    "headline": "Separate bays, independent access",
+    "intro": "Multiple overhead doors along one wall let each bay come and go without shuffling vehicles. It is the difference between a garage that stores three cars and a garage where three people can leave for work in any order.",
+    "detail": "Door spacing is the constraint that matters. Each opening needs jamb space either side and enough pier between openings to carry the load above, so three 9' doors need meaningfully more than 27' of wall. Straight-wall profiles handle multiple sidewall openings more gracefully than arches.",
+    "useCases": ["Multi-vehicle households", "Rental and storage bays", "Fleet parking", "Mixed vehicle and shop use"],
+    "commonSizes": ["30' x 30'", "30' x 40'", "40' x 40'", "40' x 60'"],
+    "models": ["B", "S", "T"],
+    "specs": [
+      ["Door count", "2 – 6 typical"],
+      ["Wall type", "Straight wall recommended"],
+      ["Openings", "Sidewall or endwall placement"]
+    ]
+  },
+  {
+    "slug": "combo-garage-kits",
+    "name": "Combo Garage & Shop Kits",
+    "group": "Residential",
+    "headline": "Park on one side, work on the other",
+    "intro": "A combo layout splits a single structure into a parking bay and a dedicated work bay, usually with an interior partition. You heat and dust-control the shop half without conditioning the space where a wet vehicle sits.",
+    "detail": "The partition is worth planning at design time rather than adding later — it determines where you want the doors, where power runs, and whether the shop side gets its own man door. A common split puts vehicles in a 20' bay and the shop in the remaining 20' to 40'.",
+    "useCases": ["Garage plus woodworking shop", "Garage plus home business", "Vehicle storage with heated work area"],
+    "commonSizes": ["30' x 40'", "30' x 60'", "40' x 60'"],
+    "models": ["S", "B", "X"],
+    "specs": [
+      ["Partition", "Interior stud or steel divider wall"],
+      ["Access", "Separate man door per bay recommended"],
+      ["Insulation", "Typically shop bay only"]
+    ]
+  },
+  {
+    "slug": "workshops",
+    "name": "Steel Workshops",
+    "group": "Residential",
+    "headline": "Clear span, because benches belong on walls",
+    "intro": "A workshop lives or dies on usable wall. Interior posts land exactly where you wanted the bench, the table saw outfeed or the lumber rack. Clear-span steel removes that argument entirely — the roof is carried by the frame and the floor is yours.",
+    "detail": "Height matters more than most first-time builders expect. Sheet goods on end, a lift, a dust collector or a mezzanine all want vertical room, and adding sidewall height at order time costs far less than wishing for it afterward.",
+    "useCases": ["Woodworking", "Metal fabrication", "Automotive work", "Hobby and maker space"],
+    "commonSizes": ["24' x 36'", "30' x 40'", "30' x 60'", "40' x 60'"],
+    "models": ["S", "X", "B"],
+    "specs": [
+      ["Interior", "Column-free clear span"],
+      ["Sidewall height", "10' – 20'"],
+      ["Insulation", "Blanket, batt, or spray foam"],
+      ["Ventilation", "Turbine vents, ridge vents, wall louvers"]
+    ]
+  },
+  {
+    "slug": "workshops/large-workshops",
+    "name": "Large Workshops",
+    "group": "Residential",
+    "parent": "workshops",
+    "headline": "When the project is bigger than the building was",
+    "intro": "Past about 40' of width the design conversation changes. You are no longer fitting a shop around equipment; you are laying out zones — receiving, fabrication, finishing, storage — and the building has to support all of them without a post in the middle.",
+    "detail": "Large shops usually justify an engineered slab, three-phase power planning and a serious look at overhead door placement, since moving material through the building becomes the daily bottleneck rather than floor area itself.",
+    "useCases": ["Commercial fabrication", "Fleet maintenance", "Large equipment restoration", "Multi-station production"],
+    "commonSizes": ["40' x 60'", "50' x 80'", "60' x 100'"],
+    "models": ["T", "S", "X"],
+    "specs": [
+      ["Clear span", "40' – 100'+"],
+      ["Doors", "Multiple oversized overhead"],
+      ["Foundation", "Engineered slab recommended"]
+    ]
+  },
+  {
+    "slug": "workshops/small-business-shops",
+    "name": "Small Business Shops",
+    "group": "Commercial",
+    "parent": "workshops",
+    "headline": "A storefront and a shop under one roof",
+    "intro": "Small trades — cabinet makers, small engine repair, welding, detailing — usually need three things in one envelope: a work floor, a customer-facing corner, and secure storage. A steel shell divides cleanly into all three.",
+    "detail": "If customers will come to you, plan the entry, parking side and signage wall at design time. A man door with a small conditioned office partitioned off the front corner covers most of what a walk-in trade actually needs.",
+    "useCases": ["Trade shops", "Repair businesses", "Light manufacturing", "Service businesses with walk-in customers"],
+    "commonSizes": ["30' x 40'", "30' x 60'", "40' x 60'"],
+    "models": ["S", "B"],
+    "specs": [
+      ["Layout", "Shop floor plus partitioned office"],
+      ["Access", "Customer man door plus overhead service door"],
+      ["Finish", "Interior liner panel optional"]
+    ]
+  },
+  {
+    "slug": "barndominium",
+    "name": "Barndominiums",
+    "group": "Residential",
+    "headline": "Shop below, living space beside it",
+    "intro": "A barndominium is a steel shell finished as living space, usually pairing a residential area with a working shop or equipment bay under the same roof. The structure goes up as a shell; interior framing, plumbing and finishes are conventional residential work from there.",
+    "detail": "Two things drive cost and both are decided early: where the conditioned envelope stops, and how the shop side is separated from the living side for fire, sound and dust. Local code will have opinions on both, so involve your building department before finalizing the shell dimensions.",
+    "useCases": ["Primary residence with shop", "Guest or family quarters", "Ranch headquarters", "Live-work property"],
+    "commonSizes": ["30' x 60'", "40' x 60'", "40' x 80'", "50' x 100'"],
+    "models": ["S", "T", "X"],
+    "specs": [
+      ["Delivery", "Weather-tight shell; interior finished locally"],
+      ["Insulation", "Full envelope required for living space"],
+      ["Utilities", "Rough-in planned before slab pour"],
+      ["Windows", "Framed openings specified at order"]
+    ]
+  },
+  {
+    "slug": "carport-kits",
+    "name": "Carport Kits",
+    "group": "Residential",
+    "headline": "Cover without enclosure",
+    "intro": "An open or partially enclosed steel cover keeps sun, hail and snow off a vehicle without the cost, the permit weight or the foundation of a fully enclosed garage. In much of the country it is the highest-value shelter per dollar spent.",
+    "detail": "Open structures are governed by uplift rather than gravity load — wind wants to lift the roof, not crush it. Anchoring is therefore the specification that matters most, and it varies sharply by soil and local wind speed.",
+    "useCases": ["Vehicle and truck cover", "RV and boat shelter", "Equipment shade", "Covered outdoor work area"],
+    "commonSizes": ["18' x 20'", "20' x 24'", "24' x 30'", "30' x 40'"],
+    "models": ["A", "R", "B"],
+    "specs": [
+      ["Configuration", "Open, partially enclosed, or one-side closed"],
+      ["Anchoring", "Uplift-rated; soil dependent"],
+      ["Permit", "Often lighter than enclosed structures — verify locally"]
+    ]
+  },
+  {
+    "slug": "storage",
+    "name": "Storage Buildings",
+    "group": "Storage",
+    "headline": "Dry, secure, and not made of vinyl",
+    "intro": "Steel storage buildings solve the problem fabric and plastic structures do not: they stay put, they stay dry, and they can be locked. For anything valuable enough to insure, the difference matters.",
+    "detail": "The specification that pays for itself is ventilation. Sealed metal buildings holding equipment through temperature swings will condense moisture on the underside of the roof unless air can move. Vents or a vapor barrier are not optional in most climates.",
+    "useCases": ["Seasonal and household storage", "Equipment and tool storage", "Inventory overflow", "Secure site storage"],
+    "commonSizes": ["16' x 20'", "20' x 30'", "30' x 40'", "40' x 60'"],
+    "models": ["A", "R", "S", "B"],
+    "specs": [
+      ["Security", "Lockable steel doors"],
+      ["Ventilation", "Turbine or ridge venting recommended"],
+      ["Condensation control", "Vapor barrier or insulation"]
+    ]
+  },
+  {
+    "slug": "large-storage-buildings",
+    "name": "Large Storage Buildings",
+    "group": "Storage",
+    "headline": "Bulk volume, unobstructed",
+    "intro": "At scale, storage stops being about floor area and starts being about how you get material in and out. Wide clear spans and oversized openings let loaders, trailers and forklifts operate inside rather than at the door.",
+    "detail": "Endwall access is usually preferable to sidewall for drive-through operations, and specifying the opening at order time is far cheaper than cutting one into a finished endwall later.",
+    "useCases": ["Bulk commodity storage", "Fleet and trailer storage", "Distribution overflow", "Municipal and contractor yards"],
+    "commonSizes": ["50' x 100'", "60' x 120'", "70' x 150'", "100' x 200'"],
+    "models": ["T", "S"],
+    "specs": [
+      ["Clear span", "50' – 100'+"],
+      ["Access", "Oversized endwall or sidewall openings"],
+      ["Height", "Sidewalls to 20'+"]
+    ]
+  },
+  {
+    "slug": "container-covers",
+    "name": "Container Covers",
+    "group": "Storage",
+    "headline": "Two containers, one roof, covered space between",
+    "intro": "A container cover spans a steel roof between two shipping containers, converting the gap into covered, weather-protected working area. The containers carry the structure, so there is no separate foundation for the roof itself, and the whole assembly can be taken down and moved.",
+    "detail": "Containers are not included with a roof-system kit. Spacing is set by the cover you order, so position the containers to the specified dimension before assembly rather than building the roof to wherever they happen to sit.",
+    "useCases": ["Equipment and yard cover", "Jobsite shelter", "Agricultural implement storage", "Relocatable covered workspace"],
+    "commonSizes": ["20' x 40'", "25' x 40'", "30' x 40'", "35' x 40'", "40' x 40'"],
+    "models": ["M"],
+    "specs": [
+      ["Containers", "Not included — supplied by owner"],
+      ["Span", "20' – 40' between containers"],
+      ["Material", "Non-combustible steel"],
+      ["Relocatable", "Bolt-together; can be dismantled and moved"]
+    ]
+  },
+  {
+    "slug": "quonset-buildings",
+    "name": "Quonset Hut Buildings",
+    "group": "Building Styles",
+    "headline": "The arch that needs no interior frame",
+    "intro": "A quonset is a continuous corrugated steel arch bolted rib to rib. The shape is the structure — there is no separate frame holding up a separate skin — which is why it uses less steel per square foot than almost anything else and why it has stayed in production since the 1940s.",
+    "detail": "The trade-off is honest: at the base, the walls curve. Floor space near the perimeter is limited in headroom, which matters if you planned to line the walls with tall shelving. Buyers who want the arch's economy plus usable wall height generally move to a straight-wall-with-arched-roof profile instead.",
+    "useCases": ["Storage and equipment", "Agricultural buildings", "Workshops", "Low-cost enclosed space"],
+    "commonSizes": ["20' x 30'", "25' x 40'", "30' x 50'", "40' x 60'"],
+    "models": ["A", "C", "R", "X"],
+    "specs": [
+      ["Structure", "Self-supporting corrugated arch"],
+      ["Interior", "Completely column-free"],
+      ["Assembly", "Nut-and-bolt, no welding"],
+      ["Steel", "Galvalume-coated"]
+    ]
+  },
+  {
+    "slug": "straight-wall",
+    "name": "Straight Wall Buildings",
+    "group": "Building Styles",
+    "headline": "Vertical walls, usable to the edge",
+    "intro": "Straight-wall construction gives you full height right up to the wall line. Benches, racking, cabinets and parked equipment all work against the wall the way you expect, and overhead doors can sit in the sidewall rather than only the endwall.",
+    "detail": "Available in cold-formed steel and in red iron for heavier commercial loads. Cold-formed covers most residential and light commercial spans at lower cost; red iron is the answer when spans, loads or occupancy requirements get serious.",
+    "useCases": ["Workshops", "Commercial buildings", "Barndominiums", "Warehouses"],
+    "commonSizes": ["30' x 40'", "40' x 60'", "50' x 80'", "60' x 100'"],
+    "models": ["B", "S", "T"],
+    "specs": [
+      ["Wall", "Full-height vertical sidewall"],
+      ["Framing", "Cold-formed or red iron steel"],
+      ["Roof", "Arched or sloped"],
+      ["Doors", "Sidewall or endwall placement"]
+    ]
+  },
+  {
+    "slug": "roofing-systems",
+    "name": "Steel Roofing Systems",
+    "group": "Building Styles",
+    "headline": "Cover an existing structure or an open span",
+    "intro": "Roof-only systems put engineered steel cover over something that already exists — a yard, a container pair, a loading area, an aging roof deck. You get the weather protection without rebuilding walls you already have.",
+    "detail": "Because there are no walls to resist it, uplift governs the design. Attachment to whatever is underneath is the critical detail and is worth engineering rather than improvising.",
+    "useCases": ["Container covers", "Re-roofing existing structures", "Loading and transfer areas", "Open equipment cover"],
+    "commonSizes": ["20' x 40'", "30' x 40'", "40' x 60'"],
+    "models": ["M", "R"],
+    "specs": [
+      ["Application", "New cover or retrofit over existing"],
+      ["Loading", "Uplift-governed design"],
+      ["Material", "Non-combustible steel"]
+    ]
+  },
+  {
+    "slug": "agricultural-and-farm",
+    "name": "Agricultural & Farm Buildings",
+    "group": "Agricultural",
+    "headline": "Built for equipment that does not wait for weather",
+    "intro": "Farm structures earn out by keeping machinery under cover and feed dry. Clear-span steel handles both without interior posts to steer around with a tractor, and the openings can be sized to whatever the largest implement on the operation happens to be.",
+    "detail": "Size the door to the equipment first and the building second — a combine head or a sprayer boom sets the minimum opening, and everything else follows from there. Ventilation matters as much as cover for anything storing hay or housing livestock.",
+    "useCases": ["Machinery and implement storage", "Hay and feed storage", "Livestock shelter", "Grain and input storage"],
+    "commonSizes": ["40' x 60'", "40' x 80'", "50' x 100'", "60' x 120'"],
+    "models": ["S", "T", "R", "X"],
+    "specs": [
+      ["Openings", "Sized to largest implement"],
+      ["Interior", "Column-free"],
+      ["Ventilation", "Ridge, turbine, or open-end"],
+      ["Floor", "Slab, gravel, or dirt depending on use"]
+    ]
+  },
+  {
+    "slug": "commercial",
+    "name": "Commercial Buildings",
+    "group": "Commercial",
+    "headline": "Occupied space, engineered to code",
+    "intro": "Commercial use brings requirements residential buildings do not carry: occupancy classification, accessible entrances, egress, fire separation and inspection at multiple stages. The structure is the straightforward part; the approvals process is where projects slip.",
+    "detail": "Engage your local authority early. Stamped drawings for your jurisdiction are produced against the wind, snow and seismic values at your specific address, and the sooner those are on file the sooner the rest of the project can move.",
+    "useCases": ["Retail and showroom", "Office and shop combinations", "Service businesses", "Light industrial"],
+    "commonSizes": ["40' x 60'", "50' x 80'", "60' x 100'", "80' x 150'"],
+    "models": ["T", "S", "B"],
+    "specs": [
+      ["Drawings", "Engineer-stamped for your jurisdiction"],
+      ["Code", "IBC-compliant design"],
+      ["Expansion", "Length extension possible on most designs"],
+      ["Finish", "Liner panels, partitions, and mezzanines available"]
+    ]
+  },
+  {
+    "slug": "warehouses",
+    "name": "Warehouses",
+    "group": "Commercial",
+    "headline": "Racking, aisles, and dock height",
+    "intro": "Warehouse design starts at the racking plan and works outward. Bay spacing, aisle width and clear height under the lowest obstruction determine how many pallet positions the building actually yields — which is the number that matters, not square footage.",
+    "detail": "Clear height is the specification most often under-ordered. Two extra feet of sidewall can add an entire rack level across the whole floor, and it is far cheaper bought at order time than retrofitted never.",
+    "useCases": ["Distribution and fulfillment", "Cold and dry storage", "Cross-dock operations", "Inventory and overflow"],
+    "commonSizes": ["50' x 100'", "60' x 120'", "80' x 200'", "100' x 200'"],
+    "models": ["T", "S"],
+    "specs": [
+      ["Clear height", "16' – 24'+ typical"],
+      ["Span", "Column-free to 100'+"],
+      ["Docks", "Grade-level or dock-height openings"],
+      ["Lighting", "Skylights and translucent panels available"]
+    ]
+  },
+  {
+    "slug": "manufacturing-facilities",
+    "name": "Manufacturing Facilities",
+    "group": "Commercial",
+    "headline": "Process flow first, walls second",
+    "intro": "A production building is laid out around material movement. Where raw stock enters, how work travels between stations, and where finished goods stage all determine the footprint — and all of it is easier when no columns interrupt the floor.",
+    "detail": "Crane loads, heavy equipment pads and three-phase service should be identified before the structure is engineered, since each affects the frame, the anchor design and the slab.",
+    "useCases": ["Production and assembly", "Fabrication", "Processing", "Packaging and finishing"],
+    "commonSizes": ["60' x 100'", "80' x 150'", "100' x 200'"],
+    "models": ["T"],
+    "specs": [
+      ["Crane ready", "Bridge crane loads engineered on request"],
+      ["Power", "Three-phase service planning"],
+      ["Span", "Wide clear span for uninterrupted flow"],
+      ["Foundation", "Engineered slab with equipment pads"]
+    ]
+  },
+  {
+    "slug": "aviation",
+    "name": "Aviation Hangars",
+    "group": "Specialized",
+    "headline": "Wingspan sets the span",
+    "intro": "Hangar sizing is dictated by wingspan plus clearance either side, and by tail height at the door. Get those two numbers right and the rest of the building follows; get them wrong and the aircraft does not fit, which is not a fixable problem after the fact.",
+    "detail": "The door is the expensive component and the one with the longest lead time. Bifold and hydraulic doors need structural provision designed into the endwall from the start, so specify the door before the building is engineered.",
+    "useCases": ["Private aircraft hangar", "Maintenance hangar", "Multi-aircraft storage", "Airport and FBO facilities"],
+    "commonSizes": ["50' x 50'", "60' x 60'", "70' x 100'", "100' x 200'"],
+    "models": ["T"],
+    "specs": [
+      ["Clear span", "No interior columns"],
+      ["Door", "Bifold or hydraulic, structurally integrated"],
+      ["Clear height", "Set by tail height plus clearance"],
+      ["Compliance", "Airport authority requirements vary"]
+    ]
+  },
+  {
+    "slug": "arenas-recreational",
+    "name": "Arenas & Recreational Buildings",
+    "group": "Specialized",
+    "headline": "Wide open, all season",
+    "intro": "Riding arenas, courts and indoor recreation need span above all else — nothing can stand in the middle of the floor. Steel clear-span construction covers dimensions that would be impractical in almost any other material at comparable cost.",
+    "detail": "Standard riding dimensions are a good starting point rather than a rule; the useful question is what activity happens at the perimeter, since rails, seating and equipment all eat into the nominal footprint.",
+    "useCases": ["Riding arenas", "Indoor courts and sports", "Community and event space", "Recreational vehicle storage"],
+    "commonSizes": ["60' x 120'", "70' x 150'", "80' x 200'", "100' x 200'"],
+    "models": ["T", "S"],
+    "specs": [
+      ["Span", "Completely column-free floor"],
+      ["Lighting", "Skylights and translucent panels"],
+      ["Ventilation", "Ridge and gable venting"],
+      ["Footing", "Engineered to arena surface and use"]
+    ]
+  },
+  {
+    "slug": "churches",
+    "name": "Churches & Assembly Buildings",
+    "group": "Specialized",
+    "headline": "Assembly occupancy, honestly engineered",
+    "intro": "Buildings for public assembly carry the strictest life-safety requirements of any category — occupant load, egress capacity, accessibility and fire rating are all reviewed closely. Steel handles the span a sanctuary needs; the process needs care.",
+    "detail": "Bring the design authority in at concept stage. Occupant load determines exit count and width, which determines the endwall layout, which determines the structure — so it flows backward from the number of seats.",
+    "useCases": ["Sanctuaries and worship space", "Fellowship halls", "Classrooms and youth space", "Community assembly"],
+    "commonSizes": ["50' x 80'", "60' x 100'", "80' x 150'"],
+    "models": ["T", "S"],
+    "specs": [
+      ["Occupancy", "Assembly classification"],
+      ["Egress", "Sized to occupant load"],
+      ["Accessibility", "ADA-compliant entrances required"],
+      ["Acoustics", "Interior treatment recommended"]
+    ]
+  },
+  {
+    "slug": "energy-oil-gas",
+    "name": "Energy, Oil & Gas Structures",
+    "group": "Specialized",
+    "headline": "Remote sites, hard conditions, relocatable",
+    "intro": "Energy sector buildings are often needed where there is no infrastructure, on a schedule set by the project rather than the weather. Bolt-together steel ships to remote sites, goes up without specialized trades, and can be dismantled and relocated when the work moves.",
+    "detail": "Site-specific engineering matters more here than almost anywhere — wind exposure, frost depth and soil conditions on remote pads vary enormously, and classified-area requirements may govern electrical and ventilation design.",
+    "useCases": ["Equipment and pump shelters", "Field offices and crew facilities", "Pipe and material storage", "Maintenance shops"],
+    "commonSizes": ["30' x 40'", "40' x 60'", "50' x 100'"],
+    "models": ["S", "T", "R"],
+    "specs": [
+      ["Relocatable", "Bolt-together, can be dismantled"],
+      ["Remote delivery", "Ships to site without crane in many sizes"],
+      ["Engineering", "Site-specific wind, snow, and seismic"],
+      ["Classified areas", "Requirements vary — verify locally"]
+    ]
+  },
+  {
+    "slug": "marijuana",
+    "name": "Cannabis Cultivation Facilities",
+    "group": "Specialized",
+    "headline": "Controlled environment, secured envelope",
+    "intro": "Licensed cultivation has requirements most agricultural buildings never face: a sealed and controlled environment, security and access control, and in most jurisdictions an inspection regime tied to the license itself.",
+    "detail": "Regulations are state and municipality specific and they change. Confirm setback, security, odor control and licensing requirements with your regulator before committing to a footprint or a site — the building is easier to change on paper than on a pad.",
+    "useCases": ["Indoor cultivation", "Processing and drying", "Secure storage", "Support and office space"],
+    "commonSizes": ["40' x 60'", "50' x 100'", "60' x 120'"],
+    "models": ["S", "T"],
+    "specs": [
+      ["Envelope", "Fully insulated and sealed"],
+      ["Climate", "HVAC and dehumidification planning"],
+      ["Security", "Access control and camera provisions"],
+      ["Compliance", "State and local licensing requirements apply"]
+    ]
+  }
+]

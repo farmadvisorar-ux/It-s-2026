@@ -1,0 +1,85 @@
+---
+import Article from '../../layouts/Article.astro';
+
+const toc = [
+  { id: 'realistic', label: 'Is DIY realistic?' },
+  { id: 'crew', label: 'Crew, tools, time' },
+  { id: 'sequence', label: 'The sequence' },
+  { id: 'mistakes', label: 'Common mistakes' },
+  { id: 'hire', label: 'When to hire it out' },
+];
+---
+
+<Article
+  title="Assembly Guide"
+  eyebrow="Guide"
+  description="What raising a steel building kit actually involves — crew size, tools, sequence, and the mistakes that cause the most trouble."
+  lede="Kits are designed to bolt together without welding or specialized equipment. That makes DIY assembly genuinely achievable — and it is still real work, done outdoors, on a schedule the weather partly controls."
+  crumbs={[{ label: 'Resources', href: '/resources/' }]}
+  toc={toc}
+>
+  <h2 id="realistic">Is DIY realistic?</h2>
+  <p>
+    For small and mid-sized buildings, yes, and plenty of owners do it. Components arrive
+    pre-punched and numbered, everything bolts together, and the instructions are written for
+    people who have not done it before.
+  </p>
+  <p>
+    Be honest about scale, though. A 20' x 24' storage building and a 60' x 100' clear-span
+    structure are not the same project. The second involves lifting heavy components to
+    height, and it belongs with a crew that does it professionally.
+  </p>
+
+  <h2 id="crew">Crew, tools, time</h2>
+  <h3>People</h3>
+  <p>
+    Two people can raise a small kit. Three or four makes almost any residential-scale
+    building go faster and considerably safer. The reason is not weight so much as awkwardness
+    — panels want holding in position while someone else sets fasteners.
+  </p>
+  <h3>Tools</h3>
+  <ul>
+    <li>Impact driver or wrench set, and a good supply of charged batteries</li>
+    <li>Standard hand tools, clamps, chalk line, tape</li>
+    <li>Level and a way to check square across a large diagonal</li>
+    <li>Ladders or scaffolding rated for the height</li>
+    <li>Lifting equipment matched to your panel size — a tractor with forks, telehandler, or rented lift</li>
+    <li>Fall protection where you will be working at height</li>
+  </ul>
+  <h3>Time</h3>
+  <p>
+    A small storage building is a weekend for two motivated people. A mid-sized garage is
+    typically several days for a small crew. Weather is the variable that moves these numbers
+    most — panels in wind are dangerous, and there is no useful way to hurry that.
+  </p>
+
+  <h2 id="sequence">The sequence</h2>
+  <ol>
+    <li><strong>Verify the foundation.</strong> Square, level, and anchors exactly where the drawings put them. Confirm this before anything else — everything downstream depends on it.</li>
+    <li><strong>Inventory the shipment.</strong> Check every bundle against the packing list. Finding a shortage now is an inconvenience; finding it halfway up is a stoppage.</li>
+    <li><strong>Set base connections.</strong> To the drawings, not to the nominal dimensions.</li>
+    <li><strong>Raise the structure.</strong> Following the specified order, bracing temporarily as you go. Do not skip temporary bracing because the next piece is going on shortly.</li>
+    <li><strong>Sheet the roof and walls.</strong> Working to the panel layout, keeping runs straight from the start.</li>
+    <li><strong>Install openings.</strong> Doors, windows and vents into their framed positions.</li>
+    <li><strong>Trim and close.</strong> Every trim piece is closing a joint against weather and pests — this stage is not cosmetic.</li>
+  </ol>
+
+  <h2 id="mistakes">Common mistakes</h2>
+  <ul>
+    <li><strong>Not squaring the base.</strong> By far the most common and the most expensive. Errors at the foundation multiply as the building rises, and when panels do not align at the top, the fix is back at the bottom. Measure the diagonals.</li>
+    <li><strong>Over-tightening fasteners.</strong> Crushing the sealing washer defeats the seal and creates a leak path. Snug and sealed, not maximum torque.</li>
+    <li><strong>Skipping temporary bracing.</strong> A partially assembled structure is far less stable than a finished one, and wind does not wait.</li>
+    <li><strong>Working in wind.</strong> A panel is a sail. This is the most likely way to get hurt on the job.</li>
+    <li><strong>Storing components on bare ground.</strong> Bundles sitting in mud and water before assembly will show it later.</li>
+    <li><strong>Not reading ahead.</strong> Read the next two steps before you start the current one. Some fasteners are far easier to reach before the adjacent panel goes on.</li>
+  </ul>
+
+  <h2 id="hire">When to hire it out</h2>
+  <p>
+    Bring in a professional crew when the building is large, when components need lifting well
+    above ground level, when you are on a deadline the weather could break, or when you simply
+    do not have the people. Because kits are designed for straightforward assembly, most
+    general contractors and pole-barn builders handle them competently — you do not need a
+    specialist erector for most residential-scale work.
+  </p>
+</Article>

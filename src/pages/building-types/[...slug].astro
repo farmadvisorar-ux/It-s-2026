@@ -1,0 +1,214 @@
+---
+import Base from '../../layouts/Base.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import types from '../../data/building-types.json';
+import models from '../../data/models.json';
+import inventory from '../../data/inventory.json';
+
+export function getStaticPaths() {
+  return (types as any[]).map((t) => ({
+    params: { slug: t.slug },
+    props: { type: t },
+  }));
+}
+
+const { type } = Astro.props;
+const typeModels = (models as any[]).filter((m) => type.models.includes(m.code));
+const related = (types as any[])
+  .filter((t) => t.group === type.group && t.slug !== type.slug)
+  .slice(0, 3);
+
+// inventory whose model matches this building type
+const matches = (inventory as any[])
+  .filter((i) => i.model && type.models.includes(i.model))
+  .slice(0, 4);
+
+const parentCrumb = type.parent
+  ? [{ label: 'Building Types', href: '/building-types/' },
+     { label: (types as any[]).find((t) => t.slug === type.parent)?.name ?? '', href: `/building-types/${type.parent}/` }]
+  : [{ label: 'Building Types', href: '/building-types/' }];
+---
+
+<Base
+  title={type.name}
+  description={type.intro.slice(0, 155)}
+  crumbs={parentCrumb}
+  current={type.name}
+>
+  <article>
+    <!-- header -->
+    <section class="head">
+      <div class="wrap head__inner">
+        <div>
+          <p class="eyebrow">{type.group}</p>
+          <h1 class="page-title">{type.name}</h1>
+          <p class="head__line">{type.headline}</p>
+          <div class="head__actions">
+            <a class="btn btn--primary" href={`/quote/?building=${type.slug}`}>Quote this building</a>
+            <a class="btn btn--ghost" href="/inventory/">See ready-to-ship kits</a>
+          </div>
+        </div>
+        <Placeholder label={`${type.name} — primary photo`} variant="wide" />
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="wrap body-grid">
+        <!-- main copy -->
+        <div class="prose">
+          <p class="lede">{type.intro}</p>
+          <h2>What to think about before you order</h2>
+          <p>{type.detail}</p>
+
+          <h2>Common uses</h2>
+          <ul>
+            {type.useCases.map((u: string) => <li>{u}</li>)}
+          </ul>
+
+          <h2>Recommended profiles</h2>
+          <p>
+            These are the models that suit {type.name.toLowerCase()} best. The right one
+            depends mostly on whether you need usable wall height or the lowest cost per
+            square foot.
+          </p>
+          <div class="model-list">
+            {typeModels.map((m) => (
+              <a class="model-row" href={`/models/${m.code.toLowerCase()}/`}>
+                <span class="model-row__code">{m.code}</span>
+                <span class="model-row__body">
+                  <strong>{m.name}</strong>
+                  <span>{m.profile} · {m.spanRange}</span>
+                </span>
+              </a>
+            ))}
+          </div>
+        </div>
+
+        <!-- sidebar -->
+        <aside class="side">
+          <div class="panel">
+            <h2 class="panel__head">Specifications</h2>
+            <div class="table-scroll">
+              <table class="spec">
+                <tbody>
+                  {type.specs.map(([k, v]: [string, string]) => (
+                    <tr><th scope="row">{k}</th><td>{v}</td></tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h2 class="panel__head">Common sizes</h2>
+            <ul class="sizes">
+              {type.commonSizes.map((s: string) => <li>{s}</li>)}
+            </ul>
+            <p class="panel__note">
+              Sizes are a starting point, not a menu. Most builds are dimensioned to the job.
+            </p>
+          </div>
+
+          <div class="panel panel--accent">
+            <h2 class="panel__head">Not sure on size?</h2>
+            <p class="panel__note">
+              Tell us what goes inside and how you move it in and out. That is usually
+              enough to land on the right footprint.
+            </p>
+            <a class="btn btn--primary" href="/quote/" style="width:100%;justify-content:center">Ask us</a>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    {matches.length > 0 && (
+      <section class="section section--sunken">
+        <div class="wrap">
+          <h2 class="sec-title">Ready-to-ship kits in these profiles</h2>
+          <div class="grid grid--4">
+            {matches.map((d) => (
+              <a class="card" href={`/inventory/${d.slug}/`}>
+                <div class="card__body">
+                  <span class="tag tag--accent">Model {d.model}</span>
+                  <h3 class="card__title">{d.title}</h3>
+                  {d.sqft && <span class="card__meta">{d.sqft.toLocaleString()} sq ft</span>}
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    {related.length > 0 && (
+      <section class="section">
+        <div class="wrap">
+          <h2 class="sec-title">Related buildings</h2>
+          <div class="grid grid--3">
+            {related.map((t) => (
+              <a class="card" href={`/building-types/${t.slug}/`}>
+                <Placeholder label={t.name} />
+                <div class="card__body">
+                  <h3 class="card__title">{t.name}</h3>
+                  <p class="card__text">{t.headline}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+  </article>
+</Base>
+
+<style>
+  .head { padding-block: clamp(2rem, 5vw, 3.5rem); border-bottom: 1px solid var(--border); }
+  .head__inner { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
+  .page-title { font-size: clamp(1.875rem, 4.5vw, 3rem); margin-block: 0.5rem 0.75rem; }
+  .head__line { font-size: 1.125rem; color: var(--text-muted); }
+  .head__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+  .head :global(.ph), .head :global(.ph-img) { border-radius: var(--radius-lg); border: 1px solid var(--border); }
+
+  .body-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+
+  .side { display: grid; gap: 1.25rem; position: sticky; top: 88px; }
+  .panel { background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+  .panel--accent { border-color: color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 6%, var(--bg-raised)); }
+  .panel__head { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 0.875rem; }
+  .panel__note { font-size: 0.8125rem; color: var(--text-muted); margin-top: 0.75rem; }
+  .panel .spec th, .panel .spec td { padding: 0.5rem 0; font-size: 0.875rem; }
+  .panel .spec th { width: 45%; padding-right: 0.75rem; }
+
+  .sizes { list-style: none; padding: 0; display: flex; flex-wrap: wrap; gap: 0.375rem; }
+  .sizes li {
+    font-family: var(--font-mono); font-size: 0.8125rem;
+    padding: 0.25rem 0.5rem; border: 1px solid var(--border);
+    border-radius: 3px; background: var(--bg-sunken);
+  }
+
+  .model-list { display: grid; gap: 0.5rem; margin-bottom: 1rem; }
+  .model-row {
+    display: flex; align-items: center; gap: 0.875rem;
+    padding: 0.75rem; text-decoration: none;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    background: var(--bg-raised); transition: border-color .15s;
+  }
+  .model-row:hover { border-color: var(--accent); }
+  .model-row__code {
+    display: grid; place-items: center; flex-shrink: 0;
+    width: 2rem; height: 2rem; border-radius: 3px;
+    background: var(--bg-sunken); border: 1px solid var(--border-strong);
+    font-family: var(--font-mono); font-weight: 700; font-size: 0.875rem; color: var(--accent);
+  }
+  .model-row__body { display: flex; flex-direction: column; }
+  .model-row__body strong { font-size: 0.9375rem; }
+  .model-row__body span { font-size: 0.8125rem; color: var(--text-faint); }
+
+  .sec-title { font-size: clamp(1.375rem, 3vw, 1.875rem); margin-bottom: 1.5rem; }
+
+  @media (max-width: 900px) {
+    .head__inner { grid-template-columns: 1fr; }
+    .body-grid { grid-template-columns: 1fr; }
+    .side { position: static; }
+  }
+</style>

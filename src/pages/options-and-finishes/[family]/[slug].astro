@@ -1,0 +1,85 @@
+---
+import Base from '../../../layouts/Base.astro';
+import Placeholder from '../../../components/Placeholder.astro';
+import options from '../../../data/options.json';
+
+export function getStaticPaths() {
+  return (options as any[]).flatMap((fam) =>
+    fam.items.map((o: any) => ({
+      params: { family: fam.family, slug: o.slug },
+      props: { option: o, fam },
+    }))
+  );
+}
+
+const { option, fam } = Astro.props;
+const siblings = fam.items.filter((o: any) => o.slug !== option.slug);
+---
+
+<Base
+  title={`${option.name} — ${fam.familyName}`}
+  description={option.summary}
+  crumbs={[
+    { label: 'Options & Finishes', href: '/options-and-finishes/' },
+    { label: fam.familyName, href: '/options-and-finishes/' },
+  ]}
+  current={option.name}
+>
+  <section class="section">
+    <div class="wrap body-grid">
+      <div>
+        <p class="eyebrow">{fam.familyName}</p>
+        <h1 class="page-title">{option.name}</h1>
+        <p class="lede">{option.summary}</p>
+
+        <Placeholder label={`${option.name} — detail photo`} variant="wide" class="hero-img" />
+
+        <div class="prose">
+          <h2>How it works</h2>
+          <p>{option.detail}</p>
+
+          <h2>Key points</h2>
+          <ul>
+            {option.points.map((p: string) => <li>{p}</li>)}
+          </ul>
+        </div>
+
+        <a class="btn btn--primary" href={`/quote/?option=${option.slug}`}>Add this to a quote</a>
+      </div>
+
+      <aside class="side">
+        <div class="panel">
+          <h2 class="panel__head">More {fam.familyName.replace(' Options', '').toLowerCase()} options</h2>
+          <ul class="plain">
+            {siblings.map((o: any) => (
+              <li><a href={`/options-and-finishes/${fam.family}/${o.slug}/`}>{o.name}</a></li>
+            ))}
+          </ul>
+        </div>
+        <div class="panel panel--accent">
+          <h2 class="panel__head">Decide early</h2>
+          <p class="panel__note">
+            Options that cut into the structure — doors, windows, vents — are engineered into
+            the kit. Adding them after delivery means field-modifying a stamped building.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .body-grid { display: grid; grid-template-columns: minmax(0,1fr) 280px; gap: clamp(2rem,5vw,4rem); align-items: start; }
+  .page-title { font-size: clamp(1.875rem, 4.5vw, 2.75rem); margin-block: 0.5rem 0.75rem; }
+  .hero-img { margin: 2rem 0; border-radius: var(--radius-lg); border: 1px solid var(--border); }
+  .side { display: grid; gap: 1.25rem; position: sticky; top: 88px; }
+  .panel { background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+  .panel--accent { border-color: color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 6%, var(--bg-raised)); }
+  .panel__head { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 0.875rem; }
+  .panel__note { font-size: 0.8125rem; color: var(--text-muted); }
+  .plain { list-style: none; padding: 0; }
+  .plain li { margin-bottom: 0.5rem; font-size: 0.875rem; }
+  .plain a { color: var(--text-muted); text-decoration: none; }
+  .plain a:hover { color: var(--accent); }
+  @media (max-width: 900px) { .body-grid { grid-template-columns: 1fr; } .side { position: static; } }
+</style>

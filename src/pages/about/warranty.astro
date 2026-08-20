@@ -1,0 +1,108 @@
+---
+import Article from '../../layouts/Article.astro';
+
+const toc = [
+  { id: 'structure', label: 'How coverage is structured' },
+  { id: 'affects', label: 'What affects coverage' },
+  { id: 'claim', label: 'Making a claim' },
+  { id: 'records', label: 'Records to keep' },
+];
+---
+
+<Article
+  title="Warranty"
+  eyebrow="About"
+  description="How steel building warranty coverage is structured, what affects it, and what records to keep."
+  lede="Warranty coverage is provided by the manufacturer and is stated in the documents that come with your order. This page explains how that coverage is normally structured and what affects it."
+  crumbs={[{ label: 'About', href: '/about/' }]}
+  toc={toc}
+>
+  <div class="admin-note">
+    <strong>Publish note — remove before launch.</strong> Fill in the exact warranty terms,
+    durations and conditions from your dealer agreement and the manufacturer's current
+    warranty document. Do not publish specific durations until you have confirmed them in
+    writing, and do not restate manufacturer warranty language without checking that your
+    dealer agreement permits it.
+  </div>
+
+  <h2 id="structure">How coverage is structured</h2>
+  <p>
+    Steel building warranties normally separate two things, because they fail in different
+    ways and on different timescales:
+  </p>
+  <ul>
+    <li>
+      <strong>Structural coverage</strong> — the steel framing and its capacity to carry the
+      loads it was engineered for. This is the long-duration part of the warranty.
+    </li>
+    <li>
+      <strong>Panel and coating coverage</strong> — the metallic coating and any factory paint
+      finish, against perforation, excessive fading or chalking. Coating warranties are
+      typically stated separately from structural coverage, and often carry different terms
+      depending on the environment the building is in.
+    </li>
+  </ul>
+  <p>
+    Accessories supplied by other manufacturers — overhead doors, ventilation equipment,
+    windows — normally carry their own warranties from those makers rather than being covered
+    under the building warranty.
+  </p>
+
+  <h2 id="affects">What affects coverage</h2>
+  <p>
+    Warranties assume the building was assembled correctly and looked after. In practice the
+    things that jeopardize coverage are consistent:
+  </p>
+  <ul>
+    <li><strong>Assembly that departs from the instructions</strong> or from the stamped drawings.</li>
+    <li><strong>Foundation or anchoring</strong> that does not meet the engineered specification.</li>
+    <li><strong>Field modification</strong> — cutting openings into a stamped structure without engineering.</li>
+    <li><strong>Loads beyond the design values</strong>, including hanging equipment from the frame or adding a mezzanine that was never engineered.</li>
+    <li><strong>Neglected maintenance</strong>, particularly standing water, blocked gutters and debris left on the roof.</li>
+    <li><strong>Contact with incompatible materials</strong> — copper runoff, some treated lumber, dissimilar metals.</li>
+    <li><strong>Corrosive environments</strong> not disclosed at order, such as coastal salt exposure or certain agricultural and industrial atmospheres.</li>
+  </ul>
+  <p>
+    None of these are unusual exclusions. They are the same list any building product warranty
+    carries, and all of them are within your control.
+  </p>
+
+  <h2 id="claim">Making a claim</h2>
+  <ol>
+    <li>Contact us with your order number and a description of the issue.</li>
+    <li>Provide photographs showing the condition and its location on the building.</li>
+    <li>Have your stamped drawings and delivery documentation available.</li>
+    <li>We coordinate with the manufacturer on the claim.</li>
+  </ol>
+  <p>
+    Shipping damage is a separate process and it is time-sensitive. Inspect the shipment
+    against the packing list before you sign, and note any damage on the bill of lading at the
+    time of delivery — that record is what makes a freight claim straightforward.
+  </p>
+
+  <h2 id="records">Records to keep</h2>
+  <p>Keep these together with your property documents:</p>
+  <ul>
+    <li>Your stamped engineering drawings</li>
+    <li>Order documentation and the warranty statement supplied with it</li>
+    <li>The signed bill of lading and packing list</li>
+    <li>Foundation and concrete records, including the anchor plan used for the pour</li>
+    <li>Permit and inspection records</li>
+    <li>A dated note of maintenance carried out</li>
+  </ul>
+  <p>
+    That last one sounds fussy and is genuinely useful. A short annual record of roof clearing
+    and fastener checks is exactly the evidence that resolves a maintenance question during a
+    claim.
+  </p>
+</Article>
+
+<style>
+  .admin-note {
+    padding: 1rem 1.125rem; margin-bottom: 2rem;
+    background: color-mix(in srgb, #dc2626 8%, transparent);
+    border: 1px dashed color-mix(in srgb, #dc2626 45%, transparent);
+    border-radius: var(--radius); font-size: 0.8125rem; color: var(--text-muted);
+  }
+  .admin-note strong { display: block; color: #dc2626; margin-bottom: 0.25rem; }
+</style>

@@ -1,0 +1,91 @@
+---
+import Article from '../layouts/Article.astro';
+---
+
+<Article
+  title="Terms of Use"
+  eyebrow="Legal"
+  description="Terms governing use of the Marshall Sheds website."
+  lede="These terms cover your use of this website. Terms of sale are separate and are provided with your quote and order documents."
+  crumbs={[]}
+>
+  <div class="admin-note">
+    <strong>Publish note — remove before launch.</strong> This is a starting template, not
+    legal advice. Have it reviewed by a lawyer, and make sure it does not conflict with your
+    dealer agreement — particularly anything about how you describe the manufacturer
+    relationship, warranty, or use of manufacturer trademarks.
+  </div>
+
+  <h2>About this site</h2>
+  <p>
+    This website is operated by Marshall Sheds, an authorized independent dealer of
+    pre-engineered steel buildings. We are not the manufacturer. Buildings are produced by our
+    manufacturing partner and shipped direct from their production facilities.
+  </p>
+
+  <h2>Information on this site</h2>
+  <p>
+    Product information, dimensions, specifications and guidance on this site are provided for
+    general reference. Specifications, availability and pricing can change, and the
+    engineering that applies to your building is determined by your specific site.
+  </p>
+  <p>
+    Nothing on this site is an offer to sell at a stated price. A binding price and
+    specification comes only from a written quote issued to you.
+  </p>
+
+  <h2>Guidance is not engineering advice</h2>
+  <p>
+    Our guides cover general principles — foundations, ventilation, code processes and so on.
+    They are not a substitute for engineering, and they are not a substitute for your local
+    building department. Requirements vary by jurisdiction and by site, and only your stamped
+    drawings and your building department can tell you what applies to your project.
+  </p>
+
+  <h2>Quotes and orders</h2>
+  <p>
+    Quotes are valid for the period stated on them. Steel is a commodity and pricing moves.
+    Terms of sale — including deposit, payment, lead time, delivery, cancellation and warranty
+    — are set out in your quote and order documents, and those documents govern the
+    transaction rather than this page.
+  </p>
+
+  <h2>Your responsibilities</h2>
+  <ul>
+    <li>Providing accurate site information, including the exact delivery address</li>
+    <li>Obtaining permits and approvals for your project</li>
+    <li>Site preparation, foundation design and construction</li>
+    <li>Offloading the delivery</li>
+    <li>Assembly in accordance with the instructions and stamped drawings</li>
+  </ul>
+
+  <h2>Intellectual property</h2>
+  <p>
+    Content on this site, including text and design, belongs to Marshall Sheds or is used with
+    permission. Trademarks belonging to our manufacturing partner and other third parties
+    remain the property of their respective owners.
+  </p>
+
+  <h2>Limitation of liability</h2>
+  <p>
+    To the extent permitted by law, we are not liable for indirect or consequential losses
+    arising from use of this website. Nothing here limits liability that cannot be limited by
+    law, and nothing here affects the warranty provided with your building.
+  </p>
+
+  <h2>Changes</h2>
+  <p>We may update these terms. Continued use of the site means you accept the current version.</p>
+
+  <h2>Contact</h2>
+  <p>Questions can be sent through the <a href="/contact/">contact page</a>.</p>
+</Article>
+
+<style>
+  .admin-note {
+    padding: 1rem 1.125rem; margin-bottom: 2rem;
+    background: color-mix(in srgb, #dc2626 8%, transparent);
+    border: 1px dashed color-mix(in srgb, #dc2626 45%, transparent);
+    border-radius: var(--radius); font-size: 0.8125rem; color: var(--text-muted);
+  }
+  .admin-note strong { display: block; color: #dc2626; margin-bottom: 0.25rem; }
+</style>

@@ -1,0 +1,153 @@
+---
+import Base from '../../layouts/Base.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import inventory from '../../data/inventory.json';
+import models from '../../data/models.json';
+
+export function getStaticPaths() {
+  return (inventory as any[]).map((i) => ({
+    params: { slug: i.slug },
+    props: { item: i },
+  }));
+}
+
+const { item } = Astro.props;
+const model = (models as any[]).find((m) => m.code === item.model);
+const regionLabel: Record<string, string> = { usa: 'USA', canada: 'Canada', quebec: 'Quebec' };
+
+const similar = (inventory as any[])
+  .filter((i) => i.slug !== item.slug && (i.model === item.model || (item.sqft && i.sqft && Math.abs(i.sqft - item.sqft) < 1200)))
+  .slice(0, 4);
+
+const dims = [
+  item.width && `${item.width}' wide`,
+  item.height && `${item.height}' sidewall`,
+  item.length && `${item.length}' long`,
+].filter(Boolean);
+---
+
+<Base
+  title={item.title}
+  description={`${item.title} steel building kit, ready to ship. ${item.sqft ? item.sqft.toLocaleString() + ' sq ft footprint. ' : ''}Clearance inventory from Marshall Sheds.`}
+  crumbs={[{ label: 'Inventory', href: '/inventory/' }]}
+  current={item.title}
+>
+  <section class="section">
+    <div class="wrap detail">
+      <div class="detail__media">
+        <Placeholder label={`${item.title} — photo`} />
+        <div class="thumbs">
+          <Placeholder label="Interior" variant="square" />
+          <Placeholder label="Endwall" variant="square" />
+          <Placeholder label="Site" variant="square" />
+        </div>
+      </div>
+
+      <div class="detail__info">
+        <div class="inv__tags">
+          <span class="tag tag--accent">Clearance</span>
+          {item.model && <span class="tag">Model {item.model}</span>}
+          {item.regions.map((r: string) => <span class="tag">{regionLabel[r] ?? r}</span>)}
+        </div>
+
+        <h1 class="page-title">{item.title}</h1>
+
+        {dims.length > 0 && <p class="dims">{dims.join(' · ')}</p>}
+
+        <div class="price-box">
+          <p class="price-box__label">Pricing</p>
+          <p class="price-box__value">Request a quote</p>
+          <p class="price-box__note">
+            Clearance pricing depends on your delivery address — freight from the nearest
+            plant is the variable. Send us the postal code and we will quote the kit
+            delivered.
+          </p>
+          <a class="btn btn--primary" href={`/quote/?kit=${item.slug}`} style="width:100%;justify-content:center">Request pricing</a>
+        </div>
+
+        <div class="table-scroll">
+          <table class="spec">
+            <tbody>
+              {item.width && <tr><th scope="row">Width</th><td>{item.width}'</td></tr>}
+              {item.height && <tr><th scope="row">Sidewall height</th><td>{item.height}'</td></tr>}
+              {item.length && <tr><th scope="row">Length</th><td>{item.length}'</td></tr>}
+              {item.sqft && <tr><th scope="row">Footprint</th><td>{item.sqft.toLocaleString()} sq ft</td></tr>}
+              {model && <tr><th scope="row">Profile</th><td><a href={`/models/${model.code.toLowerCase()}/`}>{model.name} — {model.profile}</a></td></tr>}
+              <tr><th scope="row">Availability</th><td>{item.regions.map((r: string) => regionLabel[r] ?? r).join(', ')}</td></tr>
+              <tr><th scope="row">Assembly</th><td>Bolt-together, no welding</td></tr>
+              <tr><th scope="row">Drawings</th><td>Engineer-stamped for your jurisdiction</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        {item.tags.includes('container') && (
+          <p class="callout">
+            <strong>Containers not included.</strong> This is a roof system that spans between
+            two shipping containers you supply. Position them to the specified dimension
+            before assembly.
+          </p>
+        )}
+      </div>
+    </div>
+  </section>
+
+  {model && (
+    <section class="section section--sunken">
+      <div class="wrap">
+        <h2 class="sec-title">About the {model.name}</h2>
+        <div class="prose">
+          <p>{model.summary}</p>
+          <p>{model.notes}</p>
+          <a class="btn btn--ghost" href={`/models/${model.code.toLowerCase()}/`}>Full {model.name} details</a>
+        </div>
+      </div>
+    </section>
+  )}
+
+  {similar.length > 0 && (
+    <section class="section">
+      <div class="wrap">
+        <h2 class="sec-title">Similar kits</h2>
+        <div class="grid grid--4">
+          {similar.map((s) => (
+            <a class="card" href={`/inventory/${s.slug}/`}>
+              <div class="card__body">
+                {s.model && <span class="tag">Model {s.model}</span>}
+                <h3 class="card__title">{s.title}</h3>
+                {s.sqft && <span class="card__meta">{s.sqft.toLocaleString()} sq ft</span>}
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .detail { display: grid; grid-template-columns: 1.1fr 1fr; gap: clamp(2rem, 5vw, 3.5rem); align-items: start; }
+  .detail__media :global(.ph), .detail__media :global(.ph-img) { border-radius: var(--radius-lg); border: 1px solid var(--border); }
+  .thumbs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.75rem; margin-top: 0.75rem; }
+  .page-title { font-size: clamp(1.75rem, 4vw, 2.5rem); margin-block: 0.75rem 0.5rem; }
+  .dims { font-family: var(--font-mono); font-size: 0.9375rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+  .inv__tags { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+
+  .price-box {
+    background: var(--bg-raised); border: 1px solid var(--border-strong);
+    border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 1.5rem;
+  }
+  .price-box__label { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); }
+  .price-box__value { font-size: 1.375rem; font-weight: 800; margin: 0.25rem 0 0.5rem; }
+  .price-box__note { font-size: 0.8125rem; color: var(--text-muted); margin-bottom: 1rem; }
+
+  .callout {
+    margin-top: 1.25rem; padding: 0.875rem 1rem;
+    background: color-mix(in srgb, var(--accent) 8%, var(--bg-raised));
+    border-left: 3px solid var(--accent); border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: 0.875rem; color: var(--text-muted);
+  }
+  .callout strong { color: var(--text); }
+  .sec-title { font-size: clamp(1.375rem,3vw,1.875rem); margin-bottom: 1.5rem; }
+
+  @media (max-width: 900px) { .detail { grid-template-columns: 1fr; } }
+</style>

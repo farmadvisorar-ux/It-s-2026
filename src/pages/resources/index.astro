@@ -1,0 +1,50 @@
+---
+import Base from '../../layouts/Base.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import faqs from '../../data/faqs.json';
+
+const guides = [
+  { href: '/resources/arch-vs-straight-wall/', title: 'Arch vs. Straight Wall', blurb: 'The single decision that shapes everything else about your building — and the honest trade-off between them.' },
+  { href: '/resources/galvalume-steel/', title: 'Galvalume Steel Explained', blurb: 'What the coating actually does, why it outlasts plain galvanizing, and what shortens its life.' },
+  { href: '/resources/building-codes/', title: 'Building Codes by State', blurb: 'Why your address determines your engineering, and what your building department will want to see.' },
+  { href: '/resources/assembly/', title: 'Assembly Guide', blurb: 'What raising a kit actually involves — crew size, tools, sequence, and the mistake that causes most problems.' },
+  { href: '/resources/foundations/', title: 'Foundation Basics', blurb: 'Slab, footing or pier — how soil, frost depth and load determine what you pour.' },
+  { href: '/resources/condensation/', title: 'Condensation & Ventilation', blurb: 'Why metal buildings sweat, and the three fixes that actually work.' },
+  { href: '/resources/faq/', title: `FAQ — ${(faqs as any[]).length} Answers`, blurb: 'Pricing, permits, delivery, insulation, maintenance and everything else people ask before ordering.' },
+  { href: '/sizes/', title: 'Popular Sizes', blurb: 'Common footprints with square footage and what typically fits in each.' },
+];
+---
+
+<Base
+  title="Resources"
+  description="Guides on steel building selection, engineering, foundations, assembly, condensation control and building codes."
+  crumbs={[]}
+  current="Resources"
+>
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Learn</p>
+      <h1 class="page-title">Resources</h1>
+      <p class="lede">
+        Most of the expensive mistakes in a steel building project are made before anything
+        is ordered. These cover the decisions worth getting right the first time.
+      </p>
+
+      <div class="grid grid--3" style="margin-top:2.5rem">
+        {guides.map((g) => (
+          <a class="card" href={g.href}>
+            <Placeholder label={g.title} />
+            <div class="card__body">
+              <h2 class="card__title">{g.title}</h2>
+              <p class="card__text">{g.blurb}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page-title { font-size: clamp(2rem, 5vw, 3rem); margin-block: 0.5rem 1rem; }
+</style>

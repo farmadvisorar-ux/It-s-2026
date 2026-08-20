@@ -1,0 +1,284 @@
+---
+import Base from '../layouts/Base.astro';
+import types from '../data/building-types.json';
+import models from '../data/models.json';
+
+/**
+ * Form delivery
+ * -------------
+ * This posts to whatever you put in PUBLIC_FORM_ENDPOINT (an .env value).
+ * Any of these work with a static Vercel deploy:
+ *   - Formspree      https://formspree.io/f/xxxxxxx
+ *   - Web3Forms      https://api.web3forms.com/submit
+ *   - A Vercel serverless function at /api/quote
+ * Until it is set, the form validates and shows the "not yet connected" notice
+ * rather than silently dropping a lead.
+ */
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+const timelines = ['As soon as possible', 'Within 3 months', '3–6 months', '6–12 months', 'Still researching'];
+---
+
+<Base
+  title="Request a Quote"
+  description="Tell us the size, use and location of your steel building and we will come back with a written quote including freight."
+  crumbs={[]}
+  current="Get a Quote"
+>
+  <section class="section">
+    <div class="wrap quote-grid">
+      <div class="quote-intro">
+        <p class="eyebrow">No obligation</p>
+        <h1 class="page-title">Request a Quote</h1>
+        <p class="lede">
+          The more you can tell us up front, the more useful the first quote is. If you do
+          not know a field yet, leave it blank — we would rather talk it through than have
+          you guess.
+        </p>
+
+        <ul class="points">
+          <li>
+            <strong>Location matters most.</strong> Wind, snow and seismic values are set by
+            your address, and they drive both the engineering and the price.
+          </li>
+          <li>
+            <strong>Freight is quoted separately.</strong> Kits ship from the plant nearest
+            you, so the delivered price depends on where you are.
+          </li>
+          <li>
+            <strong>We quote in writing.</strong> Building, options, and freight itemized —
+            not a single number with no breakdown.
+          </li>
+        </ul>
+      </div>
+
+      <div class="quote-form-wrap">
+        {!endpoint && (
+          <div class="notice" role="status">
+            <strong>Form not yet connected.</strong> Set <code>PUBLIC_FORM_ENDPOINT</code> in
+            your environment variables to start receiving submissions. See
+            <code>README.md</code> for setup.
+          </div>
+        )}
+
+        <form
+          class="quote-form"
+          id="quote-form"
+          method="POST"
+          action={endpoint || undefined}
+          novalidate
+        >
+          <fieldset>
+            <legend>Your details</legend>
+            <div class="row">
+              <div class="field">
+                <label for="name">Name <span aria-hidden="true">*</span></label>
+                <input id="name" name="name" type="text" required autocomplete="name" />
+              </div>
+              <div class="field">
+                <label for="email">Email <span aria-hidden="true">*</span></label>
+                <input id="email" name="email" type="email" required autocomplete="email" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="phone">Phone</label>
+                <input id="phone" name="phone" type="tel" autocomplete="tel" />
+              </div>
+              <div class="field">
+                <label for="postal">Delivery ZIP / Postal code <span aria-hidden="true">*</span></label>
+                <input id="postal" name="postal" type="text" required autocomplete="postal-code" />
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>The building</legend>
+            <div class="field">
+              <label for="building">What are you building?</label>
+              <select id="building" name="building">
+                <option value="">Not sure yet</option>
+                {(types as any[]).map((t) => <option value={t.slug}>{t.name}</option>)}
+              </select>
+            </div>
+            <div class="row row--3">
+              <div class="field">
+                <label for="width">Width (ft)</label>
+                <input id="width" name="width" type="number" min="8" max="200" inputmode="numeric" />
+              </div>
+              <div class="field">
+                <label for="length">Length (ft)</label>
+                <input id="length" name="length" type="number" min="8" max="500" inputmode="numeric" />
+              </div>
+              <div class="field">
+                <label for="height">Sidewall (ft)</label>
+                <input id="height" name="height" type="number" min="6" max="40" inputmode="numeric" />
+              </div>
+            </div>
+            <div class="row">
+              <div class="field">
+                <label for="model">Preferred profile</label>
+                <select id="model" name="model">
+                  <option value="">Recommend one for me</option>
+                  {(models as any[]).map((m) => <option value={m.code}>{m.name} — {m.profile}</option>)}
+                </select>
+              </div>
+              <div class="field">
+                <label for="timeline">Timeline</label>
+                <select id="timeline" name="timeline">
+                  {timelines.map((t) => <option value={t}>{t}</option>)}
+                </select>
+              </div>
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Options you want priced</legend>
+            <div class="checks">
+              {['Overhead doors', 'Man doors', 'Sliding doors', 'Insulation', 'Skylights', 'Ventilation', 'Windows', 'Gutters', 'Foundation help'].map((o) => (
+                <label class="check">
+                  <input type="checkbox" name="options" value={o} />
+                  <span>{o}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <fieldset>
+            <legend>Anything else</legend>
+            <div class="field">
+              <label for="notes">What is going in the building, and how does it get in and out?</label>
+              <textarea id="notes" name="notes" rows="4" placeholder="e.g. two trucks plus a workbench wall; need a 12' door on the endwall"></textarea>
+            </div>
+          </fieldset>
+
+          <!-- honeypot -->
+          <div class="visually-hidden" aria-hidden="true">
+            <label for="company_website">Leave this blank</label>
+            <input id="company_website" name="company_website" type="text" tabindex="-1" autocomplete="off" />
+          </div>
+
+          <button class="btn btn--primary btn--submit" type="submit">Send Request</button>
+          <p class="fineprint">
+            We use your details to prepare a quote and follow up about it. We do not sell
+            your information.
+          </p>
+        </form>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .quote-grid { display: grid; grid-template-columns: 0.85fr 1.15fr; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+  .page-title { font-size: clamp(1.875rem, 4.5vw, 2.75rem); margin-block: 0.5rem 1rem; }
+  .quote-intro { position: sticky; top: 88px; }
+  .points { list-style: none; padding: 0; margin-top: 2rem; display: grid; gap: 1.25rem; }
+  .points li { font-size: 0.9375rem; color: var(--text-muted); padding-left: 1rem; border-left: 2px solid var(--accent); }
+  .points strong { display: block; color: var(--text); margin-bottom: 0.125rem; }
+
+  .quote-form-wrap { background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: clamp(1.25rem, 3vw, 2rem); }
+  .notice {
+    padding: 0.875rem 1rem; margin-bottom: 1.5rem;
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    border-radius: var(--radius); font-size: 0.8125rem; color: var(--text-muted);
+  }
+  .notice code { font-family: var(--font-mono); font-size: 0.75rem; background: var(--bg-sunken); padding: 0.0625rem 0.25rem; border-radius: 2px; }
+
+  fieldset { border: none; padding: 0; margin: 0 0 1.75rem; }
+  legend { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 0.875rem; padding: 0; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .row--3 { grid-template-columns: repeat(3, 1fr); }
+  .field { display: flex; flex-direction: column; gap: 0.375rem; margin-bottom: 1rem; }
+  .field label { font-size: 0.8125rem; font-weight: 500; }
+  .field label span { color: var(--accent); }
+  input, select, textarea {
+    padding: 0.625rem 0.75rem;
+    background: var(--bg); border: 1px solid var(--border-strong);
+    border-radius: var(--radius); font-size: 0.9375rem; width: 100%;
+  }
+  textarea { resize: vertical; }
+  input[aria-invalid='true'], select[aria-invalid='true'] { border-color: #dc2626; }
+  .err { font-size: 0.75rem; color: #dc2626; }
+
+  .checks { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.5rem; }
+  .check { display: flex; align-items: center; gap: 0.5rem; font-size: 0.875rem; cursor: pointer; }
+  .check input { width: auto; }
+
+  .btn--submit { width: 100%; justify-content: center; padding-block: 0.875rem; }
+  .fineprint { font-size: 0.75rem; color: var(--text-faint); margin-top: 0.875rem; text-align: center; }
+
+  .form-success {
+    padding: 2rem; text-align: center;
+    background: color-mix(in srgb, var(--accent) 8%, transparent);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    border-radius: var(--radius-lg);
+  }
+
+  @media (max-width: 900px) {
+    .quote-grid { grid-template-columns: 1fr; }
+    .quote-intro { position: static; }
+  }
+  @media (max-width: 560px) {
+    .row, .row--3 { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script>
+  // Prefill from query string: /quote/?building=garages&model=S&kit=slug
+  const params = new URLSearchParams(location.search);
+  const setIf = (id, val) => {
+    const el = document.getElementById(id);
+    if (el && val) el.value = val;
+  };
+  setIf('building', params.get('building'));
+  setIf('model', params.get('model'));
+
+  const kit = params.get('kit');
+  const opt = params.get('option');
+  const notes = document.getElementById('notes');
+  if (notes && (kit || opt)) {
+    const bits = [];
+    if (kit) bits.push(`Interested in clearance kit: ${kit}`);
+    if (opt) bits.push(`Please include pricing for: ${opt.replace(/-/g, ' ')}`);
+    notes.value = bits.join('\n');
+  }
+
+  // Validation
+  const form = document.getElementById('quote-form');
+  form?.addEventListener('submit', (e) => {
+    let ok = true;
+    form.querySelectorAll('.err').forEach((n) => n.remove());
+
+    form.querySelectorAll('[required]').forEach((el) => {
+      const valid = el.value.trim() !== '' && (el.type !== 'email' || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value));
+      el.setAttribute('aria-invalid', String(!valid));
+      if (!valid) {
+        ok = false;
+        const msg = document.createElement('p');
+        msg.className = 'err';
+        msg.textContent = el.type === 'email' && el.value.trim() !== '' ? 'Enter a valid email address.' : 'This field is required.';
+        el.parentElement.appendChild(msg);
+      }
+    });
+
+    // honeypot tripped — silently drop
+    if (form.company_website.value !== '') { e.preventDefault(); return; }
+
+    if (!ok) {
+      e.preventDefault();
+      form.querySelector('[aria-invalid="true"]')?.focus();
+      return;
+    }
+
+    // No endpoint configured yet — do not pretend the lead was sent.
+    if (!form.getAttribute('action')) {
+      e.preventDefault();
+      form.insertAdjacentHTML(
+        'beforebegin',
+        '<div class="form-success"><strong>Form endpoint not configured.</strong><p style="margin-top:.5rem;font-size:.875rem;color:var(--text-muted)">This submission was not sent. Set PUBLIC_FORM_ENDPOINT to go live.</p></div>'
+      );
+      form.style.display = 'none';
+    }
+  });
+</script>

@@ -1,0 +1,75 @@
+---
+import Article from '../../layouts/Article.astro';
+
+const toc = [
+  { id: 'direct', label: 'Factory-direct, locally shipped' },
+  { id: 'spec', label: 'Specification support' },
+  { id: 'engineering', label: 'Engineering that matches your address' },
+  { id: 'after', label: 'After the sale' },
+];
+---
+
+<Article
+  title="Our Advantage"
+  eyebrow="About"
+  description="What buying a steel building through Marshall Sheds gets you — factory-direct pricing, specification support, and engineering stamped for your jurisdiction."
+  lede="Plenty of places will sell you steel. The difference is in what happens before the order goes in, which is where most of the money is won or lost."
+  crumbs={[{ label: 'About', href: '/about/' }]}
+  toc={toc}
+>
+  <h2 id="direct">Factory-direct, locally shipped</h2>
+  <p>
+    Kits come direct from the manufacturer, and our manufacturing partner operates a network
+    of production facilities across the United States and Canada. Yours ships from the plant
+    nearest your jobsite rather than from a single central warehouse.
+  </p>
+  <p>
+    That is not a marketing detail — freight on a truckload of steel is a real number, and
+    cutting the distance it travels is one of the few genuine cost reductions available in
+    this business. It also shortens lead time.
+  </p>
+
+  <h2 id="spec">Specification support</h2>
+  <p>
+    The most common way to overpay for a steel building is to order the wrong one. Not a
+    defective one — a perfectly good building that does not suit the job, because a dimension
+    was picked before anyone worked out what had to fit inside it.
+  </p>
+  <p>We ask the questions that prevent that:</p>
+  <ul>
+    <li>What goes in the building, including the thing that only visits twice a year?</li>
+    <li>How does it get in and out — and what is the largest opening that has to accommodate?</li>
+    <li>What lives against the walls? This alone often decides arch versus straight wall.</li>
+    <li>Will it be heated, occupied, or finished later?</li>
+    <li>Is expansion plausible in five years?</li>
+  </ul>
+  <p>
+    None of that is complicated. It just has to happen before the steel is cut rather than
+    after it arrives.
+  </p>
+
+  <h2 id="engineering">Engineering that matches your address</h2>
+  <p>
+    Every building is engineered to the wind, snow and seismic values published for your
+    specific site, and supplied with drawings stamped by an engineer licensed in your
+    jurisdiction. That is what your building department needs to issue a permit, and what your
+    insurer and any future buyer will want to see.
+  </p>
+  <p>
+    We ask for the exact site address for that reason. Design values change over surprisingly
+    short distances, particularly with elevation, and a quote based on the nearest town can be
+    wrong in either direction.
+  </p>
+
+  <h2 id="after">After the sale</h2>
+  <p>
+    Questions during assembly are normal. A step in the instructions that reads ambiguously,
+    a bundle that does not look like the packing list, a fastener that seems wrong for the
+    location — these come up, and they are much easier to resolve on the phone than by
+    guessing on a ladder.
+  </p>
+  <p>
+    We stay reachable through delivery and assembly. A business that runs on referrals cannot
+    afford to do otherwise.
+  </p>
+</Article>

@@ -1,0 +1,79 @@
+---
+import Article from '../../layouts/Article.astro';
+
+const toc = [
+  { id: 'what', label: 'What it is' },
+  { id: 'why', label: 'Why it outlasts galvanizing' },
+  { id: 'life', label: 'What shortens its life' },
+  { id: 'care', label: 'Keeping the coating intact' },
+];
+---
+
+<Article
+  title="Galvalume Steel Explained"
+  eyebrow="Guide"
+  description="What Galvalume coating is, how aluminum-zinc protects steel panels, and what actually shortens coating life on a metal building."
+  lede="The steel in your building is not what fails. The coating on it is — so it is worth understanding what that coating does and what you can do to leave it alone."
+  crumbs={[{ label: 'Resources', href: '/resources/' }]}
+  toc={toc}
+>
+  <h2 id="what">What it is</h2>
+  <p>
+    Galvalume is sheet steel with a metallic coating of roughly aluminum and zinc, applied at
+    the mill. Both metals are doing a job, and they are different jobs — which is the whole
+    point of the alloy.
+  </p>
+  <p>
+    The <strong>aluminum</strong> forms a stable, tightly-adhered oxide layer that is
+    essentially inert. It is an excellent long-term barrier, but a barrier only protects what
+    it covers.
+  </p>
+  <p>
+    The <strong>zinc</strong> handles the gaps. Zinc is anodic to steel, meaning that at a
+    scratch or a cut edge it corrodes preferentially and protects the exposed steel
+    sacrificially. That is why a scratched Galvalume panel does not immediately start rusting
+    from the scratch outward.
+  </p>
+
+  <h2 id="why">Why it outlasts plain galvanizing</h2>
+  <p>
+    Traditional galvanizing is zinc alone. Zinc protects steel well, but it consumes itself
+    doing so — it is a sacrificial coating throughout, not just at the edges. In most
+    atmospheric conditions it wears away faster than an aluminum-zinc coating of comparable
+    thickness.
+  </p>
+  <p>
+    Galvalume gets the durability of the aluminum barrier across the whole surface plus zinc's
+    edge protection where it is actually needed. In typical service the result substantially
+    outlasts plain galvanized steel, which is why it became the standard for building panels.
+  </p>
+
+  <h2 id="life">What shortens its life</h2>
+  <p>
+    Coatings fail for boring, preventable reasons. Almost all of them are about water or
+    contact.
+  </p>
+  <ul>
+    <li><strong>Standing water.</strong> Anywhere water sits rather than sheds — a blocked gutter, a flat detail, debris in a valley — is where the coating goes first.</li>
+    <li><strong>Trapped debris.</strong> Leaves and dirt hold moisture against the panel indefinitely. A clean roof dries; a dirty one does not.</li>
+    <li><strong>Dissimilar metals.</strong> Copper and bare steel in contact with Galvalume, especially with water present, drives galvanic corrosion. Copper runoff from a pipe or vent onto a panel is a classic way to eat a hole in a roof.</li>
+    <li><strong>Deep scratches.</strong> Zinc protects small breaks. A long gouge through to bare steel is more than the sacrificial mechanism can cover — touch those up.</li>
+    <li><strong>Treated lumber contact.</strong> Some preservative treatments are corrosive to metallic coatings. Isolate panels from treated wood.</li>
+  </ul>
+
+  <h2 id="care">Keeping the coating intact</h2>
+  <p>
+    Maintenance is genuinely light, but it is not zero. Once or twice a year:
+  </p>
+  <ul>
+    <li>Clear debris off the roof and out of the gutters.</li>
+    <li>Check that fasteners are still tight and their washers have not degraded.</li>
+    <li>Look for scratches through to bare steel and touch them up with a compatible coating.</li>
+    <li>Confirm nothing is draining onto the panels that should not be — especially copper.</li>
+  </ul>
+  <p>
+    Do that and the coating will comfortably outlive the reason you built the building. Skip
+    it for a decade in a wet climate with a debris-filled gutter and you will find the one
+    spot where water sat.
+  </p>
+</Article>

@@ -1,0 +1,153 @@
+---
+import Base from '../../layouts/Base.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import inventory from '../../data/inventory.json';
+import models from '../../data/models.json';
+
+const items = inventory as any[];
+const regions = [...new Set(items.flatMap((i) => i.regions))].sort();
+const usedModels = [...new Set(items.map((i) => i.model).filter(Boolean))].sort();
+const regionLabel: Record<string, string> = { usa: 'USA', canada: 'Canada', quebec: 'Quebec' };
+const modelName = (c: string) => (models as any[]).find((m) => m.code === c)?.name ?? c;
+---
+
+<Base
+  title="Clearance Inventory"
+  description={`${items.length} steel building kits ready to ship — overstock and cancelled-order inventory at clearance pricing. Filter by region, model and size.`}
+  crumbs={[]}
+  current="Inventory"
+>
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Ready to ship</p>
+      <h1 class="page-title">Clearance Inventory</h1>
+      <p class="lede">
+        These are overstock and cancelled-order kits — structurally identical to a custom
+        build, discounted because the steel already exists. When one sells it is gone, so
+        sizes here move faster than the custom lineup.
+      </p>
+
+      <!-- filters -->
+      <div class="filters" role="group" aria-label="Filter inventory">
+        <div class="filter">
+          <label for="f-region">Region</label>
+          <select id="f-region" data-filter="region">
+            <option value="">All regions</option>
+            {regions.map((r) => <option value={r}>{regionLabel[r] ?? r}</option>)}
+          </select>
+        </div>
+        <div class="filter">
+          <label for="f-model">Model</label>
+          <select id="f-model" data-filter="model">
+            <option value="">All models</option>
+            {usedModels.map((m) => <option value={m}>{m} — {modelName(m)}</option>)}
+          </select>
+        </div>
+        <div class="filter">
+          <label for="f-size">Footprint</label>
+          <select id="f-size" data-filter="size">
+            <option value="">Any size</option>
+            <option value="s">Under 1,000 sq ft</option>
+            <option value="m">1,000 – 2,500 sq ft</option>
+            <option value="l">2,500 – 6,000 sq ft</option>
+            <option value="xl">6,000+ sq ft</option>
+          </select>
+        </div>
+        <p class="count" aria-live="polite"><strong id="count">{items.length}</strong> buildings</p>
+      </div>
+
+      <div class="grid grid--3" id="inv-grid">
+        {items.map((i) => (
+          <a
+            class="card inv"
+            href={`/inventory/${i.slug}/`}
+            data-region={i.regions.join(' ')}
+            data-model={i.model ?? ''}
+            data-sqft={i.sqft ?? 0}
+          >
+            <Placeholder label={i.title} />
+            <div class="card__body">
+              <div class="inv__tags">
+                {i.featured && <span class="tag tag--accent">Top pick</span>}
+                {i.model && <span class="tag">Model {i.model}</span>}
+                {i.tags.includes('container') && <span class="tag">Container</span>}
+              </div>
+              <h2 class="card__title">{i.title}</h2>
+              <span class="card__meta">
+                {i.sqft ? `${i.sqft.toLocaleString()} sq ft` : 'Dimensions on request'}
+                {i.height ? ` · ${i.height}' sidewall` : ''}
+              </span>
+              <span class="inv__price">Request pricing</span>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <p class="empty" id="empty" hidden>No buildings match those filters. Try widening the search.</p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page-title { font-size: clamp(2rem, 5vw, 3rem); margin-block: 0.5rem 1rem; }
+  .filters {
+    display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end;
+    margin: 2.5rem 0 2rem; padding: 1.25rem;
+    background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-lg);
+  }
+  .filter { display: flex; flex-direction: column; gap: 0.375rem; }
+  .filter label { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); }
+  .filter select {
+    padding: 0.5rem 0.75rem; min-width: 190px;
+    background: var(--bg); border: 1px solid var(--border-strong);
+    border-radius: var(--radius); font-size: 0.875rem;
+  }
+  .count { margin-left: auto; font-size: 0.875rem; color: var(--text-muted); }
+  .inv__tags { display: flex; flex-wrap: wrap; gap: 0.375rem; }
+  .inv__price {
+    margin-top: auto; padding-top: 0.75rem;
+    font-size: 0.875rem; font-weight: 600; color: var(--accent);
+  }
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--text-muted); }
+  @media (max-width: 640px) {
+    .filter, .filter select { width: 100%; min-width: 0; }
+    .count { margin-left: 0; }
+  }
+</style>
+
+<script>
+  const grid = document.getElementById('inv-grid');
+  const countEl = document.getElementById('count');
+  const emptyEl = document.getElementById('empty');
+  const selects = document.querySelectorAll('select[data-filter]');
+
+  const buckets = {
+    s: (n) => n > 0 && n < 1000,
+    m: (n) => n >= 1000 && n < 2500,
+    l: (n) => n >= 2500 && n < 6000,
+    xl: (n) => n >= 6000,
+  };
+
+  function apply() {
+    const region = document.querySelector('[data-filter="region"]').value;
+    const model = document.querySelector('[data-filter="model"]').value;
+    const size = document.querySelector('[data-filter="size"]').value;
+    let shown = 0;
+
+    grid.querySelectorAll('.inv').forEach((card) => {
+      const regions = (card.dataset.region || '').split(' ');
+      const sqft = Number(card.dataset.sqft || 0);
+      const ok =
+        (!region || regions.includes(region)) &&
+        (!model || card.dataset.model === model) &&
+        (!size || buckets[size](sqft));
+      card.hidden = !ok;
+      if (ok) shown++;
+    });
+
+    countEl.textContent = String(shown);
+    emptyEl.hidden = shown > 0;
+  }
+
+  selects.forEach((s) => s.addEventListener('change', apply));
+</script>

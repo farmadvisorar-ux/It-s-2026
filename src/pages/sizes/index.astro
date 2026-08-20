@@ -1,0 +1,120 @@
+---
+import Base from '../../layouts/Base.astro';
+
+const sizes = [
+  { w: 20, l: 20, use: 'Single vehicle, compact storage', fits: 'One car with a narrow walk-around' },
+  { w: 20, l: 24, use: 'Single garage with bench wall', fits: 'One vehicle plus a real workbench behind it' },
+  { w: 20, l: 30, use: 'Garage / small workshop', fits: 'One vehicle plus a dedicated work area' },
+  { w: 24, l: 30, use: 'Workshop', fits: 'Two vehicles tight, or one plus full shop' },
+  { w: 24, l: 36, use: 'Workshop with storage', fits: 'Shop floor plus dedicated storage end' },
+  { w: 30, l: 30, use: 'Two-car garage', fits: 'Two vehicles with comfortable walk-around' },
+  { w: 30, l: 40, use: 'Garage / shop combo', fits: 'Two vehicles plus a partitioned shop bay' },
+  { w: 30, l: 50, use: 'Large workshop', fits: 'Multi-station shop or 3-vehicle storage' },
+  { w: 30, l: 60, use: 'Shop or small barndominium', fits: 'Living space one end, shop the other' },
+  { w: 40, l: 40, use: 'Multi-bay garage', fits: 'Three to four vehicles or equipment' },
+  { w: 40, l: 60, use: 'Agricultural / commercial', fits: 'Tractors and implements, or light commercial' },
+  { w: 40, l: 80, use: 'Equipment shed', fits: 'Line of implements with drive-through access' },
+  { w: 50, l: 80, use: 'Commercial / warehouse', fits: 'Racking with forklift aisles' },
+  { w: 50, l: 100, use: 'Warehouse / arena', fits: 'Distribution or indoor recreation' },
+  { w: 60, l: 100, use: 'Large commercial', fits: 'Manufacturing or bulk storage' },
+  { w: 60, l: 120, use: 'Riding arena', fits: 'Standard arena footprint with perimeter' },
+  { w: 80, l: 150, use: 'Industrial', fits: 'Production floor with staging' },
+  { w: 100, l: 200, use: 'Hangar / large industrial', fits: 'Aircraft, or full production facility' },
+];
+
+const band = (sqft: number) =>
+  sqft < 1000 ? 'Compact' : sqft < 2500 ? 'Mid-size' : sqft < 6000 ? 'Large' : 'Industrial';
+---
+
+<Base
+  title="Popular Steel Building Sizes"
+  description="Common steel building sizes with square footage and what fits in each — from 20x20 garages to 100x200 industrial spans."
+  crumbs={[]}
+  current="Sizes"
+>
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Reference</p>
+      <h1 class="page-title">Popular Sizes</h1>
+      <p class="lede">
+        These are the footprints people order most often. Treat them as starting points —
+        buildings are dimensioned to the job, and the right size is usually determined by
+        what goes inside and how it gets in and out.
+      </p>
+
+      <div class="table-scroll size-table">
+        <table class="spec">
+          <thead>
+            <tr>
+              <th scope="col">Size</th>
+              <th scope="col">Square feet</th>
+              <th scope="col">Class</th>
+              <th scope="col">Typical use</th>
+              <th scope="col">What fits</th>
+            </tr>
+          </thead>
+          <tbody>
+            {sizes.map((s) => (
+              <tr>
+                <td class="mono strong">{s.w}' &times; {s.l}'</td>
+                <td class="mono">{(s.w * s.l).toLocaleString()}</td>
+                <td><span class="tag">{band(s.w * s.l)}</span></td>
+                <td>{s.use}</td>
+                <td class="muted">{s.fits}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="note-grid">
+        <div class="note">
+          <h2>Width is the expensive dimension</h2>
+          <p>
+            Adding length is comparatively cheap — you are repeating a bay that is already
+            engineered. Adding width means a longer span and more steel throughout. If you are
+            weighing 30' x 60' against 40' x 45', the first is usually cheaper for similar area.
+          </p>
+        </div>
+        <div class="note">
+          <h2>Height is the one people regret</h2>
+          <p>
+            Sidewall height is the cheapest capacity you will ever buy, and the most expensive
+            to add afterward — which is to say, impossible. Two extra feet can mean another
+            rack level across the whole floor, or clearance for a lift.
+          </p>
+        </div>
+        <div class="note">
+          <h2>Plan for the door, not the vehicle</h2>
+          <p>
+            Roof racks, raised loader arms and boats on trailers all need more clearance than
+            the vehicle alone suggests. Size the opening to the largest thing that will ever
+            pass through it, then add margin.
+          </p>
+        </div>
+      </div>
+
+      <div class="cta-row">
+        <a class="btn btn--primary" href="/quote/">Get a quote for your size</a>
+        <a class="btn btn--ghost" href="/inventory/">See what is in stock</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page-title { font-size: clamp(2rem, 5vw, 3rem); margin-block: 0.5rem 1rem; }
+  .size-table { margin-top: 2.5rem; border: 1px solid var(--border); border-radius: var(--radius-lg); background: var(--bg-raised); }
+  .size-table thead th {
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--text-faint); background: var(--bg-sunken); white-space: nowrap;
+  }
+  .mono { font-family: var(--font-mono); font-size: 0.875rem; white-space: nowrap; }
+  .strong { font-weight: 700; }
+  .muted { color: var(--text-muted); font-size: 0.875rem; }
+  .note-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-top: 3rem; }
+  .note { border-top: 2px solid var(--accent); padding-top: 1rem; }
+  .note h2 { font-size: 1.0625rem; margin-bottom: 0.5rem; }
+  .note p { font-size: 0.9375rem; color: var(--text-muted); }
+  .cta-row { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 3rem; }
+</style>

@@ -1,0 +1,85 @@
+---
+import Article from '../../layouts/Article.astro';
+
+const toc = [
+  { id: 'whats-in', label: "What is in a quote" },
+  { id: 'variables', label: 'What moves the price' },
+  { id: 'not-included', label: 'What is not included' },
+  { id: 'save', label: 'Where you can genuinely save' },
+];
+---
+
+<Article
+  title="How We Price"
+  eyebrow="About"
+  description="What goes into a steel building quote, what is excluded, and why the same size building costs different amounts in different locations."
+  lede="We itemize quotes rather than giving you one number. You should be able to see what the building costs, what the options cost, and what the freight costs — separately."
+  crumbs={[{ label: 'About', href: '/about/' }]}
+  toc={toc}
+>
+  <h2 id="whats-in">What is in a quote</h2>
+  <ul>
+    <li><strong>The building kit</strong> — structural steel, roof and wall panels, fasteners and closures.</li>
+    <li><strong>Engineering and stamped drawings</strong> for your jurisdiction.</li>
+    <li><strong>Options you specified</strong> — doors, insulation, vents, windows, trim — priced individually.</li>
+    <li><strong>Freight</strong> to your delivery address, quoted as its own line.</li>
+  </ul>
+
+  <h2 id="variables">What moves the price</h2>
+  <h3>Location</h3>
+  <p>
+    The largest variable, and the one people find least intuitive. A building in a heavy-snow
+    county needs more steel than the identical footprint in a mild climate, because it is
+    engineered to a higher load. Coastal wind speeds do the same thing. This is why we cannot
+    quote accurately from a size alone.
+  </p>
+  <h3>Width before length</h3>
+  <p>
+    Width is the expensive dimension. Adding length repeats a bay that is already engineered;
+    adding width increases the span and puts more steel into every frame. Given a choice
+    between 30' x 60' and 40' x 45' for similar area, the first is usually cheaper.
+  </p>
+  <h3>Openings</h3>
+  <p>
+    Every door and window is a hole in a structure, which means framing and reinforcement
+    around it. A large overhead door costs more than its own price because of what has to
+    happen structurally above it.
+  </p>
+  <h3>Steel pricing</h3>
+  <p>
+    Commodity steel moves, sometimes sharply. This is why quotes carry a validity period and
+    why a deposit locks your price — it is not a pressure tactic, it is the actual mechanism.
+  </p>
+
+  <h2 id="not-included">What is not included</h2>
+  <p>
+    Being direct about this up front avoids unpleasant arithmetic later. A kit price does not
+    include:
+  </p>
+  <ul>
+    <li>Site preparation, grading or drainage</li>
+    <li>Foundation design, concrete, or the pour</li>
+    <li>Permit fees</li>
+    <li>Assembly labor, if you are not doing it yourself</li>
+    <li>Equipment to offload the truck</li>
+    <li>Electrical, plumbing, HVAC</li>
+    <li>Interior framing and finishes</li>
+  </ul>
+  <p>
+    For most projects the foundation is the largest of these by some distance. Get a local
+    concrete quote early — it is a real part of your budget, not a rounding error.
+  </p>
+
+  <h2 id="save">Where you can genuinely save</h2>
+  <ul>
+    <li><strong>Buy clearance inventory.</strong> Overstock and cancelled-order kits are the same steel and the same engineering, discounted because they already exist. The trade-off is taking a size that exists rather than one you specified.</li>
+    <li><strong>Assemble it yourself,</strong> if the building is a size that makes that realistic.</li>
+    <li><strong>Do not over-build the width.</strong> Length is cheaper per square foot.</li>
+    <li><strong>Skip the walls you do not need.</strong> If you only need weather off something, a carport or container cover costs a fraction of an enclosed building.</li>
+    <li><strong>Order in one pass.</strong> Adding openings later means field-modifying a stamped structure, which costs far more than specifying them at order.</li>
+  </ul>
+  <p>
+    What we would not suggest saving on is sidewall height. It is the cheapest capacity you
+    will ever buy and the only dimension you genuinely cannot add later.
+  </p>
+</Article>

@@ -1,0 +1,113 @@
+---
+import Base from '../../layouts/Base.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import site from '../../data/site.json';
+
+const links = [
+  { href: '/about/our-advantage/', title: 'Our Advantage', blurb: 'What buying through a dealer gets you that a web form does not.' },
+  { href: '/about/warranty/', title: 'Warranty', blurb: 'What is covered, for how long, and what affects coverage.' },
+  { href: '/about/pricing/', title: 'How We Price', blurb: 'What goes into a quote and why the same building costs different amounts in different places.' },
+  { href: '/contact/', title: 'Contact Us', blurb: 'Talk to someone about a project.' },
+];
+---
+
+<Base
+  title="About Marshall Sheds"
+  description="Marshall Sheds is an authorized independent dealer of pre-engineered steel buildings, supplying garages, workshops, barndominiums and commercial structures."
+  crumbs={[]}
+  current="About"
+>
+  <section class="section">
+    <div class="wrap about-grid">
+      <div>
+        <p class="eyebrow">About</p>
+        <h1 class="page-title">Marshall Sheds</h1>
+        <p class="lede">
+          We supply pre-engineered steel buildings — garages, workshops, barndominiums,
+          quonset huts, container covers and commercial structures — as bolt-together kits
+          shipped direct to your site.
+        </p>
+
+        <div class="prose">
+          <h2>What we actually do</h2>
+          <p>
+            We are an authorized independent dealer, not the manufacturer. The buildings are
+            produced by our manufacturing partner, whose network of plants across the United
+            States and Canada means your kit ships from the facility nearest your jobsite
+            rather than across the continent. That is most of why factory-direct pricing works.
+          </p>
+          <p>
+            Our job is the part between you and that factory: working out what you actually
+            need built, specifying it correctly the first time, getting the engineering
+            stamped for your jurisdiction, and staying reachable through delivery.
+          </p>
+
+          <h2>Why that matters</h2>
+          <p>
+            Most of the expensive mistakes in a steel building project happen before anything
+            ships. A door ordered two feet too narrow, a sidewall a foot too short, an anchor
+            plan that did not reach the concrete contractor, a permit conversation nobody had
+            with the building department. None of those are manufacturing problems and all of
+            them are avoidable.
+          </p>
+          <p>
+            We would rather spend an hour on the specification than have you discover the gap
+            after the truck leaves.
+          </p>
+
+          <h2>How we work</h2>
+          <ul>
+            <li><strong>We quote in writing.</strong> Building, options and freight itemized separately, so you can see what each part costs.</li>
+            <li><strong>We ask for your exact address.</strong> Not to market to you — because wind, snow and seismic values are set geographically and they drive the engineering.</li>
+            <li><strong>We tell you when a smaller building will do.</strong> Selling you something you did not need is a bad trade for a business that runs on referrals.</li>
+            <li><strong>We stay reachable after the sale.</strong> Questions during assembly are normal and expected.</li>
+          </ul>
+        </div>
+      </div>
+
+      <aside class="side">
+        <Placeholder label="Marshall Sheds" variant="square" />
+        <div class="panel">
+          <h2 class="panel__head">Dealer notice</h2>
+          <p class="panel__note">{site.dealerNotice}</p>
+        </div>
+        <div class="panel">
+          <h2 class="panel__head">More</h2>
+          <ul class="plain">
+            {links.map((l) => <li><a href={l.href}>{l.title}</a></li>)}
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="section section--sunken">
+    <div class="wrap">
+      <div class="grid grid--4">
+        {links.map((l) => (
+          <a class="card" href={l.href}>
+            <div class="card__body">
+              <h2 class="card__title">{l.title}</h2>
+              <p class="card__text">{l.blurb}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .about-grid { display: grid; grid-template-columns: minmax(0,1fr) 300px; gap: clamp(2rem,5vw,4rem); align-items: start; }
+  .page-title { font-size: clamp(2rem, 5vw, 3rem); margin-block: 0.5rem 1rem; }
+  .side { display: grid; gap: 1.25rem; position: sticky; top: 88px; }
+  .side :global(.ph) { border-radius: var(--radius-lg); border: 1px solid var(--border); }
+  .panel { background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+  .panel__head { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 0.875rem; }
+  .panel__note { font-size: 0.8125rem; color: var(--text-muted); line-height: 1.6; }
+  .plain { list-style: none; padding: 0; }
+  .plain li { margin-bottom: 0.5rem; font-size: 0.875rem; }
+  .plain a { color: var(--text-muted); text-decoration: none; }
+  .plain a:hover { color: var(--accent); }
+  @media (max-width: 900px) { .about-grid { grid-template-columns: 1fr; } .side { position: static; } }
+</style>

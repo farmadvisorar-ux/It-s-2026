@@ -1,0 +1,97 @@
+---
+import Article from '../../layouts/Article.astro';
+
+const toc = [
+  { id: 'address', label: 'Why the address matters' },
+  { id: 'loads', label: 'The three load values' },
+  { id: 'stamped', label: 'Stamped drawings' },
+  { id: 'permit', label: 'The permit process' },
+  { id: 'states', label: 'State-by-state notes' },
+];
+
+const regions = [
+  { name: 'Heavy snow states', list: 'Alaska, Colorado, Idaho, Maine, Michigan, Minnesota, Montana, New Hampshire, New York, North Dakota, Utah, Vermont, Wisconsin, Wyoming', note: 'Ground snow load drives the roof design and can vary dramatically with elevation inside a single county.' },
+  { name: 'High wind & hurricane', list: 'Alabama, Florida, Georgia, Louisiana, Mississippi, North Carolina, South Carolina, Texas, Virginia', note: 'Coastal counties carry higher design wind speeds and often additional wind-borne debris requirements.' },
+  { name: 'Seismic design', list: 'Alaska, California, Hawaii, Nevada, Oregon, Utah, Washington', note: 'Seismic design category affects anchorage and bracing, and is set by soil class as well as location.' },
+  { name: 'Frost depth critical', list: 'The northern tier and mountain west generally', note: 'Footings must extend below the local frost line, which your building department publishes.' },
+];
+---
+
+<Article
+  title="Building Codes by State"
+  eyebrow="Guide"
+  description="How US and Canadian building codes affect steel building engineering — snow, wind and seismic loads, stamped drawings, and the permit process."
+  lede="There is no such thing as a building that is 'code compliant' in general. Compliance is always to a specific jurisdiction's adopted code, at a specific address."
+  crumbs={[{ label: 'Resources', href: '/resources/' }]}
+  toc={toc}
+>
+  <h2 id="address">Why the address matters</h2>
+  <p>
+    When we ask for your exact site address before quoting, it is not a sales formality. The
+    engineering values that determine how much steel goes into your building are published
+    geographically, and they change over short distances. Two sites twenty miles apart — or
+    two thousand feet apart in elevation — can carry meaningfully different design loads.
+  </p>
+  <p>
+    This is also why a quote based on a nearby town can be wrong in both directions. Under-
+    engineered fails inspection; over-engineered costs you money you did not need to spend.
+  </p>
+
+  <h2 id="loads">The three load values</h2>
+  <p>
+    Nearly all of the site-specific engineering comes down to three numbers:
+  </p>
+  <ul>
+    <li><strong>Ground snow load</strong> — how much accumulated snow the roof must carry, in pounds per square foot. Elevation-sensitive, and the dominant factor in northern and mountain regions.</li>
+    <li><strong>Design wind speed</strong> — the wind the structure must resist, with coastal and open-exposure sites carrying higher values. Governs uplift, which is what matters most for open structures and roofs.</li>
+    <li><strong>Seismic design category</strong> — derived from ground motion values and your soil class. Affects anchorage and bracing rather than the frame itself in most cases.</li>
+  </ul>
+  <p>
+    On top of these, your jurisdiction may impose local amendments — additional requirements
+    layered on the base code. These are genuinely local and your building department is the
+    only reliable source.
+  </p>
+
+  <h2 id="stamped">Stamped drawings</h2>
+  <p>
+    A stamped drawing set is signed and sealed by a professional engineer licensed in your
+    state or province, certifying the design meets code for your location. Most building
+    departments will not issue a permit without them, and they matter beyond the permit:
+    lenders, insurers and future buyers all treat a stamped structure differently from an
+    unstamped one.
+  </p>
+  <p>
+    Keep the set with your property records. You will want it if you ever add a mezzanine,
+    hang a crane, sell the property, or make an insurance claim.
+  </p>
+
+  <h2 id="permit">The permit process</h2>
+  <ol>
+    <li><strong>Talk to your building department first.</strong> Before ordering. Ask about setbacks, height limits, allowable use and any appearance requirements — some jurisdictions restrict exposed metal siding in certain zones.</li>
+    <li><strong>Confirm the design values</strong> they require, and any local amendments.</li>
+    <li><strong>Submit the stamped drawings</strong> along with your site plan and foundation details.</li>
+    <li><strong>Schedule inspections</strong> as required — typically footing, foundation, framing and final.</li>
+  </ol>
+  <p>
+    The single most common source of delay is discovering a zoning restriction after the steel
+    is ordered. One conversation early avoids it.
+  </p>
+
+  <h2 id="states">State-by-state notes</h2>
+  <p>
+    Requirements below are broad orientation, not a substitute for your local building
+    department. Codes are adopted at the state and often municipal level, and they are revised
+    on a cycle.
+  </p>
+  {regions.map((r) => (
+    <>
+      <h3>{r.name}</h3>
+      <p><strong>{r.list}.</strong> {r.note}</p>
+    </>
+  ))}
+  <p>
+    <strong>Canada</strong> works the same way under the National Building Code as adopted and
+    amended provincially, with climatic data published by location. Quebec administers its own
+    construction code, and requirements there differ from the rest of the country.
+  </p>
+</Article>

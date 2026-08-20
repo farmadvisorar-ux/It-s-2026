@@ -1,0 +1,49 @@
+---
+import Base from '../../layouts/Base.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import options from '../../data/options.json';
+---
+
+<Base
+  title="Options & Finishes"
+  description="Doors, insulation, foundations, ventilation, skylights, trim, colors and wall accessories for steel arch and straight-wall buildings."
+  crumbs={[]}
+  current="Options & Finishes"
+>
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Specify your build</p>
+      <h1 class="page-title">Options &amp; Finishes</h1>
+      <p class="lede">
+        Almost everything here is cheaper decided now than added later. Openings are framed
+        into the engineering, insulation affects the envelope, and anchors are sized with the
+        foundation — none of which is easy to revisit once the steel is cut.
+      </p>
+
+      {(options as any[]).map((fam) => (
+        <div class="fam">
+          <h2 class="fam__head">{fam.familyName}</h2>
+          <p class="fam__blurb">{fam.familyIntro}</p>
+          <div class="grid grid--3">
+            {fam.items.map((o: any) => (
+              <a class="card" href={`/options-and-finishes/${fam.family}/${o.slug}/`}>
+                <Placeholder label={o.name} />
+                <div class="card__body">
+                  <h3 class="card__title">{o.name}</h3>
+                  <p class="card__text">{o.summary}</p>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page-title { font-size: clamp(2rem, 5vw, 3rem); margin-block: 0.5rem 1rem; }
+  .fam { margin-top: 3.5rem; }
+  .fam__head { font-size: clamp(1.25rem, 2.8vw, 1.75rem); margin-bottom: 0.5rem; }
+  .fam__blurb { color: var(--text-muted); max-width: 66ch; margin-bottom: 1.75rem; }
+</style>

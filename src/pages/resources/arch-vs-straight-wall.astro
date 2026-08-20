@@ -1,0 +1,89 @@
+---
+import Article from '../../layouts/Article.astro';
+
+const toc = [
+  { id: 'how', label: 'How each one works' },
+  { id: 'floor', label: 'The floor space question' },
+  { id: 'cost', label: 'Cost' },
+  { id: 'doors', label: 'Doors and openings' },
+  { id: 'pick', label: 'How to choose' },
+];
+---
+
+<Article
+  title="Arch vs. Straight Wall"
+  eyebrow="Guide"
+  description="The trade-off between arch and straight-wall steel buildings: cost, usable floor space, door placement and how to pick the right one."
+  lede="This is the first real decision in a steel building project, and it constrains most of the ones that follow. Neither is better in the abstract — they fail in different places."
+  crumbs={[{ label: 'Resources', href: '/resources/' }]}
+  toc={toc}
+>
+  <h2 id="how">How each one works</h2>
+  <p>
+    An <strong>arch building</strong> is a continuous curve of corrugated steel bolted rib to
+    rib. The shape is the structure — there is no separate frame holding up a separate skin.
+    That is why it uses less steel per square foot than almost any other way of enclosing
+    space, and why the interior is completely free of columns.
+  </p>
+  <p>
+    A <strong>straight-wall building</strong> separates those jobs. A frame carries the load,
+    panels close it in, and the walls stand vertical. It costs more in material and labor
+    because you are building two systems instead of one, and it buys you something specific
+    in return.
+  </p>
+
+  <h2 id="floor">The floor space question</h2>
+  <p>
+    This is where the decision is actually made. In an arch, the walls curve inward as they
+    approach the floor. The square footage on the drawing is real, but the space near the
+    perimeter has limited headroom. A 30' wide arch does not give you 30' of wall you can
+    stand a cabinet against.
+  </p>
+  <p>
+    For storage of things that are low, or for equipment parked down the centerline, this
+    costs you nothing. For a workshop where you wanted benches, shelving and a lumber rack
+    around the perimeter, it costs you the whole reason you built it.
+  </p>
+  <p>
+    <strong>The practical test:</strong> walk your intended layout and ask what lives against
+    the walls. If the answer is "nothing much," buy the arch and keep the money. If the answer
+    is a bench wall, racking or tall storage, the straight wall pays for itself immediately.
+  </p>
+
+  <h2 id="cost">Cost</h2>
+  <p>
+    Arches are meaningfully cheaper per square foot at comparable spans, and the gap is
+    widest at small and medium sizes. They are also faster to assemble, because there are
+    fewer distinct components and no separate framing stage — which matters if you are
+    raising it yourself.
+  </p>
+  <p>
+    At very large spans the comparison narrows, and above a certain size wide-span structural
+    profiles become the sensible answer regardless, because they handle the loads and the
+    door requirements that big buildings bring.
+  </p>
+
+  <h2 id="doors">Doors and openings</h2>
+  <p>
+    Straight walls take doors and windows in conventional positions, including along the
+    sidewall, because there is a full-height vertical plane to put them in. This matters more
+    than it sounds: multiple overhead doors along one side is straightforward in a
+    straight-wall building and awkward in an arch.
+  </p>
+  <p>
+    In an arch, openings are simplest in the endwalls. A sidewall opening means framing into
+    the curve itself, which is possible but constrains size and placement. If your layout
+    depends on side access, that is a strong signal.
+  </p>
+
+  <h2 id="pick">How to choose</h2>
+  <ul>
+    <li><strong>Choose an arch</strong> when cost per square foot is the priority, the contents are low or centered, and endwall access is fine.</li>
+    <li><strong>Choose a straight wall</strong> when you need usable wall height, sidewall doors, or the building will be finished as occupied space.</li>
+    <li><strong>Consider the hybrid</strong> — straight sidewalls with an arched roof — when you want most of the arch's structural efficiency and still need real wall height. It is the most common recommendation for people torn between the two.</li>
+  </ul>
+  <p>
+    If you are still unsure, describe what goes inside and where it sits. That usually settles
+    it faster than comparing specifications.
+  </p>
+</Article>

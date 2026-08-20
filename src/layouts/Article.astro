@@ -1,0 +1,61 @@
+---
+import Base from './Base.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  eyebrow?: string;
+  lede?: string;
+  crumbs?: { label: string; href: string }[];
+  toc?: { id: string; label: string }[];
+}
+const { title, description, eyebrow, lede, crumbs = [], toc = [] } = Astro.props;
+---
+
+<Base title={title} description={description} crumbs={crumbs} current={title}>
+  <section class="section">
+    <div class="wrap art-grid">
+      <article>
+        {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+        <h1 class="page-title">{title}</h1>
+        {lede && <p class="lede">{lede}</p>}
+        <div class="prose art-body">
+          <slot />
+        </div>
+      </article>
+
+      <aside class="side">
+        {toc.length > 0 && (
+          <div class="panel">
+            <h2 class="panel__head">On this page</h2>
+            <ul class="plain">
+              {toc.map((t) => <li><a href={`#${t.id}`}>{t.label}</a></li>)}
+            </ul>
+          </div>
+        )}
+        <div class="panel panel--accent">
+          <h2 class="panel__head">Need a quote?</h2>
+          <p class="panel__note">Tell us the size, the use and the delivery address. We will come back in writing.</p>
+          <a class="btn btn--primary" href="/quote/" style="width:100%;justify-content:center;margin-top:0.875rem">Request a Quote</a>
+        </div>
+      </aside>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .art-grid { display: grid; grid-template-columns: minmax(0, 1fr) 280px; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+  .page-title { font-size: clamp(1.875rem, 4.5vw, 2.75rem); margin-block: 0.5rem 1rem; }
+  .art-body { margin-top: 1.5rem; }
+  .art-body :global(h2) { scroll-margin-top: 88px; }
+  .side { display: grid; gap: 1.25rem; position: sticky; top: 88px; }
+  .panel { background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+  .panel--accent { border-color: color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 6%, var(--bg-raised)); }
+  .panel__head { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 0.875rem; }
+  .panel__note { font-size: 0.8125rem; color: var(--text-muted); }
+  .plain { list-style: none; padding: 0; }
+  .plain li { margin-bottom: 0.5rem; font-size: 0.875rem; }
+  .plain a { color: var(--text-muted); text-decoration: none; }
+  .plain a:hover { color: var(--accent); }
+  @media (max-width: 900px) { .art-grid { grid-template-columns: 1fr; } .side { position: static; } }
+</style>

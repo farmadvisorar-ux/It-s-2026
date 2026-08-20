@@ -1,0 +1,54 @@
+---
+import Base from '../../layouts/Base.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import types from '../../data/building-types.json';
+
+const groups = [...new Set((types as any[]).map((t) => t.group))];
+---
+
+<Base
+  title="Steel Building Types"
+  description="Every steel building type we supply — garages, workshops, barndominiums, quonset huts, container covers, agricultural, commercial and specialized structures."
+  current="Building Types"
+  crumbs={[]}
+>
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">Catalog</p>
+      <h1 class="page-title">Steel Building Types</h1>
+      <p class="lede">
+        {types.length} building categories across residential, agricultural, commercial and
+        specialized use. Every one of them is a pre-engineered kit, sized and stamped for
+        the address it is going to.
+      </p>
+
+      {groups.map((g) => (
+        <div class="group">
+          <h2 class="group__head">{g}</h2>
+          <div class="grid grid--3">
+            {(types as any[]).filter((t) => t.group === g).map((t) => (
+              <a class="card" href={`/building-types/${t.slug}/`}>
+                <Placeholder label={t.name} />
+                <div class="card__body">
+                  <h3 class="card__title">{t.name}</h3>
+                  <p class="card__text">{t.headline}</p>
+                  <span class="card__meta">{t.commonSizes[0]} – {t.commonSizes[t.commonSizes.length - 1]}</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+</Base>
+
+<style>
+  .page-title { font-size: clamp(2rem, 5vw, 3rem); margin-block: 0.5rem 1rem; }
+  .group { margin-top: 3.5rem; }
+  .group__head {
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--text-faint); padding-bottom: 0.75rem; margin-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+</style>

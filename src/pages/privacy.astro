@@ -1,0 +1,89 @@
+---
+import Article from '../layouts/Article.astro';
+---
+
+<Article
+  title="Privacy Policy"
+  eyebrow="Legal"
+  description="How Marshall Sheds collects, uses and protects personal information submitted through this website."
+  lede="This policy covers information you give us through this website and how we use it."
+  crumbs={[]}
+>
+  <div class="admin-note">
+    <strong>Publish note — remove before launch.</strong> This is a starting template, not
+    legal advice. Have it reviewed against the privacy laws that apply to you before going
+    live — that may include state laws such as the CCPA, Canadian PIPEDA if you sell into
+    Canada, and GDPR if you accept enquiries from the EU. Fill in your business name, contact
+    address and any analytics or advertising tools you actually use.
+  </div>
+
+  <h2>What we collect</h2>
+  <p>We collect information you submit directly through our quote and contact forms:</p>
+  <ul>
+    <li>Name, email address and phone number</li>
+    <li>Delivery ZIP or postal code, and site address where you provide it</li>
+    <li>Details about the building you are enquiring about</li>
+    <li>Anything else you choose to include in a message</li>
+  </ul>
+  <p>
+    Our web host also records standard technical information such as IP address, browser type
+    and pages visited, as part of operating the site.
+  </p>
+
+  <h2>How we use it</h2>
+  <ul>
+    <li>To prepare and send you a quote</li>
+    <li>To follow up about your enquiry</li>
+    <li>To arrange engineering, production and delivery if you place an order</li>
+    <li>To meet legal and record-keeping obligations</li>
+  </ul>
+  <p>
+    We do not sell your personal information. We share it only with the parties needed to
+    fulfil your enquiry or order — for example our manufacturing partner, the engineer
+    preparing your stamped drawings, and the freight carrier delivering your kit.
+  </p>
+
+  <h2>Marketing</h2>
+  <p>
+    If we send you occasional updates, every message includes a way to unsubscribe, and we
+    will stop when you ask. You can also ask us to stop at any time using the contact details
+    on this site.
+  </p>
+
+  <h2>Retention</h2>
+  <p>
+    We keep enquiry records while your enquiry is active and for a reasonable period
+    afterwards. Order records are retained longer, because warranty and engineering
+    documentation needs to remain available for the life of the building.
+  </p>
+
+  <h2>Your choices</h2>
+  <p>
+    Depending on where you live, you may have the right to request a copy of the information
+    we hold about you, ask us to correct it, or ask us to delete it. Contact us using the
+    details on this site and we will respond.
+  </p>
+
+  <h2>Cookies</h2>
+  <p>
+    This site uses cookies only where needed to operate properly. If we add analytics or
+    advertising tools later, this section will be updated to say what they are and what they
+    collect.
+  </p>
+
+  <h2>Contact</h2>
+  <p>
+    Questions about this policy can be sent to us through the
+    <a href="/contact/">contact page</a>.
+  </p>
+</Article>
+
+<style>
+  .admin-note {
+    padding: 1rem 1.125rem; margin-bottom: 2rem;
+    background: color-mix(in srgb, #dc2626 8%, transparent);
+    border: 1px dashed color-mix(in srgb, #dc2626 45%, transparent);
+    border-radius: var(--radius); font-size: 0.8125rem; color: var(--text-muted);
+  }
+  .admin-note strong { display: block; color: #dc2626; margin-bottom: 0.25rem; }
+</style>

@@ -1,0 +1,252 @@
+---
+import Base from '../layouts/Base.astro';
+import Placeholder from '../components/Placeholder.astro';
+import site from '../data/site.json';
+import types from '../data/building-types.json';
+import models from '../data/models.json';
+import inventory from '../data/inventory.json';
+
+const featured = ['garages', 'workshops', 'barndominium', 'quonset-buildings', 'container-covers', 'agricultural-and-farm', 'commercial', 'storage'];
+const featuredTypes = featured.map((s) => types.find((t: any) => t.slug === s)).filter(Boolean) as any[];
+const deals = (inventory as any[]).filter((i) => i.featured).slice(0, 3);
+const dealCount = (inventory as any[]).length;
+
+const advantages = [
+  {
+    title: 'Factory-direct pricing',
+    body: 'Kits ship from the plant nearest your jobsite. No middle distributor markup between the mill and your slab.',
+  },
+  {
+    title: 'Engineer-stamped drawings',
+    body: 'Every building is engineered to the wind, snow and seismic values at your specific address, and stamped for your jurisdiction.',
+  },
+  {
+    title: 'Bolt-together assembly',
+    body: 'Pre-punched panels and numbered parts. No welding, no specialized tooling — many owners raise their own building.',
+  },
+  {
+    title: 'Non-combustible steel',
+    body: '100% steel construction. Nothing to rot, nothing termites will eat, and nothing that feeds a fire.',
+  },
+];
+
+const steps = [
+  { n: '01', t: 'Tell us the job', b: 'Size, use, and where it is going. Location drives the engineering more than anything else.' },
+  { n: '02', t: 'We quote the kit', b: 'A written quote covering the building, the options you picked, and freight to your site.' },
+  { n: '03', t: 'Drawings and permit', b: 'Stamped drawings for your jurisdiction so your building department has what it needs.' },
+  { n: '04', t: 'Delivery and build', b: 'Your kit ships to site. Assemble it yourself or bring in a local crew.' },
+];
+---
+
+<Base title={site.name}>
+  <!-- ================= HERO ================= -->
+  <section class="hero">
+    <div class="wrap hero__inner">
+      <div class="hero__copy">
+        <p class="eyebrow">Authorized Steel Building Dealer</p>
+        <h1 class="hero__title">Steel buildings that go up fast and stay up for decades</h1>
+        <p class="lede">
+          Garages, workshops, barndominiums, quonset huts and commercial structures —
+          pre-engineered, factory-direct, and shipped as a bolt-together kit with
+          stamped drawings for your local code.
+        </p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="/quote/">Get a Free Quote</a>
+          <a class="btn btn--ghost" href="/inventory/">Browse {dealCount} Clearance Buildings</a>
+        </div>
+        <dl class="hero__stats">
+          <div><dt>Clear spans to</dt><dd>100'+</dd></div>
+          <div><dt>Building types</dt><dd>{types.length}</dd></div>
+          <div><dt>Assembly</dt><dd>No welding</dd></div>
+        </dl>
+      </div>
+      <div class="hero__media">
+        <Placeholder label="Hero — steel building exterior" variant="wide" />
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= BUILDING TYPES ================= -->
+  <section class="section">
+    <div class="wrap">
+      <header class="sec-head">
+        <div>
+          <p class="eyebrow">What we build</p>
+          <h2>Pick the building that matches the job</h2>
+        </div>
+        <a class="btn btn--ghost" href="/building-types/">All {types.length} types</a>
+      </header>
+
+      <div class="grid grid--4">
+        {featuredTypes.map((t) => (
+          <a class="card" href={`/building-types/${t.slug}/`}>
+            <Placeholder label={t.name} />
+            <div class="card__body">
+              <span class="card__meta">{t.group}</span>
+              <h3 class="card__title">{t.name}</h3>
+              <p class="card__text">{t.headline}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= ADVANTAGES ================= -->
+  <section class="section section--sunken">
+    <div class="wrap">
+      <p class="eyebrow">Why steel</p>
+      <h2 class="sec-title">Built to a spec, not to a guess</h2>
+      <div class="grid grid--4 adv-grid">
+        {advantages.map((a) => (
+          <div class="adv">
+            <h3>{a.title}</h3>
+            <p>{a.body}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= MODELS ================= -->
+  <section class="section">
+    <div class="wrap">
+      <header class="sec-head">
+        <div>
+          <p class="eyebrow">Building models</p>
+          <h2>Eight profiles, different jobs</h2>
+        </div>
+        <a class="btn btn--ghost" href="/models/">Compare models</a>
+      </header>
+      <p class="lede" style="margin-bottom:2rem">
+        The profile determines how the building carries load — and how much of the floor you actually get to use.
+        Arches are the most economical per square foot; straight walls give you usable height right to the wall line.
+      </p>
+      <div class="grid grid--4">
+        {models.map((m: any) => (
+          <a class="card model-card" href={`/models/${m.code.toLowerCase()}/`}>
+            <div class="card__body">
+              <span class="model-code">{m.code}</span>
+              <h3 class="card__title">{m.name}</h3>
+              <span class="card__meta">{m.spanRange}</span>
+              <p class="card__text">{m.profile}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= INVENTORY ================= -->
+  {deals.length > 0 && (
+    <section class="section section--sunken">
+      <div class="wrap">
+        <header class="sec-head">
+          <div>
+            <p class="eyebrow">Clearance inventory</p>
+            <h2>Kits ready to ship</h2>
+          </div>
+          <a class="btn btn--ghost" href="/inventory/">View all inventory</a>
+        </header>
+        <p class="lede" style="margin-bottom:2rem">
+          Overstock and cancelled-order kits — structurally identical to a custom build,
+          available at a discount because the steel is already made.
+        </p>
+        <div class="grid grid--3">
+          {deals.map((d) => (
+            <a class="card" href={`/inventory/${d.slug}/`}>
+              <Placeholder label={d.title} />
+              <div class="card__body">
+                <span class="tag tag--accent">Clearance</span>
+                <h3 class="card__title">{d.title}</h3>
+                {d.sqft && <span class="card__meta">{d.sqft.toLocaleString()} sq ft footprint</span>}
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <!-- ================= PROCESS ================= -->
+  <section class="section">
+    <div class="wrap">
+      <p class="eyebrow">How it works</p>
+      <h2 class="sec-title">From first call to finished building</h2>
+      <ol class="steps">
+        {steps.map((s) => (
+          <li class="step">
+            <span class="step__n">{s.n}</span>
+            <h3>{s.t}</h3>
+            <p>{s.b}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ================= CTA ================= -->
+  <section class="cta">
+    <div class="wrap cta__inner">
+      <div>
+        <h2>Tell us what you need built</h2>
+        <p>
+          Send us the size, the use and the location. We will come back with a written
+          quote and the engineering questions worth answering before you pour anything.
+        </p>
+      </div>
+      <a class="btn btn--primary btn--lg" href="/quote/">Request a Quote</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* hero */
+  .hero { padding-block: clamp(2.5rem, 7vw, 5rem); border-bottom: 1px solid var(--border); }
+  .hero__inner { display: grid; grid-template-columns: 1.05fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center; }
+  .hero__title { font-size: clamp(2rem, 5.2vw, 3.5rem); margin-block: 0.75rem 1rem; }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 2rem; }
+  .hero__stats { display: flex; flex-wrap: wrap; gap: 2.5rem; margin-top: 2.5rem; padding-top: 2rem; border-top: 1px solid var(--border); }
+  .hero__stats dt { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); }
+  .hero__stats dd { margin: 0.25rem 0 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
+  .hero__media :global(.ph), .hero__media :global(.ph-img) { border-radius: var(--radius-lg); border: 1px solid var(--border); }
+
+  /* section heads */
+  .sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
+  .sec-head h2, .sec-title { font-size: clamp(1.5rem, 3.4vw, 2.125rem); }
+  .sec-title { margin-bottom: 2rem; }
+
+  /* advantages */
+  .adv-grid { gap: 2rem; }
+  .adv { border-top: 2px solid var(--accent); padding-top: 1rem; }
+  .adv h3 { font-size: 1rem; margin-bottom: 0.5rem; }
+  .adv p { font-size: 0.9375rem; color: var(--text-muted); }
+
+  /* models */
+  .model-card .card__body { gap: 0.375rem; }
+  .model-code {
+    display: grid; place-items: center;
+    width: 2.25rem; height: 2.25rem; margin-bottom: 0.5rem;
+    background: var(--bg-sunken); border: 1px solid var(--border-strong);
+    border-radius: var(--radius);
+    font-family: var(--font-mono); font-weight: 700; color: var(--accent);
+  }
+
+  /* steps */
+  .steps { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 2rem; }
+  .step__n { font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 700; color: var(--accent); }
+  .step h3 { font-size: 1.0625rem; margin: 0.5rem 0; }
+  .step p { font-size: 0.9375rem; color: var(--text-muted); }
+
+  /* cta */
+  .cta { background: var(--bg-inverse); color: var(--text-inverse); padding-block: clamp(2.5rem, 6vw, 4rem); }
+  .cta__inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .cta h2 { font-size: clamp(1.5rem, 3.4vw, 2rem); margin-bottom: 0.5rem; }
+  .cta p { color: color-mix(in srgb, currentColor 72%, transparent); max-width: 52ch; }
+  .btn--lg { padding: 0.9375rem 2rem; font-size: 1rem; }
+
+  @media (max-width: 900px) {
+    .hero__inner { grid-template-columns: 1fr; }
+    .hero__media { order: -1; }
+  }
+</style>

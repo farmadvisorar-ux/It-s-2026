@@ -1,0 +1,750 @@
+[
+  {
+    "slug": "20-x-40-container-cover",
+    "title": "20' x 40' Container Cover",
+    "model": null,
+    "width": 20,
+    "height": null,
+    "length": 40,
+    "sqft": 800,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "25-x-40-container-cover",
+    "title": "25' x 40' Container Cover",
+    "model": null,
+    "width": 25,
+    "height": null,
+    "length": 40,
+    "sqft": 1000,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "30-x-40-container-cover",
+    "title": "30' x 40' Container Cover",
+    "model": null,
+    "width": 30,
+    "height": null,
+    "length": 40,
+    "sqft": 1200,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "35-x-40-container-cover",
+    "title": "35' x 40' Container Cover",
+    "model": null,
+    "width": 35,
+    "height": null,
+    "length": 40,
+    "sqft": 1400,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "40-x-40-container-cover",
+    "title": "40' x 40' Container Cover",
+    "model": null,
+    "width": 40,
+    "height": null,
+    "length": 40,
+    "sqft": 1600,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "t-60-x-16-x-80",
+    "title": "T 60' x 16' x 80'",
+    "model": "T",
+    "width": 60,
+    "height": 16,
+    "length": 80,
+    "sqft": 4800,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "t-60-x-20-x-120",
+    "title": "T 60' x 20' x 120'",
+    "model": "T",
+    "width": 60,
+    "height": 20,
+    "length": 120,
+    "sqft": 7200,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "t-70-x-18-x-100",
+    "title": "T 70' x 18' x 100'",
+    "model": "T",
+    "width": 70,
+    "height": 18,
+    "length": 100,
+    "sqft": 7000,
+    "regions": [
+      "usa"
+    ],
+    "tags": [
+      "top-3"
+    ],
+    "featured": true
+  },
+  {
+    "slug": "t-100-x-18-x-200",
+    "title": "T 100' x 18' x 200'",
+    "model": "T",
+    "width": 100,
+    "height": 18,
+    "length": 200,
+    "sqft": 20000,
+    "regions": [
+      "usa"
+    ],
+    "tags": [
+      "top-3"
+    ],
+    "featured": true
+  },
+  {
+    "slug": "30x62-barndo-shell",
+    "title": "30'x62' Barndo Shell",
+    "model": null,
+    "width": 30,
+    "height": null,
+    "length": 62,
+    "sqft": 1860,
+    "regions": [
+      "usa"
+    ],
+    "tags": [
+      "container",
+      "top-3"
+    ],
+    "featured": true
+  },
+  {
+    "slug": "40-x-80-equipment-shed",
+    "title": "40' x 80' Equipment Shed",
+    "model": null,
+    "width": 40,
+    "height": null,
+    "length": 80,
+    "sqft": 3200,
+    "regions": [
+      "usa"
+    ],
+    "tags": [
+      "container"
+    ],
+    "featured": false
+  },
+  {
+    "slug": "40-x-60-steel-building-industrial-agricultural",
+    "title": "40' x 60' Steel Building (Industrial/Agricultural)",
+    "model": null,
+    "width": 40,
+    "height": null,
+    "length": 60,
+    "sqft": 2400,
+    "regions": [
+      "usa"
+    ],
+    "tags": [
+      "container",
+      "top-3"
+    ],
+    "featured": true
+  },
+  {
+    "slug": "30-x-40-workshop-building",
+    "title": "30' x 40' Workshop Building",
+    "model": null,
+    "width": 30,
+    "height": null,
+    "length": 40,
+    "sqft": 1200,
+    "regions": [
+      "usa"
+    ],
+    "tags": [
+      "container"
+    ],
+    "featured": false
+  },
+  {
+    "slug": "30-x-30-two-car-garage",
+    "title": "30' x 30' Two-Car Garage",
+    "model": null,
+    "width": 30,
+    "height": null,
+    "length": 30,
+    "sqft": 900,
+    "regions": [
+      "usa"
+    ],
+    "tags": [
+      "container"
+    ],
+    "featured": false
+  },
+  {
+    "slug": "20-x-30-one-car-garage-workshop",
+    "title": "20' x 30' One-Car Garage / Workshop",
+    "model": null,
+    "width": 20,
+    "height": null,
+    "length": 30,
+    "sqft": 600,
+    "regions": [
+      "usa"
+    ],
+    "tags": [
+      "container"
+    ],
+    "featured": false
+  },
+  {
+    "slug": "20-x-20-small-garage",
+    "title": "20' x 20' Small Garage",
+    "model": null,
+    "width": 20,
+    "height": null,
+    "length": 20,
+    "sqft": 400,
+    "regions": [
+      "usa"
+    ],
+    "tags": [
+      "container"
+    ],
+    "featured": false
+  },
+  {
+    "slug": "20-x-24-backyard-garage",
+    "title": "20' x 24' Backyard Garage",
+    "model": null,
+    "width": 20,
+    "height": null,
+    "length": 24,
+    "sqft": 480,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "s-12-x-11-x-12",
+    "title": "S 12' x 11' x 12'",
+    "model": "S",
+    "width": 12,
+    "height": 11,
+    "length": 12,
+    "sqft": 144,
+    "regions": [
+      "quebec"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "a-20-x-13-x-30",
+    "title": "A 20' x 13' x 30'",
+    "model": "A",
+    "width": 20,
+    "height": 13,
+    "length": 30,
+    "sqft": 600,
+    "regions": [
+      "quebec"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "x-22-x-17-x-32",
+    "title": "X 22' x 17' x 32'",
+    "model": "X",
+    "width": 22,
+    "height": 17,
+    "length": 32,
+    "sqft": 704,
+    "regions": [
+      "quebec"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "x-22-x-17-x-44",
+    "title": "X 22' x 17' x 44'",
+    "model": "X",
+    "width": 22,
+    "height": 17,
+    "length": 44,
+    "sqft": 968,
+    "regions": [
+      "quebec"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "x-30-x-19-x-40",
+    "title": "X 30' x 19' x 40'",
+    "model": "X",
+    "width": 30,
+    "height": 19,
+    "length": 40,
+    "sqft": 1200,
+    "regions": [
+      "quebec"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "x-30-x-19-x-60",
+    "title": "X 30' x 19' x 60'",
+    "model": "X",
+    "width": 30,
+    "height": 19,
+    "length": 60,
+    "sqft": 1800,
+    "regions": [
+      "quebec"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "r-20-x-7-x-20",
+    "title": "R 20' x 7' x 20'",
+    "model": "R",
+    "width": 20,
+    "height": 7,
+    "length": 20,
+    "sqft": 400,
+    "regions": [
+      "quebec"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "r-20-x-7-x-40",
+    "title": "R 20' x 7' x 40'",
+    "model": "R",
+    "width": 20,
+    "height": 7,
+    "length": 40,
+    "sqft": 800,
+    "regions": [
+      "quebec"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "r-25-x-9-x-40",
+    "title": "R 25' x 9' x 40'",
+    "model": "R",
+    "width": 25,
+    "height": 9,
+    "length": 40,
+    "sqft": 1000,
+    "regions": [
+      "quebec"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "t-40-x-16-x-40",
+    "title": "T 40' x 16' x 40'",
+    "model": "T",
+    "width": 40,
+    "height": 16,
+    "length": 40,
+    "sqft": 1600,
+    "regions": [
+      "quebec"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "t-60-x-16-x-80-quebec",
+    "title": "T 60' x 16' x 80'",
+    "model": "T",
+    "width": 60,
+    "height": 16,
+    "length": 80,
+    "sqft": 4800,
+    "regions": [
+      "quebec"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "t-50-x-20-x-100",
+    "title": "T 50' x 20' x 100'",
+    "model": "T",
+    "width": 50,
+    "height": 20,
+    "length": 100,
+    "sqft": 5000,
+    "regions": [
+      "quebec"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "28-x-40-container-cover",
+    "title": "28' x 40' Container Cover",
+    "model": null,
+    "width": 28,
+    "height": null,
+    "length": 40,
+    "sqft": 1120,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "40-x-60-industrial-use",
+    "title": "40' x 60' Industrial Use",
+    "model": null,
+    "width": 40,
+    "height": null,
+    "length": 60,
+    "sqft": 2400,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "30-x-60-ultra-shop",
+    "title": "30' x 60' Ultra Shop",
+    "model": null,
+    "width": 30,
+    "height": null,
+    "length": 60,
+    "sqft": 1800,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "40-x-40-container-cover-usa",
+    "title": "40' x 40' Container Cover",
+    "model": null,
+    "width": 40,
+    "height": null,
+    "length": 40,
+    "sqft": 1600,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "36-x-26-workshop",
+    "title": "36' x 26' Workshop",
+    "model": null,
+    "width": 36,
+    "height": null,
+    "length": 26,
+    "sqft": 936,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "32-x-40-container-cover",
+    "title": "32' x 40' Container Cover",
+    "model": null,
+    "width": 32,
+    "height": null,
+    "length": 40,
+    "sqft": 1280,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "16-x-20-shed-with-leanto",
+    "title": "16' x 20' Shed with leanto",
+    "model": null,
+    "width": 16,
+    "height": null,
+    "length": 20,
+    "sqft": 320,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "16-x-18-gambrel-shed",
+    "title": "16' x 18' Gambrel Shed",
+    "model": null,
+    "width": 16,
+    "height": null,
+    "length": 18,
+    "sqft": 288,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "a-model-25-x-13-x-34",
+    "title": "A Model 25' x 13' x 34'",
+    "model": "A",
+    "width": 25,
+    "height": 13,
+    "length": 34,
+    "sqft": 850,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "a-model-20-x-12-x-24",
+    "title": "A Model 20' x 12' x 24'",
+    "model": "A",
+    "width": 20,
+    "height": 12,
+    "length": 24,
+    "sqft": 480,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "a-model-17-x-12-x-20",
+    "title": "A Model 17' x 12' x 20'",
+    "model": "A",
+    "width": 17,
+    "height": 12,
+    "length": 20,
+    "sqft": 340,
+    "regions": [
+      "usa"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "a-model-25-x-13-x-24",
+    "title": "A Model 25' x 13' x 24'",
+    "model": "A",
+    "width": 25,
+    "height": 13,
+    "length": 24,
+    "sqft": 600,
+    "regions": [
+      "canada"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "c-model-12-x-8-x-18",
+    "title": "C Model 12' x 8' x 18'",
+    "model": "C",
+    "width": 12,
+    "height": 8,
+    "length": 18,
+    "sqft": 216,
+    "regions": [
+      "canada"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "a-model-30-x-18-x-50",
+    "title": "A Model 30' x 18' x 50'",
+    "model": "A",
+    "width": 30,
+    "height": 18,
+    "length": 50,
+    "sqft": 1500,
+    "regions": [
+      "canada"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "r-model-20-x-7-x-20",
+    "title": "R Model 20' x 7' x 20'",
+    "model": "R",
+    "width": 20,
+    "height": 7,
+    "length": 20,
+    "sqft": 400,
+    "regions": [
+      "canada"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "a-model-20-x-12-x-26",
+    "title": "A Model 20' x 12' x 26'",
+    "model": "A",
+    "width": 20,
+    "height": 12,
+    "length": 26,
+    "sqft": 520,
+    "regions": [
+      "canada"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "x-model-35-x-20-x-60-package",
+    "title": "X Model 35' x 20' x 60' Package",
+    "model": "X",
+    "width": 35,
+    "height": 20,
+    "length": 60,
+    "sqft": 2100,
+    "regions": [
+      "canada"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "r-model-25-x-9-x-40",
+    "title": "R Model 25' x 9' x 40'",
+    "model": "R",
+    "width": 25,
+    "height": 9,
+    "length": 40,
+    "sqft": 1000,
+    "regions": [
+      "canada"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "x-model-41-x-21-x-80-package",
+    "title": "X Model 41' x 21' x 80' Package",
+    "model": "X",
+    "width": 41,
+    "height": 21,
+    "length": 80,
+    "sqft": 3280,
+    "regions": [
+      "canada"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "s-model-34-x-18-x-50-package",
+    "title": "S Model 34' x 18 x 50' Package",
+    "model": "S",
+    "width": 34,
+    "height": 18,
+    "length": 50,
+    "sqft": 1700,
+    "regions": [
+      "canada"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "b-model-20-x-30",
+    "title": "B Model 20' x 30'",
+    "model": "B",
+    "width": 20,
+    "height": null,
+    "length": 30,
+    "sqft": 600,
+    "regions": [
+      "canada"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "b-model-30-x-40",
+    "title": "B Model 30' x 40'",
+    "model": "B",
+    "width": 30,
+    "height": null,
+    "length": 40,
+    "sqft": 1200,
+    "regions": [
+      "canada"
+    ],
+    "tags": [],
+    "featured": false
+  },
+  {
+    "slug": "b-model-40-x-60",
+    "title": "B Model 40' x 60'",
+    "model": "B",
+    "width": 40,
+    "height": null,
+    "length": 60,
+    "sqft": 2400,
+    "regions": [
+      "canada"
+    ],
+    "tags": [],
+    "featured": false
+  }
+]
