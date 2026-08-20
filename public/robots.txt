@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://marshallsheds.com/sitemap.xml
+Sitemap: https://anysize.shop/sitemap.xml

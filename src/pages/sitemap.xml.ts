@@ -11,7 +11,7 @@ import pb from '../data/portable-buildings.json';
  */
 
 // Read from `site` in astro.config.mjs so the domain lives in exactly one place.
-const SITE = (import.meta.env.SITE ?? 'https://marshallsheds.com').replace(/\/$/, '');
+const SITE = (import.meta.env.SITE ?? 'https://anysize.shop').replace(/\/$/, '');
 
 type Entry = { path: string; priority: number; changefreq: string };
 
