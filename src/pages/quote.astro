@@ -1,5 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
+import site from '../data/site.json';
 import types from '../data/building-types.json';
 import models from '../data/models.json';
 import pb from '../data/portable-buildings.json';
@@ -15,7 +16,8 @@ import pb from '../data/portable-buildings.json';
  * Until it is set, the form validates and shows the "not yet connected" notice
  * rather than silently dropping a lead.
  */
-const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+// Env var wins if set (handy for staging); otherwise the value in site.json.
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? site.formEndpoint ?? '';
 const timelines = ['As soon as possible', 'Within 3 months', '3–6 months', '6–12 months', 'Still researching'];
 const pbProducts = (pb as any).products;
 ---

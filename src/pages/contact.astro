@@ -2,7 +2,7 @@
 import Base from '../layouts/Base.astro';
 import site from '../data/site.json';
 
-const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
+const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? site.formEndpoint ?? '';
 ---
 
 <Base
