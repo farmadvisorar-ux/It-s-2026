@@ -2,13 +2,13 @@
   "name": "Any Size",
   "tagline": "From 6-Foot Sheds to 200-Foot Spans",
   "description": "Authorized dealer of engineered steel buildings and wood portable buildings \u2014 garages, workshops, barndominiums, quonset huts, sheds, cabins and specialty structures, from 6 ft to 200 ft.",
-  "phone": "",
-  "email": "",
+  "phone": "(903) 690-5969",
+  "email": "info@anysize.shop",
   "address": {
-    "street": "",
-    "city": "",
-    "region": "",
-    "postal": "",
+    "street": "360 PR 1031",
+    "city": "Marshall",
+    "region": "TX",
+    "postal": "75672",
     "country": "USA"
   },
   "hours": "Mon\u2013Fri 8:00am\u20136:00pm",
@@ -18,5 +18,7 @@
     "youtube": ""
   },
   "dealerNotice": "Any Size is an authorized independent dealer. Engineered steel buildings and wood portable buildings are produced by our manufacturing partners and shipped direct. Steel building kits ship nationwide; portable buildings are delivered finished within our regional delivery area.",
-  "indexable": false
+  "indexable": false,
+  "phoneRaw": "+19036905969",
+  "emailPending": true
 }

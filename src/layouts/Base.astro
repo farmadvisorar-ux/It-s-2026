@@ -29,8 +29,9 @@ const localBusiness = {
   description: site.description,
   url: origin,
   image: ogImage,
-  ...(site.phone ? { telephone: site.phone } : {}),
-  ...(site.email ? { email: site.email } : {}),
+  ...(site.phone ? { telephone: site.phoneRaw ?? site.phone } : {}),
+  // Withheld until the mailbox actually receives — a dead address in schema is worse than none.
+  ...(site.email && !site.emailPending ? { email: site.email } : {}),
   address: {
     '@type': 'PostalAddress',
     ...(site.address.street ? { streetAddress: site.address.street } : {}),
@@ -45,6 +46,13 @@ const localBusiness = {
       c.communities.map((t: string) => ({ '@type': 'City', name: `${t}, Texas` }))
     ),
   ],
+  openingHoursSpecification: [{
+    '@type': 'OpeningHoursSpecification',
+    dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+    opens: '08:00',
+    closes: '18:00',
+  }],
+  priceRange: '$$',
   knowsAbout: [
     'steel buildings', 'metal buildings', 'portable buildings', 'storage sheds',
     'garages', 'workshops', 'barndominiums', 'quonset huts', 'carports',

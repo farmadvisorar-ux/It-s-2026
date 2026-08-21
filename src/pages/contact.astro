@@ -24,9 +24,9 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
 
         <dl class="contact-details">
           {site.phone && (
-            <div><dt>Phone</dt><dd><a href={`tel:${site.phone.replace(/[^\d+]/g, '')}`}>{site.phone}</a></dd></div>
+            <div><dt>Phone</dt><dd><a href={`tel:${site.phoneRaw ?? site.phone.replace(/[^\d+]/g, '')}`}>{site.phone}</a></dd></div>
           )}
-          {site.email && (
+          {site.email && !site.emailPending && (
             <div><dt>Email</dt><dd><a href={`mailto:${site.email}`}>{site.email}</a></dd></div>
           )}
           <div><dt>Hours</dt><dd>{site.hours}</dd></div>
@@ -38,11 +38,13 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
           )}
         </dl>
 
-        {!site.phone && !site.email && (
+        {site.emailPending && (
           <div class="admin-note">
-            <strong>Publish note — remove before launch.</strong> Add your phone number, email
-            address and business location to <code>src/data/site.json</code>. They will appear
-            here and in the footer automatically.
+            <strong>Publish note — remove before launch.</strong> The email address
+            <code>{site.email}</code> is reserved but not yet receiving. Set up forwarding,
+            then flip <code>emailPending</code> to <code>false</code> in
+            <code>src/data/site.json</code> and it appears here, in the footer and in the
+            business schema.
           </div>
         )}
 

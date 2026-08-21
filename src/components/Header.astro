@@ -76,6 +76,12 @@ const pbByCat = (slug: string) => (pb as any).products.filter((x: any) => x.cate
       <a class="nav__link" href="/service-area/">Service Area</a>
       <a class="nav__link" href="/resources/">Resources</a>
       <a class="nav__link" href="/about/">About</a>
+      {site.phone && (
+        <a class="nav__tel" href={`tel:${site.phoneRaw ?? site.phone}`} aria-label={`Call ${site.phone}`}>
+          <svg viewBox="0 0 16 16" aria-hidden="true" width="14" height="14"><path fill="currentColor" d="M3.7 1.2 5.5.9c.4-.1.8.1 1 .5l1 2.3c.1.3.1.7-.2.9l-1.2 1a8.6 8.6 0 0 0 4.3 4.3l1-1.2c.2-.3.6-.3.9-.2l2.3 1c.4.2.6.6.5 1l-.3 1.8c-.1.4-.5.7-.9.7A12.6 12.6 0 0 1 3 2.1c0-.4.3-.8.7-.9Z"/></svg>
+          <span>{site.phone}</span>
+        </a>
+      )}
       <a class="btn btn--primary nav__cta" href="/quote/">Get a Quote</a>
     </nav>
   </div>
@@ -110,7 +116,15 @@ const pbByCat = (slug: string) => (pb as any).products.filter((x: any) => x.cate
     background: none; border: none; cursor: pointer; border-radius: var(--radius);
   }
   .nav__link:hover { color: var(--accent); }
-  .nav__cta { margin-left: 0.75rem; padding: 0.5625rem 1.125rem; }
+  .nav__cta { margin-left: 0.5rem; padding: 0.5625rem 1.125rem; }
+  .nav__tel {
+    display: inline-flex; align-items: center; gap: 0.4375rem;
+    padding: 0.5rem 0.625rem; margin-left: 0.25rem;
+    font-size: 0.875rem; font-weight: 600; white-space: nowrap;
+    text-decoration: none; color: var(--text); border-radius: var(--radius);
+  }
+  .nav__tel:hover { color: var(--accent); }
+  .nav__tel svg { color: var(--accent); flex-shrink: 0; }
 
   .nav__item { position: relative; }
   .mega {
@@ -157,6 +171,7 @@ const pbByCat = (slug: string) => (pb as any).products.filter((x: any) => x.cate
     .nav[data-open="true"] { display: flex; }
     .nav__link { padding: 0.75rem 0; border-bottom: 1px solid var(--border); text-align: left; width: 100%; }
     .nav__cta { margin: 1rem 0 0; justify-content: center; }
+    .nav__tel { padding: 0.75rem 0; border-bottom: 1px solid var(--border); margin-left: 0; }
     .mega {
       position: static; transform: none; opacity: 1; visibility: visible;
       box-shadow: none; border: none; padding: 0.5rem 0 1rem; width: auto; display: none;

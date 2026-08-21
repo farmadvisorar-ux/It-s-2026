@@ -26,6 +26,14 @@ const pbPopular = ['barn', 'tool-shed-tall', 'utility-cabin', 'barn-garage', 'gr
           <span class="brand__text"><strong>Any</strong> Size</span>
         </div>
         <p class="foot-desc">{site.tagline}</p>
+        <address class="foot-nap">
+          <span class="foot-nap__name">{site.name}</span>
+          <span>{site.address.street}</span>
+          <span>{site.address.city}, {site.address.region} {site.address.postal}</span>
+          {site.phone && <a href={`tel:${site.phoneRaw ?? site.phone}`}>{site.phone}</a>}
+          {site.email && !site.emailPending && <a href={`mailto:${site.email}`}>{site.email}</a>}
+          <span class="foot-nap__hours">{site.hours}</span>
+        </address>
         <p class="foot-notice">{site.dealerNotice}</p>
       </div>
 
@@ -111,6 +119,14 @@ const pbPopular = ['barn', 'tool-shed-tall', 'utility-cabin', 'barn-garage', 'gr
   .brand__text { font-size: 1rem; font-weight: 500; letter-spacing: -0.02em; }
   .brand__text strong { font-weight: 800; }
   .foot-desc { margin-top: 0.75rem; color: var(--text-muted); font-size: 0.9375rem; }
+  .foot-nap {
+    display: flex; flex-direction: column; gap: 0.1875rem;
+    margin-top: 1rem; font-style: normal; font-size: 0.875rem; color: var(--text-muted);
+  }
+  .foot-nap__name { font-weight: 700; color: var(--text); }
+  .foot-nap a { color: var(--accent); text-decoration: none; }
+  .foot-nap a:hover { text-decoration: underline; }
+  .foot-nap__hours { color: var(--text-faint); font-size: 0.8125rem; margin-top: 0.25rem; }
   .foot-notice {
     margin-top: 1rem; font-size: 0.8125rem; line-height: 1.55;
     color: var(--text-faint);
