@@ -1,13 +1,14 @@
 {
-  "name": "Any Size",
-  "tagline": "From 6-Foot Sheds to 200-Foot Spans",
-  "description": "Authorized dealer of engineered steel buildings and wood portable buildings \u2014 garages, workshops, barndominiums, quonset huts, sheds, cabins and specialty structures, from 6 ft to 200 ft.",
-  "phone": "(903) 690-5969",
-  "email": "info@anysize.shop",
+  "name": "Marshall Sheds",
+  "tagline": "Barns, Sheds and Steel Buildings, Sized to the Job",
+  "description": "Independent dealer of wood portable buildings and engineered steel building kits — sheds, barns, garages, workshops, barndominiums and commercial spans. Portable buildings arrive finished; steel kits ship nationwide with stamped drawings.",
+  "phone": "",
+  "phoneRaw": "",
+  "email": "",
   "emails": {
-    "info": "info@anysize.shop",
-    "sales": "sales@anysize.shop",
-    "quotes": "quotes@anysize.shop"
+    "info": "",
+    "sales": "",
+    "quotes": ""
   },
   "address": {
     "street": "360 PR 1031",
@@ -16,15 +17,15 @@
     "postal": "75672",
     "country": "USA"
   },
-  "hours": "Mon\u2013Fri 8:00am\u20136:00pm",
+  "hours": "Mon–Fri 8:00am–6:00pm",
   "social": {
     "facebook": "",
     "instagram": "",
     "youtube": ""
   },
-  "dealerNotice": "Any Size is an authorized independent dealer. Engineered steel buildings and wood portable buildings are produced by our manufacturing partners and shipped direct. Steel building kits ship nationwide; portable buildings are delivered finished within our regional delivery area.",
+  "dealerNotice": "Marshall Sheds is an independent authorized dealer. Every building we sell is produced by one of our manufacturing partners and ships direct from their plant. Steel building kits ship nationwide and are assembled on site; wood portable buildings are delivered finished inside our regional delivery area.",
   "indexable": false,
-  "phoneRaw": "+19036905969",
-  "emailPending": false,
-  "formEndpoint": "https://formspree.io/f/xkjwyqra"
+  "phonePending": true,
+  "emailPending": true,
+  "formEndpoint": ""
 }

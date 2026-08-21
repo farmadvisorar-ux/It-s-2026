@@ -17,7 +17,7 @@ interface Props {
 
 const { title, description = site.description, crumbs = [], current, image } = Astro.props;
 const fullTitle = title === site.name ? `${site.name} — ${site.tagline}` : `${title} | ${site.name}`;
-const origin = (Astro.site ?? new URL('https://anysize.shop')).origin;
+const origin = (Astro.site ?? new URL('https://marshall-sheds.vercel.app')).origin;
 const canonical = new URL(Astro.url.pathname, origin).href;
 // Social scrapers require an absolute URL — a root-relative path silently yields no preview.
 const ogImage = new URL(image ?? '/og/default.jpg', origin).href;
@@ -116,8 +116,11 @@ const localBusiness = {
     <script type="application/ld+json" set:html={JSON.stringify(localBusiness)} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {/* A serif display face against a humanist sans. Google Fonts is the only
+        external host the site loads from; both families have local fallbacks
+        in global.css so a blocked request degrades rather than breaks. */}
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&display=swap"
       rel="stylesheet"
     />
   </head>

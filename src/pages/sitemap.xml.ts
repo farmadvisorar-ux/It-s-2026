@@ -12,7 +12,7 @@ import locations from '../data/locations.json';
  */
 
 // Read from `site` in astro.config.mjs so the domain lives in exactly one place.
-const SITE = (import.meta.env.SITE ?? 'https://anysize.shop').replace(/\/$/, '');
+const SITE = (import.meta.env.SITE ?? 'https://marshall-sheds.vercel.app').replace(/\/$/, '');
 
 type Entry = { path: string; priority: number; changefreq: string };
 

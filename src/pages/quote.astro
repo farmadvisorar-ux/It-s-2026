@@ -57,8 +57,8 @@ const pbProducts = (pb as any).products;
         {!site.emailPending && site.emails && (
           <p class="or-email">
             Rather not use a form? Send your details straight to
-            <a href={`mailto:${site.emails.quotes}?subject=${encodeURIComponent('Quote request')}`}>{site.emails.quotes}</a>,
-            or call <a href={`tel:${site.phoneRaw ?? site.phone}`}>{site.phone}</a>.
+            <a href={`mailto:${site.emails.quotes}?subject=${encodeURIComponent('Quote request')}`}>{site.emails.quotes}</a>{site.phone && !site.phonePending ? ', or call ' : '.'}
+            {site.phone && !site.phonePending && <a href={`tel:${site.phoneRaw || site.phone}`}>{site.phone}</a>}{site.phone && !site.phonePending ? '.' : ''}
           </p>
         )}
       </div>
@@ -183,7 +183,7 @@ const pbProducts = (pb as any).products;
           </fieldset>
 
           <!-- Formspree: sets the notification subject so leads are scannable in an inbox -->
-          <input type="hidden" name="_subject" value="New quote request — anysize.shop" />
+          <input type="hidden" name="_subject" value="New quote request — Marshall Sheds" />
 
           <!-- honeypot (Formspree discards any submission where this is filled) -->
           <div class="visually-hidden" aria-hidden="true">
@@ -314,7 +314,6 @@ const pbProducts = (pb as any).products;
   wireForm('quote-form', {
     successHeading: 'Thanks — we have your request.',
     successBody:
-      'We will come back with a written quote covering the building, the options you picked and freight. ' +
-      'If it is urgent, call us on (903) 690-5969.',
+      'We will come back with a written quote covering the building, the options you picked and freight.',
   });
 </script>

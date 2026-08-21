@@ -63,14 +63,16 @@ const details = detailImages();
           </div>
         </header>
         <p class="lede" style="margin-bottom:1.75rem">{c.blurb}</p>
-        <div class="grid grid--4">
+        <div class="rows rows--compact">
           {byCat(c.slug).map((p: any) => (
-            <a class="card" href={`/portable-buildings/${p.slug}/`}>
-              <Placeholder label={p.name} src={portableImage(p.slug)} alt={`${p.name} — ${p.headline}`} />
-              <div class="card__body">
-                <h3 class="card__title">{p.name}</h3>
-                <p class="card__text">{p.headline}</p>
-                <span class="card__meta">
+            <a class="row" href={`/portable-buildings/${p.slug}/`}>
+              <div class="row__media">
+                <Placeholder label={p.name} src={portableImage(p.slug)} alt={`${p.name} — ${p.headline}`} />
+              </div>
+              <div class="row__body">
+                <h3 class="row__title">{p.name}</h3>
+                <p class="row__text">{p.headline}</p>
+                <span class="row__meta">
                   {p.sizes.length === 1 ? p.sizes[0].replace('x', "' × ") + "'" : `${p.sizes.length} sizes`}
                 </span>
               </div>

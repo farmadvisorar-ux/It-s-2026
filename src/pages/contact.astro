@@ -10,12 +10,13 @@ const mailboxes = [
   { address: site.emails.info, purpose: 'General questions, orders in progress, warranty' },
   { address: site.emails.sales, purpose: 'Availability, lead times, dealer and volume enquiries' },
   { address: site.emails.quotes, purpose: 'Pricing and written quotes' },
-];
+  // An unset address would render as a bare `mailto:` link that goes nowhere.
+].filter((m) => m.address);
 ---
 
 <Base
   title="Contact Us"
-  description="Get in touch with Any Size about a steel building project — sizing, pricing, engineering or delivery."
+  description="Get in touch with Marshall Sheds about a steel building project — sizing, pricing, engineering or delivery."
   crumbs={[]}
   current="Contact"
 >
@@ -60,11 +61,12 @@ const mailboxes = [
 
         {site.emailPending && (
           <div class="admin-note">
-            <strong>Publish note — remove before launch.</strong> The email address
-            <code>{site.email}</code> is reserved but not yet receiving. Set up forwarding,
-            then flip <code>emailPending</code> to <code>false</code> in
-            <code>src/data/site.json</code> and it appears here, in the footer and in the
-            business schema.
+            <strong>Publish note — remove before launch.</strong> Marshall Sheds has no
+            mailbox of its own yet. Register the addresses on the new domain, set up
+            forwarding, put them in <code>src/data/site.json</code> and flip
+            <code>emailPending</code> to <code>false</code> — they then appear here, in the
+            footer and in the business schema. The phone number works the same way through
+            <code>phonePending</code>.
           </div>
         )}
 
@@ -109,7 +111,7 @@ const mailboxes = [
             <textarea id="message" name="message" rows="6" required></textarea>
           </div>
 
-          <input type="hidden" name="_subject" value="New message — anysize.shop" />
+          <input type="hidden" name="_subject" value="New message — Marshall Sheds" />
 
           <div class="visually-hidden" aria-hidden="true">
             <label for="_gotcha">Leave this blank</label>
@@ -182,6 +184,6 @@ const mailboxes = [
   import { wireForm } from '../scripts/form-submit.js';
   wireForm('contact-form', {
     successHeading: 'Thanks — message received.',
-    successBody: 'We will reply shortly. If it is urgent, call us on (903) 690-5969.',
+    successBody: 'We will reply shortly.',
   });
 </script>

@@ -1,13 +1,25 @@
 ---
 import site from '../data/site.json';
-import types from '../data/building-types.json';
-import pb from '../data/portable-buildings.json';
 
-const groups = [...new Set(types.map((t: any) => t.group))];
-const byGroup = (g: string) => types.filter((t: any) => t.group === g && !t.parent);
+/**
+ * Plain horizontal nav. No mega menu: the category depth that used to hang off
+ * the header now lives on the index pages themselves, which is where it can be
+ * shown with photographs instead of six columns of links.
+ *
+ * On narrow screens the same list becomes a full-screen overlay rather than a
+ * dropdown, so the whole nav is one thumb-reachable column.
+ */
+const nav = [
+  { href: '/building-types/', label: 'Steel Buildings' },
+  { href: '/portable-buildings/', label: 'Portable Buildings' },
+  { href: '/inventory/', label: 'Clearance' },
+  { href: '/options-and-finishes/', label: 'Options' },
+  { href: '/service-area/', label: 'Service Area' },
+  { href: '/resources/', label: 'Resources' },
+  { href: '/about/', label: 'About' },
+];
 
-const pbCats = (pb as any).categories;
-const pbByCat = (slug: string) => (pb as any).products.filter((x: any) => x.category === slug);
+const showPhone = Boolean(site.phone) && !site.phonePending;
 ---
 
 <header class="site-header">
@@ -15,11 +27,15 @@ const pbByCat = (slug: string) => (pb as any).products.filter((x: any) => x.cate
   <div class="wrap header-inner">
     <a href="/" class="brand" aria-label={`${site.name} home`}>
       <svg class="brand__mark" viewBox="0 0 32 32" aria-hidden="true">
-        <path d="M2 18 L16 5 L30 18 L30 28 L2 28 Z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
-        <path d="M11 28 L11 19 L21 19 L21 28" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+        <path
+          fill="currentColor"
+          fill-rule="evenodd"
+          d="M16 2.6 24.4 7.2 30 12.4 30 29.4 2 29.4 2 12.4 7.6 7.2 Z M12.4 29.4 12.4 18.6 19.6 18.6 19.6 29.4 Z"
+        />
       </svg>
       <span class="brand__text">
-        <strong>Any</strong> Size
+        <span class="brand__name">Marshall</span>
+        <span class="brand__sub">Sheds</span>
       </span>
     </a>
 
@@ -29,60 +45,19 @@ const pbByCat = (slug: string) => (pb as any).products.filter((x: any) => x.cate
     </button>
 
     <nav id="primary-nav" class="nav" aria-label="Primary">
-      <div class="nav__item has-menu">
-        <button class="nav__link" aria-expanded="false">Steel Buildings</button>
-        <div class="mega">
-          <div class="mega__inner">
-            {groups.map((g) => (
-              <div class="mega__col">
-                <h3 class="mega__head">{g}</h3>
-                <ul>
-                  {byGroup(g).map((t: any) => (
-                    <li><a href={`/building-types/${t.slug}/`}>{t.name}</a></li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-            <div class="mega__col mega__col--all">
-              <a class="mega__all" href="/building-types/">All steel building types &rarr;</a>
-              <p class="mega__note">Engineered kits, stamped for your jurisdiction, shipped nationwide.</p>
-            </div>
-          </div>
-        </div>
+      <ul class="nav__list">
+        {nav.map((item) => (
+          <li><a class="nav__link" href={item.href}>{item.label}</a></li>
+        ))}
+      </ul>
+      <div class="nav__end">
+        {showPhone && (
+          <a class="nav__tel" href={`tel:${site.phoneRaw || site.phone}`} aria-label={`Call ${site.phone}`}>
+            {site.phone}
+          </a>
+        )}
+        <a class="btn btn--primary nav__cta" href="/quote/">Get a Quote</a>
       </div>
-      <div class="nav__item has-menu">
-        <button class="nav__link" aria-expanded="false">Portable Buildings</button>
-        <div class="mega">
-          <div class="mega__inner mega__inner--pb">
-            {pbCats.map((c: any) => (
-              <div class="mega__col">
-                <h3 class="mega__head">{c.name}</h3>
-                <ul>
-                  {pbByCat(c.slug).map((x: any) => (
-                    <li><a href={`/portable-buildings/${x.slug}/`}>{x.name}</a></li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-            <div class="mega__col mega__col--all">
-              <a class="mega__all" href="/portable-buildings/">All portable buildings &rarr;</a>
-              <p class="mega__note">Delivered finished in TX, LA, MO, IL, TN and IN.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-      <a class="nav__link" href="/options-and-finishes/">Options &amp; Finishes</a>
-      <a class="nav__link" href="/inventory/">Inventory</a>
-      <a class="nav__link" href="/service-area/">Service Area</a>
-      <a class="nav__link" href="/resources/">Resources</a>
-      <a class="nav__link" href="/about/">About</a>
-      {site.phone && (
-        <a class="nav__tel" href={`tel:${site.phoneRaw ?? site.phone}`} aria-label={`Call ${site.phone}`}>
-          <svg viewBox="0 0 16 16" aria-hidden="true" width="14" height="14"><path fill="currentColor" d="M3.7 1.2 5.5.9c.4-.1.8.1 1 .5l1 2.3c.1.3.1.7-.2.9l-1.2 1a8.6 8.6 0 0 0 4.3 4.3l1-1.2c.2-.3.6-.3.9-.2l2.3 1c.4.2.6.6.5 1l-.3 1.8c-.1.4-.5.7-.9.7A12.6 12.6 0 0 1 3 2.1c0-.4.3-.8.7-.9Z"/></svg>
-          <span>{site.phone}</span>
-        </a>
-      )}
-      <a class="btn btn--primary nav__cta" href="/quote/">Get a Quote</a>
     </nav>
   </div>
 </header>
@@ -95,110 +70,93 @@ const pbByCat = (slug: string) => (pb as any).products.filter((x: any) => x.cate
   }
   .skip:focus { left: 0; }
 
-  .site-header {
-    position: sticky; top: 0; z-index: 50;
-    background: color-mix(in srgb, var(--bg-raised) 92%, transparent);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid var(--border);
+  /* Not sticky and not translucent — the page scrolls away from the header
+     rather than under a blurred bar. */
+  .site-header { background: var(--bg); }
+  .header-inner { display: flex; align-items: center; gap: 2rem; min-height: 88px; }
+
+  .brand { display: flex; align-items: center; gap: 0.75rem; text-decoration: none; color: var(--text); flex-shrink: 0; }
+  .brand__mark { width: 34px; height: 34px; color: var(--accent); }
+  .brand__text { display: flex; flex-direction: column; line-height: 1.05; }
+  .brand__name { font-family: var(--font-serif); font-size: 1.3125rem; font-weight: 700; }
+  .brand__sub {
+    font-size: 0.6875rem; font-weight: 600; text-transform: uppercase;
+    letter-spacing: 0.22em; color: var(--text-faint);
   }
-  .header-inner { display: flex; align-items: center; gap: 1.5rem; min-height: 68px; }
 
-  .brand { display: flex; align-items: center; gap: 0.625rem; text-decoration: none; color: var(--text); flex-shrink: 0; }
-  .brand__mark { width: 30px; height: 30px; color: var(--accent); }
-  .brand__text { font-size: 1.0625rem; letter-spacing: -0.02em; font-weight: 500; }
-  .brand__text strong { font-weight: 800; }
-
-  .nav { display: flex; align-items: center; gap: 0.25rem; margin-left: auto; }
+  .nav { display: flex; align-items: center; gap: 1.75rem; margin-left: auto; }
+  .nav__list { display: flex; align-items: center; gap: 1.25rem; list-style: none; padding: 0; margin: 0; }
   .nav__link {
-    display: inline-block; padding: 0.5rem 0.75rem;
-    font-size: 0.9375rem; font-weight: 500;
+    font-size: 0.9375rem; font-weight: 500; white-space: nowrap;
     text-decoration: none; color: var(--text-muted);
-    background: none; border: none; cursor: pointer; border-radius: var(--radius);
+    padding-block: 0.25rem;
+    border-bottom: 2px solid transparent;
   }
-  .nav__link:hover { color: var(--accent); }
-  .nav__cta { margin-left: 0.5rem; padding: 0.5625rem 1.125rem; }
-  .nav__tel {
-    display: inline-flex; align-items: center; gap: 0.4375rem;
-    padding: 0.5rem 0.625rem; margin-left: 0.25rem;
-    font-size: 0.875rem; font-weight: 600; white-space: nowrap;
-    text-decoration: none; color: var(--text); border-radius: var(--radius);
-  }
+  .nav__link:hover { color: var(--text); border-bottom-color: var(--accent); }
+  .nav__end { display: flex; align-items: center; gap: 1rem; }
+  .nav__tel { font-weight: 600; font-size: 0.9375rem; white-space: nowrap; text-decoration: none; color: var(--text); }
   .nav__tel:hover { color: var(--accent); }
-  .nav__tel svg { color: var(--accent); flex-shrink: 0; }
-
-  .nav__item { position: relative; }
-  .mega {
-    position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(-6px);
-    opacity: 0; visibility: hidden; transition: opacity .16s, transform .16s, visibility .16s;
-    background: var(--bg-raised); border: 1px solid var(--border);
-    border-radius: var(--radius-lg); box-shadow: var(--shadow-lg);
-    padding: 1.5rem; width: max-content; max-width: 90vw;
-  }
-  .has-menu:hover .mega, .has-menu:focus-within .mega { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
-  .mega__inner { display: grid; grid-template-columns: repeat(6, minmax(140px, 1fr)); gap: 1.75rem; }
-  .mega__inner--pb { grid-template-columns: repeat(5, minmax(140px, 1fr)); }
-  .mega__col--all { border-left: 1px solid var(--border); padding-left: 1.25rem; }
-  .mega__all { font-size: 0.875rem; font-weight: 600; color: var(--accent); text-decoration: none; display: block; margin-bottom: 0.5rem; }
-  .mega__note { font-size: 0.75rem; color: var(--text-faint); line-height: 1.5; }
-  .mega__head { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--accent); margin-bottom: 0.625rem; }
-  .mega ul { list-style: none; padding: 0; }
-  .mega li { margin-bottom: 0.375rem; }
-  .mega a { font-size: 0.875rem; color: var(--text-muted); text-decoration: none; }
-  .mega a:hover { color: var(--accent); }
 
   .nav-toggle { display: none; }
 
-  @media (max-width: 1080px) {
+  @media (max-width: 1220px) {
+    .header-inner { min-height: 72px; }
     .nav-toggle {
       display: grid; place-items: center; margin-left: auto;
-      width: 40px; height: 40px; background: none;
-      border: 1px solid var(--border); border-radius: var(--radius); cursor: pointer;
+      width: 44px; height: 44px; background: none;
+      border: 1px solid var(--border-strong); border-radius: 999px; cursor: pointer;
+      position: relative; z-index: 60;
     }
     .nav-toggle__bar, .nav-toggle__bar::before, .nav-toggle__bar::after {
       content: ''; display: block; width: 18px; height: 2px; background: var(--text); position: relative;
+      transition: transform .18s, opacity .18s;
     }
     .nav-toggle__bar::before { position: absolute; top: -6px; }
     .nav-toggle__bar::after { position: absolute; top: 6px; }
+    .nav-toggle[aria-expanded='true'] .nav-toggle__bar { background: transparent; }
+    .nav-toggle[aria-expanded='true'] .nav-toggle__bar::before { transform: translateY(6px) rotate(45deg); }
+    .nav-toggle[aria-expanded='true'] .nav-toggle__bar::after { transform: translateY(-6px) rotate(-45deg); }
 
+    /* Full-screen overlay, not a dropdown. */
     .nav {
-      position: fixed; inset: 68px 0 auto 0;
-      flex-direction: column; align-items: stretch; gap: 0;
-      background: var(--bg-raised); border-bottom: 1px solid var(--border);
-      padding: 1rem var(--gutter) 1.5rem;
-      max-height: calc(100dvh - 68px); overflow-y: auto;
+      position: fixed; inset: 0; z-index: 55;
+      flex-direction: column; align-items: stretch; justify-content: center;
+      gap: 2.5rem; margin: 0;
+      background: var(--bg);
+      padding: 5rem var(--gutter) 3rem;
+      overflow-y: auto;
       display: none;
     }
-    .nav[data-open="true"] { display: flex; }
-    .nav__link { padding: 0.75rem 0; border-bottom: 1px solid var(--border); text-align: left; width: 100%; }
-    .nav__cta { margin: 1rem 0 0; justify-content: center; }
-    .nav__tel { padding: 0.75rem 0; border-bottom: 1px solid var(--border); margin-left: 0; }
-    .mega {
-      position: static; transform: none; opacity: 1; visibility: visible;
-      box-shadow: none; border: none; padding: 0.5rem 0 1rem; width: auto; display: none;
+    .nav[data-open='true'] { display: flex; }
+    .nav__list { flex-direction: column; align-items: stretch; gap: 0; }
+    .nav__link {
+      display: block; padding: 0.875rem 0; white-space: normal;
+      font-family: var(--font-serif); font-size: 1.5rem; font-weight: 600; color: var(--text);
+      border-bottom: 1px solid var(--border);
     }
-    .has-menu[data-open="true"] .mega { display: block; }
-    .mega__inner, .mega__inner--pb { grid-template-columns: 1fr; gap: 1rem; }
-    .mega__col--all { border-left: none; padding-left: 0; }
+    .nav__link:hover { border-bottom-color: var(--border); color: var(--accent); }
+    .nav__end { flex-direction: column; align-items: stretch; gap: 1rem; }
+    .nav__tel { font-size: 1.125rem; }
+    .nav__cta { justify-content: center; }
   }
 </style>
 
 <script>
   const toggle = document.querySelector('.nav-toggle');
   const nav = document.getElementById('primary-nav');
-  toggle?.addEventListener('click', () => {
-    const open = nav?.getAttribute('data-open') === 'true';
-    nav?.setAttribute('data-open', String(!open));
-    toggle.setAttribute('aria-expanded', String(!open));
-  });
-  // mobile: tap "Building Types" to expand rather than navigate
-  document.querySelectorAll('.has-menu > .nav__link').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      if (window.innerWidth > 1080) return;
-      e.preventDefault();
-      const item = btn.parentElement as HTMLElement;
-      const open = item.getAttribute('data-open') === 'true';
-      item.setAttribute('data-open', String(!open));
-      btn.setAttribute('aria-expanded', String(!open));
-    });
+
+  function setOpen(open: boolean) {
+    nav?.setAttribute('data-open', String(open));
+    toggle?.setAttribute('aria-expanded', String(open));
+    // The overlay covers the page, so the page behind it must not scroll.
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  toggle?.addEventListener('click', () => setOpen(nav?.getAttribute('data-open') !== 'true'));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && nav?.getAttribute('data-open') === 'true') {
+      setOpen(false);
+      (toggle as HTMLElement | null)?.focus();
+    }
   });
 </script>

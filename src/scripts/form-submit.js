@@ -12,7 +12,16 @@
  *   - `_gotcha` is its built-in honeypot; anything non-empty is discarded
  */
 
+import site from '../data/site.json';
+
 const EMAIL_RE = /^[^@\s]+@[^@\s]+\.[^@\s]+$/;
+
+// The phone number lives in site.json and is withheld until the line is live,
+// so no message here may hardcode one. `phonePending` keeps a half-configured
+// number out of the copy the same way `emailPending` keeps it out of the schema.
+const phone = site.phonePending ? '' : site.phone;
+const urgentLine = phone ? ` If it is urgent, call us on ${phone}.` : '';
+const retryLine = phone ? `Please call ${phone} or try again.` : 'Please try again in a moment.';
 
 function clearErrors(form) {
   form.querySelectorAll('.err').forEach((n) => n.remove());
@@ -106,7 +115,7 @@ export function wireForm(formId, { successHeading, successBody } = {}) {
           form,
           successHtml(
             successHeading ?? 'Thanks — we have your request.',
-            successBody ?? 'We will come back to you with a written quote. If it is urgent, call us on (903) 690-5969.'
+            (successBody ?? 'We will come back to you with a written quote.') + urgentLine
           )
         );
         return;
@@ -125,7 +134,7 @@ export function wireForm(formId, { successHeading, successBody } = {}) {
       const p = document.createElement('p');
       p.className = 'err form-error';
       p.setAttribute('role', 'alert');
-      p.textContent = `Sorry — that did not send. ${err.message}. Please call (903) 690-5969 or try again.`;
+      p.textContent = `Sorry — that did not send. ${err.message}. ${retryLine}`;
       button?.insertAdjacentElement('afterend', p);
     } finally {
       if (button) {

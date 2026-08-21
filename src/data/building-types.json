@@ -378,7 +378,7 @@
     "models": ["S", "T", "R"],
     "specs": [
       ["Relocatable", "Bolt-together, can be dismantled"],
-      ["Remote delivery", "Ships to site without crane in many sizes"],
+      ["Remote delivery", "Ships to site without a crane across most sizes"],
       ["Engineering", "Site-specific wind, snow, and seismic"],
       ["Classified areas", "Requirements vary — verify locally"]
     ]

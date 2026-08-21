@@ -23,17 +23,27 @@ const groups = [...new Set((types as any[]).map((t) => t.group))];
         the address it is going to.
       </p>
 
+      <nav class="jump" aria-label="Jump to a group">
+        {groups.map((g) => (
+          <a href={`#${(g as string).toLowerCase().replace(/[^a-z0-9]+/g, '-')}`}>{g}</a>
+        ))}
+      </nav>
+
       {groups.map((g) => (
-        <div class="group">
+        <div class="group" id={(g as string).toLowerCase().replace(/[^a-z0-9]+/g, '-')}>
           <h2 class="group__head">{g}</h2>
-          <div class="grid grid--3">
+          <div class="rows rows--compact">
             {(types as any[]).filter((t) => t.group === g).map((t) => (
-              <a class="card" href={`/building-types/${t.slug}/`}>
-                <Placeholder label={t.name} src={typeImage(t.slug)} alt={`${t.name} — ${t.headline}`} />
-                <div class="card__body">
-                  <h3 class="card__title">{t.name}</h3>
-                  <p class="card__text">{t.headline}</p>
-                  <span class="card__meta">{t.commonSizes[0]} – {t.commonSizes[t.commonSizes.length - 1]}</span>
+              <a class="row" href={`/building-types/${t.slug}/`}>
+                <div class="row__media">
+                  <Placeholder label={t.name} src={typeImage(t.slug)} alt={`${t.name} — ${t.headline}`} />
+                </div>
+                <div class="row__body">
+                  <h3 class="row__title">{t.name}</h3>
+                  <p class="row__text">{t.headline}</p>
+                  <span class="row__meta">
+                    Common sizes {t.commonSizes[0]} – {t.commonSizes[t.commonSizes.length - 1]}
+                  </span>
                 </div>
               </a>
             ))}
@@ -46,10 +56,20 @@ const groups = [...new Set((types as any[]).map((t) => t.group))];
 
 <style>
   .page-title { font-size: clamp(2rem, 5vw, 3rem); margin-block: 0.5rem 1rem; }
-  .group { margin-top: 3.5rem; }
+
+  .jump { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 2rem; }
+  .jump a {
+    padding: 0.4375rem 0.9375rem;
+    font-size: 0.875rem; font-weight: 600;
+    text-decoration: none; color: var(--text-muted);
+    background: var(--bg-sunken); border-radius: 999px;
+  }
+  .jump a:hover { color: var(--accent-contrast); background: var(--accent); }
+
+  .group { margin-top: clamp(2.5rem, 6vw, 4rem); scroll-margin-top: 1.5rem; }
   .group__head {
-    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.12em;
-    color: var(--text-faint); padding-bottom: 0.75rem; margin-bottom: 1.5rem;
-    border-bottom: 1px solid var(--border);
+    font-family: var(--font-sans);
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.14em;
+    color: var(--text-faint); margin-bottom: 0.75rem;
   }
 </style>
