@@ -88,6 +88,13 @@
 /* ---------- reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; }
+/* `hidden` has to beat component display rules. Author styles override the UA
+   sheet's `[hidden] { display: none }` regardless of specificity, so any
+   element carrying a display value silently ignores `el.hidden = true`. That
+   left the inventory filter doing nothing at all (.card is display:flex) and
+   the quote form showing its portable-model field for steel enquiries
+   (.field is display:flex). !important so a component rule cannot win. */
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
 body {
   background: var(--bg);
