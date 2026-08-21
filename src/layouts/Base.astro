@@ -91,6 +91,24 @@ const localBusiness = {
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    {/* Stopgap while "Enforce HTTPS" is unticked in Settings → Pages. Until it
+        is, GitHub serves this domain over plain HTTP as well as HTTPS, and
+        there is no API to set it. This upgrades the visitor on arrival.
+
+        It is weaker than the real setting and not a replacement for it: the
+        first request still goes out in cleartext, so it cannot stop an active
+        attacker who intercepts that one. It closes the ordinary case — a
+        bookmark, a typed address, an old http:// link — and costs nothing once
+        the box is ticked, because GitHub's own redirect fires first. */}
+    <script is:inline>
+      if (
+        location.protocol === 'http:' &&
+        location.hostname !== 'localhost' &&
+        location.hostname !== '127.0.0.1'
+      ) {
+        location.replace('https://' + location.host + location.pathname + location.search + location.hash);
+      }
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
