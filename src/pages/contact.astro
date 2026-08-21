@@ -89,9 +89,11 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
             <textarea id="message" name="message" rows="6" required></textarea>
           </div>
 
+          <input type="hidden" name="_subject" value="New message — anysize.shop" />
+
           <div class="visually-hidden" aria-hidden="true">
-            <label for="company_website">Leave this blank</label>
-            <input id="company_website" name="company_website" type="text" tabindex="-1" autocomplete="off" />
+            <label for="_gotcha">Leave this blank</label>
+            <input id="_gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
           </div>
 
           <button class="btn btn--primary btn--submit" type="submit">Send Message</button>
@@ -152,35 +154,9 @@ const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? '';
 </style>
 
 <script>
-  const form = document.getElementById('contact-form');
-  form?.addEventListener('submit', (e) => {
-    let ok = true;
-    form.querySelectorAll('.err').forEach((n) => n.remove());
-
-    form.querySelectorAll('[required]').forEach((el) => {
-      const valid = el.value.trim() !== '' && (el.type !== 'email' || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value));
-      el.setAttribute('aria-invalid', String(!valid));
-      if (!valid) {
-        ok = false;
-        const msg = document.createElement('p');
-        msg.className = 'err';
-        msg.textContent = el.type === 'email' && el.value.trim() !== '' ? 'Enter a valid email address.' : 'This field is required.';
-        el.parentElement.appendChild(msg);
-      }
-    });
-
-    if (form.company_website.value !== '') { e.preventDefault(); return; }
-
-    if (!ok) {
-      e.preventDefault();
-      form.querySelector('[aria-invalid="true"]')?.focus();
-      return;
-    }
-
-    if (!form.getAttribute('action')) {
-      e.preventDefault();
-      form.insertAdjacentHTML('beforebegin', '<div class="form-success"><strong>Form endpoint not configured.</strong><p style="margin-top:.5rem;font-size:.875rem;color:var(--text-muted)">This message was not sent. Set PUBLIC_FORM_ENDPOINT to go live.</p></div>');
-      form.style.display = 'none';
-    }
+  import { wireForm } from '../scripts/form-submit.js';
+  wireForm('contact-form', {
+    successHeading: 'Thanks — message received.',
+    successBody: 'We will reply shortly. If it is urgent, call us on (903) 690-5969.',
   });
 </script>

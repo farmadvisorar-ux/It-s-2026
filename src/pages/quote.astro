@@ -172,10 +172,13 @@ const pbProducts = (pb as any).products;
             </div>
           </fieldset>
 
-          <!-- honeypot -->
+          <!-- Formspree: sets the notification subject so leads are scannable in an inbox -->
+          <input type="hidden" name="_subject" value="New quote request — anysize.shop" />
+
+          <!-- honeypot (Formspree discards any submission where this is filled) -->
           <div class="visually-hidden" aria-hidden="true">
-            <label for="company_website">Leave this blank</label>
-            <input id="company_website" name="company_website" type="text" tabindex="-1" autocomplete="off" />
+            <label for="_gotcha">Leave this blank</label>
+            <input id="_gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
           </div>
 
           <button class="btn btn--primary btn--submit" type="submit">Send Request</button>
@@ -289,41 +292,11 @@ const pbProducts = (pb as any).products;
     notes.value = bits.join('\n');
   }
 
-  // Validation
-  const form = document.getElementById('quote-form');
-  form?.addEventListener('submit', (e) => {
-    let ok = true;
-    form.querySelectorAll('.err').forEach((n) => n.remove());
-
-    form.querySelectorAll('[required]').forEach((el) => {
-      const valid = el.value.trim() !== '' && (el.type !== 'email' || /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(el.value));
-      el.setAttribute('aria-invalid', String(!valid));
-      if (!valid) {
-        ok = false;
-        const msg = document.createElement('p');
-        msg.className = 'err';
-        msg.textContent = el.type === 'email' && el.value.trim() !== '' ? 'Enter a valid email address.' : 'This field is required.';
-        el.parentElement.appendChild(msg);
-      }
-    });
-
-    // honeypot tripped — silently drop
-    if (form.company_website.value !== '') { e.preventDefault(); return; }
-
-    if (!ok) {
-      e.preventDefault();
-      form.querySelector('[aria-invalid="true"]')?.focus();
-      return;
-    }
-
-    // No endpoint configured yet — do not pretend the lead was sent.
-    if (!form.getAttribute('action')) {
-      e.preventDefault();
-      form.insertAdjacentHTML(
-        'beforebegin',
-        '<div class="form-success"><strong>Form endpoint not configured.</strong><p style="margin-top:.5rem;font-size:.875rem;color:var(--text-muted)">This submission was not sent. Set PUBLIC_FORM_ENDPOINT to go live.</p></div>'
-      );
-      form.style.display = 'none';
-    }
+  import { wireForm } from '../scripts/form-submit.js';
+  wireForm('quote-form', {
+    successHeading: 'Thanks — we have your request.',
+    successBody:
+      'We will come back with a written quote covering the building, the options you picked and freight. ' +
+      'If it is urgent, call us on (903) 690-5969.',
   });
 </script>
