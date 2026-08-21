@@ -35,6 +35,7 @@ const parentCrumb = type.parent
 <Base
   title={type.name}
   description={type.intro.slice(0, 155)}
+  image={`/og/types/${type.slug.replace(/\//g, "-")}.jpg`}
   crumbs={parentCrumb}
   current={type.name}
 >

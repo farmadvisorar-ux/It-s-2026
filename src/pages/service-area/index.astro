@@ -1,0 +1,128 @@
+---
+import Base from '../../layouts/Base.astro';
+import loc from '../../data/locations.json';
+
+const { base, counties, cities } = loc as any;
+const allCommunities = [...new Set(counties.flatMap((c: any) => c.communities))].sort();
+const cityBySlug = (s: string) => cities.find((c: any) => c.slug === s);
+---
+
+<Base
+  title="Service Area — East Texas"
+  description={`Steel buildings and portable buildings delivered across East Texas — Harrison, Gregg, Smith, Panola, Marion, Upshur, Morris and Rusk counties. Based in ${base.city}, ${base.stateCode}.`}
+  crumbs={[]}
+  current="Service Area"
+>
+  <section class="head">
+    <div class="wrap">
+      <p class="eyebrow">Based in {base.city}, {base.stateCode}</p>
+      <h1 class="page-title">Where We Deliver</h1>
+      <p class="lede">
+        We are an East Texas business. {base.city} is home, and the eight counties below are
+        our regular delivery run — {allCommunities.length} communities in all. Steel building
+        kits ship nationwide by freight; portable buildings are trucked complete, which is
+        why that line stays regional.
+      </p>
+    </div>
+  </section>
+
+  <!-- counties -->
+  <section class="section">
+    <div class="wrap">
+      <h2 class="sec-title">Counties we serve</h2>
+      <div class="grid grid--3">
+        {counties.map((c: any) => (
+          <a class="card county" href={`/service-area/${c.slug}/`}>
+            <div class="card__body">
+              {c.isBase && <span class="tag tag--accent">Home county</span>}
+              <h3 class="card__title">{c.name}</h3>
+              <span class="card__meta">County seat: {c.seat}</span>
+              <p class="card__text">{c.blurb}</p>
+              <span class="county__count">{c.communities.length} communities</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- primary markets -->
+  <section class="section section--sunken">
+    <div class="wrap">
+      <h2 class="sec-title">Towns we deliver to most</h2>
+      <p class="lede" style="margin-bottom:2rem">
+        These have their own pages covering local permitting, ground conditions and what
+        people there actually order.
+      </p>
+      <div class="grid grid--4">
+        {cities.map((c: any) => (
+          <a class="card" href={`/service-area/${c.slug}/`}>
+            <div class="card__body">
+              <h3 class="card__title">{c.name}, TX</h3>
+              <span class="card__meta">{c.county}</span>
+              <p class="card__text">{c.blurb}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- full list -->
+  <section class="section">
+    <div class="wrap">
+      <h2 class="sec-title">Every community in our delivery area</h2>
+      <p class="lede" style="margin-bottom:1.5rem">
+        If your town is on this list, you are inside our regular run. If it is not, ask
+        anyway — steel kits ship anywhere, and we go outside this area more often than not.
+      </p>
+      <ul class="all-towns">
+        {allCommunities.map((t: string) => {
+          const city = cityBySlug(
+            t.toLowerCase().replace(/['’]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
+          );
+          return (
+            <li>
+              {city ? <a href={`/service-area/${city.slug}/`}>{t}</a> : <span>{t}</span>}
+            </li>
+          );
+        })}
+      </ul>
+    </div>
+  </section>
+
+  <section class="cta">
+    <div class="wrap cta__inner">
+      <div>
+        <h2>Not sure if we reach you?</h2>
+        <p>Send us the delivery address. It takes a minute to confirm, and it decides the engineering anyway.</p>
+      </div>
+      <a class="btn btn--primary btn--lg" href="/quote/">Request a Quote</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { padding-block: clamp(2rem, 5vw, 3.5rem); border-bottom: 1px solid var(--border); }
+  .page-title { font-size: clamp(2rem, 5vw, 3rem); margin-block: 0.5rem 1rem; }
+  .sec-title { font-size: clamp(1.5rem, 3.2vw, 2rem); margin-bottom: 1.5rem; }
+  .county__count { font-size: 0.8125rem; color: var(--text-faint); font-family: var(--font-mono); margin-top: auto; padding-top: 0.75rem; }
+
+  .all-towns {
+    list-style: none; padding: 0;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 0.5rem;
+  }
+  .all-towns li {
+    font-size: 0.9375rem; padding: 0.5rem 0.75rem;
+    background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius);
+  }
+  .all-towns a { color: var(--accent); text-decoration: none; font-weight: 500; }
+  .all-towns a:hover { text-decoration: underline; }
+  .all-towns span { color: var(--text-muted); }
+
+  .cta { background: var(--bg-inverse); color: var(--text-inverse); padding-block: clamp(2.5rem, 6vw, 4rem); }
+  .cta__inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .cta h2 { font-size: clamp(1.5rem, 3.4vw, 2rem); margin-bottom: 0.5rem; }
+  .cta p { color: color-mix(in srgb, currentColor 72%, transparent); max-width: 52ch; }
+  .btn--lg { padding: 0.9375rem 2rem; font-size: 1rem; }
+</style>

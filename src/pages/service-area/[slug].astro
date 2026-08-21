@@ -1,0 +1,215 @@
+---
+import Base from '../../layouts/Base.astro';
+import Placeholder from '../../components/Placeholder.astro';
+import loc from '../../data/locations.json';
+import types from '../../data/building-types.json';
+import pb from '../../data/portable-buildings.json';
+import { typeImage } from '../../lib/images';
+
+export function getStaticPaths() {
+  const { counties, cities } = loc as any;
+  return [
+    ...counties.map((c: any) => ({ params: { slug: c.slug }, props: { place: c, kind: 'county' } })),
+    ...cities.map((c: any) => ({ params: { slug: c.slug }, props: { place: c, kind: 'city' } })),
+  ];
+}
+
+const { place, kind } = Astro.props;
+const { base, shared, counties, cities } = loc as any;
+
+const isCounty = kind === 'county';
+const label = isCounty ? place.name : `${place.name}, TX`;
+const popular = (place.popular ?? [])
+  .map((s: string) => (types as any[]).find((t) => t.slug === s))
+  .filter(Boolean);
+
+// counties list their towns; cities link back to their county and to siblings
+const county = isCounty ? place : counties.find((c: any) => c.slug === place.countySlug);
+const siblingCities = isCounty
+  ? cities.filter((c: any) => c.countySlug === place.slug)
+  : cities.filter((c: any) => c.countySlug === place.countySlug && c.slug !== place.slug);
+
+const pbStates = (pb as any).line.deliveryStates;
+---
+
+<Base
+  title={`Steel Buildings & Portable Buildings in ${label}`}
+  description={`${place.blurb} Steel building kits and wood portable buildings delivered to ${label}. Local permitting, ground conditions and what people here actually order.`}
+  crumbs={[{ label: 'Service Area', href: '/service-area/' }]}
+  current={label}
+>
+  <section class="head">
+    <div class="wrap head__inner">
+      <div>
+        <p class="eyebrow">{isCounty ? `County seat: ${place.seat}` : place.county}</p>
+        <h1 class="page-title">Buildings in {label}</h1>
+        <p class="lede">{place.intro}</p>
+        <div class="head__actions">
+          <a class="btn btn--primary" href={`/quote/?area=${place.slug}`}>Get a Quote</a>
+          <a class="btn btn--ghost" href="/service-area/">All areas we serve</a>
+        </div>
+        {place.isBase && <p class="base-note">{base.note}</p>}
+      </div>
+      <Placeholder
+        label={`Buildings delivered to ${label}`}
+        src={typeImage(place.popular?.[0] ?? 'garages')}
+        alt={`Steel building delivered in ${label}`}
+        variant="wide"
+      />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap body-grid">
+      <div class="prose">
+        <h2>What people order in {place.name}</h2>
+        <p>{place.local}</p>
+
+        <h2>Permits and local requirements</h2>
+        <p>{place.permitting}</p>
+        <p class="caveat">
+          We are a building supplier, not your building department. Treat the above as a
+          starting point and confirm the specifics for your parcel — requirements differ
+          between city limits and county, and they change.
+        </p>
+
+        <h2>Ground conditions in East Texas</h2>
+        <p>{shared.soil}</p>
+        <p>{shared.climate}</p>
+        <p>{shared.humidity}</p>
+
+        {isCounty && (
+          <>
+            <h2>Communities we deliver to in {place.name}</h2>
+            <ul class="towns">
+              {place.communities.map((t: string) => <li>{t}</li>)}
+            </ul>
+          </>
+        )}
+      </div>
+
+      <aside class="side">
+        <div class="panel">
+          <h2 class="panel__head">Delivery to {place.name}</h2>
+          <div class="table-scroll">
+            <table class="spec">
+              <tbody>
+                <tr><th scope="row">Steel kits</th><td>Ships nationwide by freight</td></tr>
+                <tr><th scope="row">Portable buildings</th><td>Delivered finished — {pbStates.join(', ')}</td></tr>
+                <tr><th scope="row">From</th><td>{base.city}, {base.stateCode}</td></tr>
+                {isCounty
+                  ? <tr><th scope="row">Communities</th><td>{place.communities.length}</td></tr>
+                  : <tr><th scope="row">County</th><td>{place.county}</td></tr>}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        {county && !isCounty && (
+          <div class="panel">
+            <h2 class="panel__head">County</h2>
+            <p class="panel__note">
+              {place.name} is in <a href={`/service-area/${county.slug}/`}>{county.name}</a>.
+              That page covers the wider area and every community in it.
+            </p>
+          </div>
+        )}
+
+        {siblingCities.length > 0 && (
+          <div class="panel">
+            <h2 class="panel__head">{isCounty ? 'Towns with their own page' : 'Nearby'}</h2>
+            <ul class="plain">
+              {siblingCities.map((c: any) => (
+                <li><a href={`/service-area/${c.slug}/`}>{c.name}, TX</a></li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        <div class="panel panel--accent">
+          <h2 class="panel__head">Local, not a call centre</h2>
+          <p class="panel__note">
+            We are based in {base.city} and deliver across {base.region}. Tell us the address
+            and we will tell you straight away whether it is a short run or a freight job.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  {popular.length > 0 && (
+    <section class="section section--sunken">
+      <div class="wrap">
+        <h2 class="sec-title">Most ordered around {place.name}</h2>
+        <div class="grid grid--4">
+          {popular.map((t: any) => (
+            <a class="card" href={`/building-types/${t.slug}/`}>
+              <Placeholder label={t.name} src={typeImage(t.slug)} alt={t.name} />
+              <div class="card__body">
+                <h3 class="card__title">{t.name}</h3>
+                <p class="card__text">{t.headline}</p>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+  )}
+
+  <section class="cta">
+    <div class="wrap cta__inner">
+      <div>
+        <h2>Building something in {place.name}?</h2>
+        <p>Send the address and what goes inside. We quote in writing, freight included.</p>
+      </div>
+      <a class="btn btn--primary btn--lg" href={`/quote/?area=${place.slug}`}>Request a Quote</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .head { padding-block: clamp(2rem, 5vw, 3.5rem); border-bottom: 1px solid var(--border); }
+  .head__inner { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 4vw, 3rem); align-items: center; }
+  .head :global(.ph), .head :global(.ph-img) { border-radius: var(--radius-lg); border: 1px solid var(--border); }
+  .page-title { font-size: clamp(1.875rem, 4.5vw, 3rem); margin-block: 0.5rem 0.75rem; }
+  .head__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
+  .base-note {
+    margin-top: 1.25rem; padding: 0.75rem 1rem; font-size: 0.875rem; color: var(--text-muted);
+    background: color-mix(in srgb, var(--accent) 8%, var(--bg-raised));
+    border-left: 3px solid var(--accent); border-radius: 0 var(--radius) var(--radius) 0;
+  }
+
+  .body-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
+  .caveat { font-size: 0.875rem; color: var(--text-faint); border-left: 2px solid var(--border-strong); padding-left: 0.875rem; }
+
+  .towns { list-style: none; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 0.5rem; }
+  .towns li {
+    font-size: 0.875rem; padding: 0.4375rem 0.625rem; color: var(--text-muted);
+    background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius);
+  }
+
+  .side { display: grid; gap: 1.25rem; position: sticky; top: 88px; }
+  .panel { background: var(--bg-raised); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; }
+  .panel--accent { border-color: color-mix(in srgb, var(--accent) 40%, transparent); background: color-mix(in srgb, var(--accent) 6%, var(--bg-raised)); }
+  .panel__head { font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-faint); margin-bottom: 0.875rem; }
+  .panel__note { font-size: 0.8125rem; color: var(--text-muted); line-height: 1.6; }
+  .panel__note a { color: var(--accent); }
+  .panel .spec th, .panel .spec td { padding: 0.5rem 0; font-size: 0.875rem; }
+  .panel .spec th { width: 45%; padding-right: 0.75rem; }
+  .plain { list-style: none; padding: 0; }
+  .plain li { margin-bottom: 0.5rem; font-size: 0.875rem; }
+  .plain a { color: var(--text-muted); text-decoration: none; }
+  .plain a:hover { color: var(--accent); }
+
+  .sec-title { font-size: clamp(1.375rem, 3vw, 1.875rem); margin-bottom: 1.5rem; }
+  .cta { background: var(--bg-inverse); color: var(--text-inverse); padding-block: clamp(2.5rem, 6vw, 4rem); }
+  .cta__inner { display: flex; justify-content: space-between; align-items: center; gap: 2rem; flex-wrap: wrap; }
+  .cta h2 { font-size: clamp(1.5rem, 3.4vw, 2rem); margin-bottom: 0.5rem; }
+  .cta p { color: color-mix(in srgb, currentColor 72%, transparent); max-width: 52ch; }
+  .btn--lg { padding: 0.9375rem 2rem; font-size: 1rem; }
+
+  @media (max-width: 900px) {
+    .head__inner, .body-grid { grid-template-columns: 1fr; }
+    .side { position: static; }
+  }
+</style>

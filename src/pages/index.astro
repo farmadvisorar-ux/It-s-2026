@@ -6,12 +6,17 @@ import types from '../data/building-types.json';
 import models from '../data/models.json';
 import inventory from '../data/inventory.json';
 import pb from '../data/portable-buildings.json';
+import loc from '../data/locations.json';
 import { typeImage, inventoryImage, heroImage, portableImage } from '../lib/images';
 
 const featured = ['garages', 'workshops', 'barndominium', 'quonset-buildings', 'container-covers', 'agricultural-and-farm', 'commercial', 'storage'];
 const featuredTypes = featured.map((s) => types.find((t: any) => t.slug === s)).filter(Boolean) as any[];
 const deals = (inventory as any[]).filter((i) => i.featured).slice(0, 3);
 const pbLine = (pb as any).line;
+const locBase = (loc as any).base;
+const locCounties = (loc as any).counties;
+const locCities = (loc as any).cities;
+const townCount = new Set(locCounties.flatMap((c: any) => c.communities)).size;
 const pbCats = (pb as any).categories;
 const pbCount = (pb as any).products.length;
 const pbFeatured = ['barn', 'tool-shed-tall', 'utility-cabin', 'barn-garage']
@@ -231,6 +236,32 @@ const steps = [
     </div>
   </section>
 
+  <!-- ================= SERVICE AREA ================= -->
+  <section class="section">
+    <div class="wrap">
+      <header class="sec-head">
+        <div>
+          <p class="eyebrow">Based in {locBase.city}, {locBase.stateCode}</p>
+          <h2>An East Texas business, not a call centre</h2>
+        </div>
+        <a class="btn btn--ghost" href="/service-area/">Full service area</a>
+      </header>
+      <p class="lede" style="margin-bottom:2rem">
+        We deliver across {locCounties.length} East Texas counties — {townCount} communities
+        in all. Steel building kits ship nationwide by freight; portable buildings are
+        trucked complete, which keeps that line regional.
+      </p>
+      <div class="areas">
+        {locCities.map((c: any) => (
+          <a class="area" href={`/service-area/${c.slug}/`}>
+            <strong>{c.name}</strong>
+            <span>{c.county.replace(' County', ' Co.').replace(' Counties', ' Cos.')}</span>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- ================= CTA ================= -->
   <section class="cta">
     <div class="wrap cta__inner">
@@ -291,6 +322,17 @@ const steps = [
   .step__n { font-family: var(--font-mono); font-size: 0.8125rem; font-weight: 700; color: var(--accent); }
   .step h3 { font-size: 1.0625rem; margin: 0.5rem 0; }
   .step p { font-size: 0.9375rem; color: var(--text-muted); }
+
+  .areas { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 0.75rem; }
+  .area {
+    display: flex; flex-direction: column; gap: 0.125rem;
+    padding: 0.75rem 0.875rem; text-decoration: none;
+    background: var(--bg-raised); border: 1px solid var(--border);
+    border-radius: var(--radius); transition: border-color .15s;
+  }
+  .area:hover { border-color: var(--accent); }
+  .area strong { font-size: 0.9375rem; color: var(--text); }
+  .area span { font-size: 0.75rem; color: var(--text-faint); font-family: var(--font-mono); }
 
   /* cta */
   .cta { background: var(--bg-inverse); color: var(--text-inverse); padding-block: clamp(2.5rem, 6vw, 4rem); }

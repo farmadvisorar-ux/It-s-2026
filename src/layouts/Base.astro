@@ -3,6 +3,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import site from '../data/site.json';
+import locations from '../data/locations.json';
 
 interface Props {
   title: string;
@@ -10,11 +11,46 @@ interface Props {
   /** Breadcrumb trail, excluding Home and the current page. */
   crumbs?: { label: string; href: string }[];
   current?: string;
+  /** Root-relative OG image, e.g. "/og/types/garages.jpg". Falls back to the default. */
+  image?: string;
 }
 
-const { title, description = site.description, crumbs = [], current } = Astro.props;
+const { title, description = site.description, crumbs = [], current, image } = Astro.props;
 const fullTitle = title === site.name ? `${site.name} — ${site.tagline}` : `${title} | ${site.name}`;
-const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://marshallsheds.com').href;
+const origin = (Astro.site ?? new URL('https://anysize.shop')).origin;
+const canonical = new URL(Astro.url.pathname, origin).href;
+// Social scrapers require an absolute URL — a root-relative path silently yields no preview.
+const ogImage = new URL(image ?? '/og/default.jpg', origin).href;
+
+const localBusiness = {
+  '@context': 'https://schema.org',
+  '@type': 'HomeAndConstructionBusiness',
+  name: site.name,
+  description: site.description,
+  url: origin,
+  image: ogImage,
+  ...(site.phone ? { telephone: site.phone } : {}),
+  ...(site.email ? { email: site.email } : {}),
+  address: {
+    '@type': 'PostalAddress',
+    ...(site.address.street ? { streetAddress: site.address.street } : {}),
+    addressLocality: site.address.city || locations.base.city,
+    addressRegion: site.address.region || locations.base.stateCode,
+    ...(site.address.postal ? { postalCode: site.address.postal } : {}),
+    addressCountry: 'US',
+  },
+  areaServed: [
+    ...locations.counties.map((c: any) => ({ '@type': 'AdministrativeArea', name: `${c.name}, Texas` })),
+    ...locations.counties.flatMap((c: any) =>
+      c.communities.map((t: string) => ({ '@type': 'City', name: `${t}, Texas` }))
+    ),
+  ],
+  knowsAbout: [
+    'steel buildings', 'metal buildings', 'portable buildings', 'storage sheds',
+    'garages', 'workshops', 'barndominiums', 'quonset huts', 'carports',
+    'agricultural buildings', 'container covers',
+  ],
+};
 ---
 
 <html lang="en">
@@ -33,7 +69,16 @@ const canonical = new URL(Astro.url.pathname, Astro.site ?? 'https://marshallshe
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content={site.name} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={fullTitle} />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <script type="application/ld+json" set:html={JSON.stringify(localBusiness)} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

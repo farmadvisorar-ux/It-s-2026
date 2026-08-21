@@ -37,6 +37,7 @@ const stateNames: Record<string, string> = {
 <Base
   title={product.name}
   description={`${product.name} — ${product.headline}. ${product.sizes.length} size${product.sizes.length === 1 ? '' : 's'}, delivered finished and ready to use.`}
+  image={`/og/portable/${product.slug}.jpg`}
   crumbs={[{ label: 'Portable Buildings', href: '/portable-buildings/' }]}
   current={product.name}
 >

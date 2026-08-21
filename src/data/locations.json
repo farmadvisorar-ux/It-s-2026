@@ -1,0 +1,273 @@
+{
+  "base": {
+    "city": "Marshall",
+    "state": "Texas",
+    "stateCode": "TX",
+    "region": "East Texas",
+    "note": "Marshall is our home base. Everything below is inside our regular delivery run, so freight is short and scheduling is straightforward."
+  },
+  "shared": {
+    "climate": "East Texas sits in a mild-snow, moderate-wind zone. Roof snow load is rarely the governing factor here the way it is up north — wind uplift and, on open rural sites, exposure category usually drive the engineering instead.",
+    "soil": "Expansive clay is common across East Texas. It swells when wet and shrinks in drought, and that movement is what cracks a slab poured without accounting for it. Any permanent building here deserves a foundation designed for that soil. It is the single thing people underspend on locally.",
+    "humidity": "High humidity most of the year makes ventilation more important than owners expect. An unvented metal building in this climate condenses moisture on the underside of the roof and drips on whatever is stored below."
+  },
+  "counties": [
+    {
+      "slug": "harrison-county",
+      "name": "Harrison County",
+      "seat": "Marshall",
+      "isBase": true,
+      "blurb": "Our home county. Shortest delivery runs we make.",
+      "intro": "Harrison County is where we are based, so buildings going anywhere in the county have the simplest logistics we offer — short freight on steel kits and a straightforward delivery window on portable buildings.",
+      "local": "The county splits between town lots in Marshall and Hallsville and a great deal of rural acreage in between. That shows in the orders: backyard storage and garages in town, equipment and hay buildings out on the county roads.",
+      "permitting": "Inside a city's limits you deal with that city. Outside them, Harrison County requirements apply and are generally lighter. One phone call before ordering is worth it — it occasionally changes which size makes sense.",
+      "communities": ["Marshall", "Hallsville", "Waskom", "Scottsville", "Elysian Fields", "Woodlawn", "Karnack", "Harleton", "Nesbitt", "Uncertain", "Jonesville", "Leigh", "Gill", "Darco"],
+      "popular": ["garages", "workshops", "agricultural-and-farm", "storage"]
+    },
+    {
+      "slug": "gregg-county",
+      "name": "Gregg County",
+      "seat": "Longview",
+      "blurb": "Our largest market, about 25 minutes west.",
+      "intro": "Gregg County holds the biggest population we serve and the widest range of jobs — backyard sheds in Longview subdivisions through to commercial and light industrial steel on the south and east sides.",
+      "local": "Longview has more established neighbourhoods with deed restrictions than the smaller communities around it, so appearance matters more here. Cottage-style portable buildings and colour-matched steel come up far more often in Gregg County than anywhere else we deliver.",
+      "permitting": "City of Longview permits inside its limits and does enforce setback and appearance rules. Check deed restrictions separately — they are not the city's rules and are often stricter about outbuildings.",
+      "communities": ["Longview", "Kilgore", "White Oak", "Gladewater", "Clarksville City", "Easton", "Lakeport", "Warren City", "Liberty City", "Pine Tree", "Spring Hill", "Judson", "Elderville"],
+      "popular": ["garages", "workshops", "commercial", "multi-door-garage-kits"]
+    },
+    {
+      "slug": "smith-county",
+      "name": "Smith County",
+      "seat": "Tyler",
+      "blurb": "About an hour west — our furthest regular run.",
+      "intro": "Smith County is the western edge of our normal delivery area. Steel kits ship there as easily as anywhere since they travel by freight; portable buildings are a longer haul but well within range.",
+      "local": "Smith County has a lot of acreage properties and horse operations, so riding arenas, hay storage and equipment barns come up more often here than the backyard storage work we do closer to home.",
+      "permitting": "City of Tyler inside its limits, Smith County outside. For anything on acreage, confirm floodplain status early — it affects the foundation more than it affects the building.",
+      "communities": ["Tyler", "Lindale", "Whitehouse", "Arp", "Bullard", "Troup", "Noonday", "Winona", "Hideaway", "New Chapel Hill", "Swan", "Flint", "Chapel Hill"],
+      "popular": ["agricultural-and-farm", "arenas-recreational", "workshops", "barndominium"]
+    },
+    {
+      "slug": "panola-county",
+      "name": "Panola County",
+      "seat": "Carthage",
+      "blurb": "Gas country and cattle country at once.",
+      "intro": "Panola County sits southeast of us and runs to the Louisiana line. Gas operations and cattle share the same ground here, which makes for a broad mix of agricultural and equipment buildings.",
+      "local": "Most Panola County deliveries land on acreage rather than in town, so drive-through access and door width matter more than styling. Size the opening to the largest implement on the place and the rest of the building follows from it.",
+      "permitting": "City of Carthage inside its limits, Panola County outside. Rural requirements are generally light, which does not make a properly engineered foundation optional — the clay here moves.",
+      "communities": ["Carthage", "Beckville", "Gary City", "Tatum", "DeBerry", "Clayton", "Long Branch", "Fairplay"],
+      "popular": ["agricultural-and-farm", "storage", "workshops", "energy-oil-gas"]
+    },
+    {
+      "slug": "marion-county",
+      "name": "Marion County",
+      "seat": "Jefferson",
+      "blurb": "Historic Jefferson and the south shore of Lake O' the Pines.",
+      "intro": "Marion County covers historic Jefferson and a good share of Lake O' the Pines, and those two areas want very different buildings.",
+      "local": "In and near Jefferson's historic district, what a building looks like is genuinely constrained. Out toward the lake the rules relax and the work shifts to boat storage, covered parking and cabins.",
+      "permitting": "Check with the City of Jefferson before ordering anything near the historic district — there can be review requirements beyond a standard permit, and discovering that afterward is expensive. Lakeside property may also fall under Corps of Engineers rules.",
+      "communities": ["Jefferson", "Lake O' the Pines", "Smithland", "Berea"],
+      "popular": ["storage", "carport-kits", "garages", "roofing-systems"]
+    },
+    {
+      "slug": "upshur-county",
+      "name": "Upshur County",
+      "seat": "Gilmer",
+      "blurb": "North of Longview, timber and small acreage.",
+      "intro": "Upshur County runs north from Gladewater up through Gilmer and Ore City, taking in the north side of Lake O' the Pines along the way.",
+      "local": "Timber and small acreage dominate, so sites are frequently wooded. Delivery access is the thing to check first here — a finished portable building needs a clear route with real overhead clearance, and branches stop more deliveries in Upshur County than anything on the ground does.",
+      "permitting": "Upshur County requirements apply outside city limits and are typically straightforward. Verify floodplain status on anything near a creek bottom.",
+      "communities": ["Gilmer", "Ore City", "Big Sandy", "East Mountain", "Union Grove", "Diana", "Harmony", "Rhonesboro", "Gladewater"],
+      "popular": ["agricultural-and-farm", "storage", "workshops", "large-storage-buildings"]
+    },
+    {
+      "slug": "morris-county",
+      "name": "Morris County",
+      "seat": "Daingerfield",
+      "blurb": "The northern edge of our delivery area.",
+      "intro": "Morris County is the northern limit of our regular run, taking in Daingerfield, Naples, Omaha and Lone Star along with the top end of Lake O' the Pines.",
+      "local": "Rural properties and lake access drive most of the work here — equipment storage, covered parking and secure buildings for property that sits unattended part of the year.",
+      "permitting": "Morris County requirements apply outside city limits. Lakeside property may involve Corps of Engineers rules depending on where the boundary falls, so confirm before siting the building.",
+      "communities": ["Daingerfield", "Naples", "Omaha", "Lone Star", "Cason"],
+      "popular": ["storage", "carport-kits", "agricultural-and-farm", "garages"]
+    },
+    {
+      "slug": "rusk-county",
+      "name": "Rusk County",
+      "seat": "Henderson",
+      "blurb": "Oilfield country south of Longview.",
+      "intro": "Rusk County runs south from Kilgore through Henderson, with a long oilfield history that shows plainly in what gets ordered — equipment storage, pipe and material cover, and shop space built to take real use.",
+      "local": "We see more heavy-duty and relocatable requirements in Rusk County than anywhere else in the area. Bolt-together steel suits that: it goes up without a fabrication shop on site and can be dismantled and moved when an operation relocates.",
+      "permitting": "Kilgore straddles the Gregg and Rusk county line and Tatum straddles Rusk and Panola, so which county your property actually sits in matters. Confirm it before ordering rather than assuming.",
+      "communities": ["Henderson", "Kilgore", "Overton", "Tatum", "Mount Enterprise", "New London", "Laneville", "Minden", "Leverett's Chapel", "Price", "Selman City"],
+      "popular": ["energy-oil-gas", "workshops", "large-storage-buildings", "commercial"]
+    }
+  ],
+  "cities": [
+    {
+      "slug": "marshall",
+      "name": "Marshall",
+      "county": "Harrison County",
+      "countySlug": "harrison-county",
+      "isBase": true,
+      "blurb": "Our home base, and the shortest delivery run we make.",
+      "intro": "Marshall is where we are based, so buildings going anywhere in Harrison County have the simplest logistics we offer — short freight on steel kits, and a straightforward delivery window on portable buildings.",
+      "local": "Harrison County covers a lot of rural acreage alongside the city itself, so what people order here splits fairly evenly between backyard storage inside the loop and larger agricultural and equipment buildings out on the county roads.",
+      "permitting": "Inside Marshall city limits you deal with the City of Marshall for permits and setbacks. Outside city limits, Harrison County requirements are different and generally lighter — worth one phone call before you order.",
+      "popular": ["garages", "workshops", "agricultural-and-farm", "storage"]
+    },
+    {
+      "slug": "longview",
+      "name": "Longview",
+      "county": "Gregg County",
+      "countySlug": "gregg-county",
+      "blurb": "The largest market we serve, about 25 minutes west.",
+      "intro": "Longview is the biggest city in our regular delivery area and the one with the widest range of jobs — everything from a backyard shed in a subdivision to commercial and light industrial steel on the south and east sides.",
+      "local": "Because Longview has more established neighbourhoods with deed restrictions than the smaller communities around it, appearance matters more here than it does out in the county. The cottage-style portable buildings and colour-matched steel come up far more often in Longview than anywhere else we deliver.",
+      "permitting": "The City of Longview handles permits inside city limits and does enforce setback and appearance rules in many neighbourhoods. Check your HOA or deed restrictions too — those are separate from the city and often stricter about outbuildings.",
+      "popular": ["garages", "workshops", "commercial", "multi-door-garage-kits"]
+    },
+    {
+      "slug": "tyler",
+      "name": "Tyler",
+      "county": "Smith County",
+      "countySlug": "smith-county",
+      "blurb": "About an hour west — our furthest regular run.",
+      "intro": "Tyler is the western edge of our normal delivery area. Steel kits ship there as easily as anywhere since they come by freight, and portable buildings are a longer haul but well within range.",
+      "local": "Smith County has a lot of acreage properties and horse operations, so riding arenas, hay storage and equipment barns come up more often around Tyler than the pure backyard-storage work we do closer to home.",
+      "permitting": "The City of Tyler permits inside city limits; Smith County has its own requirements outside them. For anything on acreage, confirm floodplain status early — it affects the foundation more than the building.",
+      "popular": ["agricultural-and-farm", "arenas-recreational", "workshops", "barndominium"]
+    },
+    {
+      "slug": "kilgore",
+      "name": "Kilgore",
+      "county": "Gregg and Rusk Counties",
+      "countySlug": "rusk-county",
+      "blurb": "Oilfield country, and it shows in what gets ordered.",
+      "intro": "Kilgore sits between Longview and Henderson with a long oilfield history, and the buildings that go there reflect it — equipment storage, pipe and material cover, and shop space built to take real use.",
+      "local": "We see more heavy-duty and relocatable requirements around Kilgore than anywhere else in the area. Bolt-together steel suits that well: it goes up without a fabrication shop on site and can be dismantled and moved when an operation relocates.",
+      "permitting": "Kilgore straddles the Gregg and Rusk county line, so which county your property sits in genuinely matters for permitting. Confirm it before ordering rather than assuming.",
+      "popular": ["energy-oil-gas", "workshops", "large-storage-buildings", "commercial"]
+    },
+    {
+      "slug": "carthage",
+      "name": "Carthage",
+      "county": "Panola County",
+      "countySlug": "panola-county",
+      "blurb": "Panola County seat, about 35 minutes southeast.",
+      "intro": "Carthage anchors Panola County and sits in the middle of gas country and cattle country at once, which makes for a broad mix of agricultural and equipment buildings.",
+      "local": "Most of what goes to Carthage lands on acreage rather than in town, so drive-through access and door width tend to matter more than styling. Size the opening to the largest implement on the place and the rest of the building usually follows.",
+      "permitting": "City of Carthage inside the limits, Panola County outside. Rural Panola County requirements are generally light, but that does not make a properly engineered foundation optional — the clay here moves.",
+      "popular": ["agricultural-and-farm", "storage", "workshops", "energy-oil-gas"]
+    },
+    {
+      "slug": "hallsville",
+      "name": "Hallsville",
+      "county": "Harrison County",
+      "countySlug": "harrison-county",
+      "blurb": "Ten minutes down I-20, and growing fast.",
+      "intro": "Hallsville has grown steadily as people move out from Longview and Marshall onto small acreage, and the building mix has followed — bigger garages, workshops and the occasional barndominium shell.",
+      "local": "A lot of Hallsville properties are new builds on a few acres, which means the outbuilding often goes up before the landscaping is finished. That is the ideal time to do it — access is open and the ground work is already disturbed.",
+      "permitting": "City of Hallsville inside the limits, Harrison County outside. Much of the growth is outside city limits, where requirements are lighter.",
+      "popular": ["garages", "barndominium", "workshops", "combo-garage-kits"]
+    },
+    {
+      "slug": "jefferson",
+      "name": "Jefferson",
+      "county": "Marion County",
+      "countySlug": "marion-county",
+      "blurb": "Historic town — appearance rules are real here.",
+      "intro": "Jefferson is a historic town and takes it seriously, which affects outbuildings more than anywhere else we deliver. What you can put up, and what it can look like, is genuinely more constrained in and near the historic district.",
+      "local": "For properties in or near the historic area, the cottage-style portable buildings and colour-matched steel are usually the ones that pass without argument. Out toward Lake O' the Pines the rules relax considerably and the usual storage and equipment buildings are fine.",
+      "permitting": "Check with the City of Jefferson before ordering if you are anywhere near the historic district — there can be review requirements beyond a standard permit, and finding that out afterward is expensive.",
+      "popular": ["storage", "garages", "carport-kits", "workshops"]
+    },
+    {
+      "slug": "scottsville",
+      "name": "Scottsville",
+      "county": "Harrison County",
+      "countySlug": "harrison-county",
+      "blurb": "Minutes east of Marshall.",
+      "intro": "Scottsville is a short run from our base — small, rural, and mostly acreage properties where an outbuilding is a practical necessity rather than a nicety.",
+      "local": "Being this close to Marshall, delivery scheduling to Scottsville is about as easy as it gets. Most orders here are storage, equipment cover and workshop space.",
+      "permitting": "Harrison County requirements apply to most of the area. Confirm setbacks from property lines before siting the building, particularly on narrower lots along the older roads.",
+      "popular": ["storage", "workshops", "agricultural-and-farm", "carport-kits"]
+    },
+    {
+      "slug": "woodlawn",
+      "name": "Woodlawn",
+      "county": "Harrison County",
+      "countySlug": "harrison-county",
+      "blurb": "Rural Harrison County, north of Marshall.",
+      "intro": "Woodlawn is rural country north of Marshall — acreage, timber and cattle, with the building needs that go along with all three.",
+      "local": "Sites out here are often wooded, which makes delivery access the thing to check first. A portable building arrives on a trailer and needs a clear path with real overhead clearance; branches stop more deliveries around Woodlawn than anything on the ground does.",
+      "permitting": "Harrison County requirements apply. Rural sites here are typically straightforward, but verify floodplain status on anything near a creek bottom.",
+      "popular": ["agricultural-and-farm", "storage", "large-storage-buildings", "workshops"]
+    },
+    {
+      "slug": "waskom",
+      "name": "Waskom",
+      "county": "Harrison County",
+      "countySlug": "harrison-county",
+      "blurb": "On the Louisiana line, twenty minutes east.",
+      "intro": "Waskom sits right on the Texas–Louisiana state line, which occasionally matters: our portable building line delivers into Louisiana as well, so properties either side of the line are covered.",
+      "local": "Being on I-20 makes freight easy. Most Waskom orders are practical rural buildings — equipment storage, workshops and covered parking.",
+      "permitting": "City of Waskom inside the limits, Harrison County outside. If your property is actually across the line in Caddo Parish, Louisiana requirements apply instead — tell us and we will quote it accordingly.",
+      "popular": ["storage", "workshops", "carport-kits", "agricultural-and-farm"]
+    },
+    {
+      "slug": "lake-o-the-pines",
+      "name": "Lake O' the Pines",
+      "county": "Marion, Upshur and Morris Counties",
+      "countySlug": "marion-county",
+      "blurb": "Lake property — boat storage and cabins.",
+      "intro": "Lake O' the Pines brings a different set of jobs than the rest of the area: boat and RV storage, lake cabins, and covered parking for property that sits empty part of the year.",
+      "local": "Two things matter more at the lake than inland. Security, because lake property is often unattended for weeks — a lockable steel building beats a fabric cover every time. And moisture: humidity off the water makes ventilation non-negotiable for anything stored long-term.",
+      "permitting": "The lake touches three counties, and shoreline property may also fall under Corps of Engineers rules depending on where the line falls. Confirm which authority applies before ordering — this is the one location in our area where that question is genuinely complicated.",
+      "popular": ["storage", "carport-kits", "garages", "roofing-systems"]
+    },
+    {
+      "slug": "pine-tree",
+      "name": "Pine Tree",
+      "county": "Gregg County",
+      "countySlug": "gregg-county",
+      "blurb": "West Longview — established neighbourhoods.",
+      "intro": "Pine Tree is the west side of Longview, largely settled residential, where the typical job is a backyard building that has to look right next to the house.",
+      "local": "Lot size is the real constraint here rather than budget. Established Pine Tree lots often have limited side access, which is why the Slim Shed and the narrower portable buildings come up so often — a 6-foot-wide building fits down the side of a house where nothing else will.",
+      "permitting": "City of Longview permitting applies. Check deed restrictions as well; several Pine Tree neighbourhoods have rules about outbuilding size, siting and colour that go beyond the city's.",
+      "popular": ["storage", "garages", "single-garage-kits", "workshops"]
+    },
+    {
+      "slug": "spring-hill",
+      "name": "Spring Hill",
+      "county": "Gregg County",
+      "countySlug": "gregg-county",
+      "blurb": "North Longview, newer development.",
+      "intro": "Spring Hill covers the north side of Longview, a lot of it newer housing on larger lots than you find closer in — which means more room for a proper workshop or a two-car detached garage.",
+      "local": "Newer construction here usually means the house already has an attached garage, so what people add is a workshop or hobby space rather than basic storage. That pushes the specification toward wall height, insulation and power planning rather than raw square footage.",
+      "permitting": "City of Longview inside the limits, Gregg County outside. Newer subdivisions frequently carry deed restrictions on outbuildings — check before you settle on a size.",
+      "popular": ["workshops", "garages", "combo-garage-kits", "storage"]
+    },
+    {
+      "slug": "elysian-fields",
+      "name": "Elysian Fields",
+      "county": "Harrison County",
+      "countySlug": "harrison-county",
+      "blurb": "South Harrison County farm country.",
+      "intro": "Elysian Fields is farming and ranching country south of Marshall, and the buildings that go there are working buildings — hay, equipment, livestock shelter.",
+      "local": "Agricultural buildings here get sized to the equipment, not to a round number. Bring us the width of your widest implement with the header folded and we will work the opening back from that, which is the order everything else follows.",
+      "permitting": "Harrison County requirements apply, and genuine agricultural use is often treated differently from other construction. Worth asking the county specifically about agricultural exemptions before you assume either way.",
+      "popular": ["agricultural-and-farm", "large-storage-buildings", "storage", "workshops"]
+    },
+    {
+      "slug": "deberry",
+      "name": "DeBerry",
+      "county": "Panola County",
+      "countySlug": "panola-county",
+      "blurb": "Southeast, near the Louisiana line.",
+      "intro": "DeBerry is rural Panola County close to the state line — small community, large properties, and buildings that need to earn their keep.",
+      "local": "Long delivery drives and rural roads make access worth checking early here. For steel kits it rarely matters since they arrive on a standard flatbed, but a finished portable building needs a clear route the whole way in.",
+      "permitting": "Panola County requirements apply. As with Waskom, if the property is actually across the Louisiana line, tell us — the engineering values and the permitting authority both change.",
+      "popular": ["agricultural-and-farm", "storage", "workshops", "carport-kits"]
+    }
+  ]
+}
