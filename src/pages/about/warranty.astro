@@ -1,5 +1,6 @@
 ---
 import Article from '../../layouts/Article.astro';
+import site from '../../data/site.json';
 
 const toc = [
   { id: 'structure', label: 'How coverage is structured' },
@@ -69,7 +70,13 @@ const toc = [
 
   <h2 id="claim">Making a claim</h2>
   <ol>
-    <li>Contact us with your order number and a description of the issue.</li>
+    <li>
+      Contact us with your order number and a description of the issue —
+      {!site.emailPending
+        ? <Fragment><a href={`mailto:${site.emails.info}?subject=${encodeURIComponent('Warranty claim')}`}>{site.emails.info}</a> or <a href={`tel:${site.phoneRaw ?? site.phone}`}>{site.phone}</a></Fragment>
+        : <a href={`tel:${site.phoneRaw ?? site.phone}`}>{site.phone}</a>}.
+      Email gives us a written record and lets you attach the photographs below.
+    </li>
     <li>Provide photographs showing the condition and its location on the building.</li>
     <li>Have your stamped drawings and delivery documentation available.</li>
     <li>We coordinate with the manufacturer on the claim.</li>

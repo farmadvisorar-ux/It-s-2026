@@ -4,6 +4,11 @@
   "description": "Authorized dealer of engineered steel buildings and wood portable buildings \u2014 garages, workshops, barndominiums, quonset huts, sheds, cabins and specialty structures, from 6 ft to 200 ft.",
   "phone": "(903) 690-5969",
   "email": "info@anysize.shop",
+  "emails": {
+    "info": "info@anysize.shop",
+    "sales": "sales@anysize.shop",
+    "quotes": "quotes@anysize.shop"
+  },
   "address": {
     "street": "360 PR 1031",
     "city": "Marshall",

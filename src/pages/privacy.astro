@@ -1,5 +1,6 @@
 ---
 import Article from '../layouts/Article.astro';
+import site from '../data/site.json';
 ---
 
 <Article
@@ -73,8 +74,13 @@ import Article from '../layouts/Article.astro';
 
   <h2>Contact</h2>
   <p>
-    Questions about this policy can be sent to us through the
-    <a href="/contact/">contact page</a>.
+    Questions about this policy, or a request to see, correct or delete the information we
+    hold about you, can be sent to
+    {!site.emailPending && <a href={`mailto:${site.emails.info}`}>{site.emails.info}</a>}
+    {!site.emailPending && ' or raised through the '}
+    <a href="/contact/">contact page</a>. You can also write to us at {site.address.street},
+    {' '}{site.address.city}, {site.address.region} {site.address.postal}, or call{' '}
+    <a href={`tel:${site.phoneRaw ?? site.phone}`}>{site.phone}</a>.
   </p>
 </Article>
 

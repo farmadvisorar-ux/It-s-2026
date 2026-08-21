@@ -31,6 +31,9 @@ const pbPopular = ['barn', 'tool-shed-tall', 'utility-cabin', 'barn-garage', 'gr
           <span>{site.address.street}</span>
           <span>{site.address.city}, {site.address.region} {site.address.postal}</span>
           {site.phone && <a href={`tel:${site.phoneRaw ?? site.phone}`}>{site.phone}</a>}
+          {/* Deliberately the general address only. This block is the NAP that
+              directories and Google cross-reference, and it has to read the same
+              on every page — sales@ and quotes@ live on /contact/ and /quote/. */}
           {site.email && !site.emailPending && <a href={`mailto:${site.email}`}>{site.email}</a>}
           <span class="foot-nap__hours">{site.hours}</span>
         </address>

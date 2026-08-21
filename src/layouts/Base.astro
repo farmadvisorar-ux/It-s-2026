@@ -31,7 +31,34 @@ const localBusiness = {
   image: ogImage,
   ...(site.phone ? { telephone: site.phoneRaw ?? site.phone } : {}),
   // Withheld until the mailbox actually receives — a dead address in schema is worse than none.
+  // One address only at the business level: `email` is part of the NAP that
+  // aggregators cross-check, so it has to match the footer everywhere.
   ...(site.email && !site.emailPending ? { email: site.email } : {}),
+  // Departmental addresses belong on contactPoint rather than the business
+  // record. contactType is a controlled vocabulary, so quotes@ rides along
+  // with sales — it is the same desk, and inventing a type helps nobody.
+  ...(!site.emailPending && site.emails
+    ? {
+        contactPoint: [
+          {
+            '@type': 'ContactPoint',
+            contactType: 'customer service',
+            email: site.emails.info,
+            ...(site.phone ? { telephone: site.phoneRaw ?? site.phone } : {}),
+            areaServed: 'US',
+            availableLanguage: 'English',
+          },
+          {
+            '@type': 'ContactPoint',
+            contactType: 'sales',
+            email: site.emails.sales,
+            ...(site.phone ? { telephone: site.phoneRaw ?? site.phone } : {}),
+            areaServed: 'US',
+            availableLanguage: 'English',
+          },
+        ],
+      }
+    : {}),
   address: {
     '@type': 'PostalAddress',
     ...(site.address.street ? { streetAddress: site.address.street } : {}),
