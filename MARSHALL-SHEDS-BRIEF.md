@@ -1,74 +1,51 @@
 # Marshall Sheds — build brief
 
-Hand this file to a fresh Claude Code session in the new project box. It contains
-everything needed to stand up a second dealer site from the Any Size codebase:
-what to copy, what must not be copied, and a design direction that makes the two
-sites read as different businesses rather than one template used twice.
+Hand this file to a fresh Claude Code session in the new project box.
+
+**The job:** clone the Any Size site in full, rebrand it to Marshall Sheds, give
+it a visibly different interface, and stand it up on its own domain as a
+completely separate operation. Same catalog, same photography, same
+architecture. Nothing links the two sites.
 
 Source repo: `https://github.com/farmadvisorar-ux/It-s-2026`
 Source site: Any Size — `anysize.shop` (Astro 4, static, 160 pages)
 
+Everything in the source is the owner's own work — the code, the copy, and the
+manufacturer photography he is licensed to use. There is no permission question
+in reusing any of it.
+
 ---
 
-## 0. Read this before writing any code
+## 0. Two facts to build around
 
-The code, the copy and the photography are all the owner's to reuse — this is
-the same business, and the site was built from scratch rather than copied from
-anyone. There is no copyright question here. There is a **search-ranking**
-question, and it is the thing most likely to make this project backfire.
+**1. The new site needs its own phone number.** A Google Business Profile
+already exists for Any Size at (903) 690-5969, 360 PR 1031, Marshall TX 75672.
+Google allows one profile per business entity and resolves entities by address
+plus phone, so a second profile on that same number is filed as a duplicate and
+suspended. This is not a ranking effect to be optimised around — the listing
+stops existing. Google Voice issues a free second number in minutes. Sharing the
+building is fine; sharing the phone is not.
 
-Two sites for one business, sharing an address, a phone number, a product
-catalog and a service area, is the pattern Google's duplicate-business and
-doorway filters are built to catch. Re-skinning the CSS does not help: the
-comparison is made on content and business identity, not on visual design. The
-realistic outcome of a straight clone with new paint is that **both** sites rank
-worse than Any Size ranks today, because they split the same signals and
-cannibalise each other. The NAP consistency work already done on Any Size is
-precisely what a second identical NAP undermines.
+Without its own number Marshall Sheds still works as a website, but it cannot
+hold a Business Profile: no map pack, no "near me" results, no reviews.
 
-So the differentiation that counts is not the UI. It is this:
+**2. Identical copy on two sites competes with itself.** Google picks one URL
+per duplicated passage and suppresses the other. With the same catalog on both
+domains, the two sites will collide on many of the same searches, and Any Size
+is the one holding the established Business Profile.
 
-| Signal | Any Size | Marshall Sheds |
-|---|---|---|
-| Product focus | Engineered **steel kits**, shipped nationwide | Wood **portable buildings**, delivered finished |
-| Geography | National, with East Texas local pages | Marshall / Harrison County and the immediate area |
-| Phone | (903) 690-5969 | **must be a different number — see below** |
-| Buyer | Someone specifying a 60×100 shop or hangar | Someone buying a 12×24 barn for the back yard |
-| Copy | Existing text | **Rewritten from scratch, not paraphrased** |
+The cheap fix, if it is wanted later, is in §3 — it is an automated pass, not
+weeks of writing. The clone is built either way; this is noted so it is a choice
+rather than a surprise.
 
-Give the two brands a real split — steel/national versus wood/local is a clean
-one that already exists in the catalog — and both sites can rank, because they
-are answering different searches. Skip the split and you are running two sites
-that compete with each other for the same customer.
-
-A second phone line is not optional, and the reason is harder than a ranking
-penalty. **A Google Business Profile already exists for Any Size** at
-(903) 690-5969, 360 PR 1031, Marshall TX 75672. Google permits one profile per
-business entity, and it resolves entities by address plus phone. A second
-profile at the same address on the same number is filed as a duplicate and
-suspended — it does not rank badly, it stops existing.
-
-Google Voice issues a free second number in about five minutes. Sharing the
-building is fine; plenty of legitimate businesses do. Sharing the phone is what
-merges the two into one record.
-
-Without its own number Marshall Sheds can still be a website, but it cannot hold
-a Business Profile — no map pack, no "near me" results, no reviews. For a local
-shed business that is the majority of local traffic, so decide it before the
-build, not after.
-
-**Verified NAP — use exactly this, do not retype it:**
+**Verified NAP for the source — do not retype from memory:**
 
 ```
 360 PR 1031, Marshall, TX 75672
 ```
 
-The ZIP is 75672. Marshall has only three ZIPs — 75670 and 75672 for street
-delivery, 75671 for PO Boxes. 75673 is not one of them and has been typed by
-mistake at least once; if it appears anywhere, it is wrong.
-
-Everything below assumes the split. If the owner decides against it, build it
-anyway and say plainly in the handover that the two sites will compete.
+Marshall has three ZIPs: 75670 and 75672 for street delivery, 75671 for PO
+Boxes. 75673 does not exist here and has been mistyped once already.
 
 ---
 
@@ -80,68 +57,63 @@ cd marshall-sheds
 rm -rf .git dist
 git init && git add -A && git commit -m "Fork Any Size codebase as Marshall Sheds"
 npm install
-npm run dev          # http://localhost:4321 — confirm the source site builds first
+npm run dev          # http://localhost:4321
+npm run build        # must report 160 pages before you change anything
 ```
 
-Confirm `npm run build` reports 160 pages before changing anything. If it does
-not, fix that first; do not debug a broken build and a rebrand at the same time.
+Get a clean 160-page build first. Do not debug a broken build and a rebrand at
+the same time.
 
 ---
 
-## 2. Mechanical rebrand
+## 2. Rebrand — mechanical
 
-These are the find-and-replace jobs. None of them require judgement.
-
-**`src/data/site.json`** — the single source of truth for identity. Every page
-reads from it, so this file drives the footer, the contact page, the schema and
-the OG tags at once.
+**`src/data/site.json`** is the single source of truth for identity. Every page
+reads it, so this one file drives the footer, the contact page, the JSON-LD
+schema and the OG tags together.
 
 ```json
 {
   "name": "Marshall Sheds",
-  "tagline": "<new tagline — see §3>",
-  "description": "<new description — see §3>",
+  "tagline": "<new tagline>",
+  "description": "<new description>",
   "phone": "(903) XXX-XXXX",
   "phoneRaw": "+1903XXXXXXX",
   "email": "info@<newdomain>",
   "emails": { "info": "...", "sales": "...", "quotes": "..." },
   "address": { "street": "360 PR 1031", "city": "Marshall", "region": "TX", "postal": "75672", "country": "USA" },
   "hours": "Mon–Fri 8:00am–6:00pm",
-  "dealerNotice": "<rewritten — see §3>",
+  "dealerNotice": "<reworded>",
   "indexable": false,
   "emailPending": true,
-  "formEndpoint": ""
+  "formEndpoint": "<new Formspree endpoint — see §5>"
 }
 ```
 
-Keep `indexable: false` and `emailPending: true` until launch. They are the two
-safety flags: the first puts `noindex` on every page, the second hides the email
-address everywhere including the schema. Flipping them is the last step of the
-project, not the first.
-
-**Other mechanical edits:**
+`indexable: false` and `emailPending: true` are safety flags. The first puts
+`noindex` on all 160 pages; the second hides the email address everywhere
+including the schema. Flipping them is the last step of the project.
 
 | File | Change |
 |---|---|
 | `package.json` | `"name": "marshall-sheds"` |
 | `astro.config.mjs` | `site: 'https://<newdomain>'` |
 | `public/CNAME` | new domain, one line, no protocol |
-| `src/layouts/Base.astro` | the `new URL('https://anysize.shop')` fallback on the `origin` line |
-| `src/components/Header.astro` | brand SVG mark and `<strong>Any</strong> Size` wordmark |
+| `src/layouts/Base.astro` | the `new URL('https://anysize.shop')` origin fallback |
+| `src/components/Header.astro` | brand SVG mark + `<strong>Any</strong> Size` wordmark |
 | `src/components/Footer.astro` | same wordmark |
-| `src/scripts/form-submit.js` | the hardcoded phone number in the two fallback strings |
+| `src/scripts/form-submit.js` | hardcoded phone in two fallback strings |
 | `src/pages/quote.astro` | hardcoded phone in `successBody` |
 | `src/pages/contact.astro` | hardcoded phone in `successBody` |
 | `README.md` | rewrite for the new brand |
-| `public/og/*` | regenerate — 93 images with the old wordmark baked in |
+| `public/og/*` | regenerate — 93 images carry the old wordmark |
 
-**Keep `public/.nojekyll`,** and treat it as load-bearing. GitHub Pages runs
-Jekyll, Jekyll ignores any path beginning with an underscore, and Astro emits
-all its CSS and JS into `_astro/`. Without that file the site deploys
-successfully and renders with zero styling, with no error message anywhere. The
-build workflow asserts its presence for exactly this reason.
+**Keep `public/.nojekyll`.** GitHub Pages runs Jekyll, Jekyll ignores any path
+starting with an underscore, and Astro emits all CSS and JS into `_astro/`.
+Without that file the site deploys successfully and renders with zero styling
+and no error anywhere. The workflow asserts it for this reason.
 
-**Verification sweep** — after the rename, this must return nothing:
+**Sweep — must return nothing:**
 
 ```bash
 npm run build
@@ -150,113 +122,118 @@ grep -ril "any size\|anysize" dist/ src/ public/ --exclude-dir=node_modules
 
 ---
 
-## 3. Content divergence — the part that matters
+## 3. Copy
 
-The catalog data can be reused as *structure*. The prose cannot be reused as
-*prose*. Every `intro`, `detail`, `headline`, `summary` and FAQ answer needs to
-be rewritten, because duplicate paragraphs across two sites is exactly the
-signal that flags both.
+Copy the catalog across as-is. All of it transfers: 24 steel building types,
+8 model profiles, 12 option items, 52 clearance listings, 84 FAQs, 16 portable
+buildings, the location data, all 225 photos.
 
-Rewriting is not paraphrasing. Changing "engineered for your site" to "engineered
-for your location" fools nothing. The reliable method is to close the source
-file, decide what the paragraph needs to say, and write it fresh in a different
-voice.
+Two things must change regardless of how much text is reused:
 
-**Give Marshall Sheds a different voice on purpose.** Any Size is written flat
-and technical — spans, gauges, load values, no adjectives. Marshall Sheds sells
-a 10×16 barn to somebody's back yard; write it plain and conversational, second
-person, shorter sentences, concrete rather than specified. Same honesty, a
-different register. Two voices are harder to fake than two colour schemes and
-count for far more.
+- **Manufacturer identity.** The copy says "our manufacturing partner", never
+  "we manufacture". The owner is a dealer. Any wording that implies otherwise is
+  a false claim about who built the building, and it carries real liability when
+  a customer relies on it.
+- **Anything naming or implying Any Size.** Caught by the grep sweep in §2.
 
-**Scope the catalog down.** Marshall Sheds does not need the 24 steel building
-types or the 52-item steel clearance list. Suggested inclusion:
+**Optional rewrite pass.** If the duplicate-content collision in §0 is worth
+avoiding, it costs one automated pass rather than weeks of writing: walk each
+data file, rewrite every `intro`, `detail`, `headline`, `summary` and FAQ answer
+in a different voice, and write the result back. The source is written flat and
+technical — spans, gauges, load values, no adjectives. A plainer, more
+conversational second-person register is a genuinely different voice and gives
+each site its own set of pages to rank. Roughly an hour of tool calls. Worth
+raising with the owner once, then doing whichever he picks.
 
-- Keep: all 16 portable buildings, the construction spec, warranty, financing
-- Keep: the East Texas location pages, tightened to Harrison County and neighbours
-- Cut: `building-types.json`, `models.json`, `inventory.json`, `options.json`,
-  and the steel half of `faqs.json` — plus every page and route that reads them
-- Cut: the "6 ft to 200 ft" framing entirely; that is Any Size's line
-
-A 40-page site that owns "portable buildings Marshall TX" beats a 160-page site
-that half-heartedly duplicates a stronger sibling.
-
-**Rewrite from scratch, do not adapt:** `dealerNotice`, `tagline`,
-`description`, the About pages, Warranty, Privacy, Terms, and all 12 portable
-FAQ answers.
-
-**Do not copy across:** manufacturer testimonials or reviews of any kind. There
-are none in the source and there should be none in the fork — inventing social
-proof for a new brand is fabrication, and review fraud is separately illegal.
+**Do not add testimonials or reviews.** There are none in the source. Inventing
+social proof for a new brand is fabrication, and review fraud is separately
+illegal.
 
 ---
 
-## 4. UI/UX divergence — concrete spec
+## 4. Interface — make it visibly different
 
-The instruction is that the two should not read as the same template. Below is a
-direction that diverges structurally, not cosmetically. Swapping the accent
-colour and calling it done will not survive a side-by-side look.
+The brief here is that a visitor seeing both sites should not read them as one
+template used twice. Recolouring the tokens does not achieve that; the shape of
+the pages has to change.
 
-### What Any Size currently is (the thing to move away from)
+### What the source is, and is moving away from
 
-Cool steel-gray palette with a warm amber accent; Inter throughout at tight
-letter-spacing; 4px and 8px radii; a sticky translucent header with two
-six-column mega menus; card grids everywhere; 1200px measure; automatic dark
-mode. It reads industrial, dense, catalog-like.
+Cool steel-gray palette with a warm amber accent. Inter throughout, tight
+letter-spacing. 4px and 8px radii. Sticky translucent header carrying two
+six-column mega menus. Card grids on every index page. 1200px measure.
+Automatic dark mode. It reads industrial, dense, catalog-like.
 
 ### Direction for Marshall Sheds
 
 **Palette — warm, not cool.** Bone or cream ground (`#faf7f2`), warm charcoal
-text (`#2b2622`), a barn-red or deep-forest accent. The contrast between a
-warm ground and a cool one is visible instantly and at a glance, which is
-exactly the test being applied.
+text (`#2b2622`), barn-red or deep-forest accent. Warm-versus-cool ground reads
+instantly at a glance, which is the test being applied.
 
 **Type — two families, not one.** A serif for headings (Bitter, Zilla Slab or
-Fraunces — all on Google Fonts, which is the only external host the CSP allows)
-against a humanist sans for body copy. Any Size is single-family Inter; a
-serif/sans pairing is a different design language, not a different setting.
+Fraunces — all on Google Fonts, the only external host the CSP allows) against a
+humanist sans for body. The source is single-family Inter; a serif/sans pairing
+is a different design language, not a different setting.
 
-**Shape — soft, not sharp.** Radii to 12–16px, shadows softer and warmer,
-1px borders replaced with tonal background steps. Industrial precision becomes
-domestic warmth.
+**Shape — soft, not sharp.** Radii to 12–16px, warmer and softer shadows, 1px
+borders replaced by tonal background steps.
 
-**Navigation — kill the mega menu.** It is the most recognisable single element
-of the source. With 16 products instead of 40, a plain horizontal nav plus a
-full-screen overlay on mobile is both simpler and honest to the smaller catalog.
+**Navigation — remove the mega menu.** It is the single most recognisable
+element of the source. Replace with a plain horizontal nav plus a full-screen
+overlay on mobile, and push the category depth onto the index pages.
 
-**Layout archetype — rows, not cards.** Replace the card grid on index pages
-with full-width media rows: image left, copy right, alternating. Different
-rhythm, different scan pattern, better suited to 16 products than to 76.
+**Layout archetype — rows, not cards.** Replace card grids on index pages with
+full-width media rows, image alternating left and right. Different rhythm,
+different scan pattern.
 
-**Measure and rhythm.** Drop `--maxw` to 1080px, widen `--gutter`, increase
-section padding. A more generous, slower page against a denser one.
+**Measure and rhythm.** `--maxw` down to 1080px, wider `--gutter`, more section
+padding. A slower, more generous page against a denser one.
 
-**Hero.** Any Size leads with a headline block. Lead instead with a full-bleed
-photograph and an overlaid card carrying the phone number — a local business
-front door rather than a catalog cover.
+**Hero.** The source leads with a headline block. Lead instead with a full-bleed
+photograph and an overlaid card carrying the phone number.
 
-**Dark mode.** Consider dropping it. A single warm light theme is a legitimate
-choice for this kind of business, halves the CSS surface, and removes another
-structural similarity. If it stays, make it a warm dark (browns) not a cool one.
+**Dark mode.** Consider dropping it — a single warm light theme is a legitimate
+choice, halves the CSS surface, and removes another structural tell. If kept,
+make it a warm dark (browns), not a cool one.
 
-Nearly all of this lands in `src/styles/global.css`, where the tokens are
-centralised — but do not stop at the tokens. Token-only changes recolour a
-design without changing it. The nav, the hero and the card-to-row switch are the
-changes that actually alter the shape of the pages.
+Most tokens live in `src/styles/global.css`. Do not stop there: token-only edits
+recolour a design without changing it. The nav, the hero, and the card-to-row
+switch are what actually change the shape of the pages.
 
 ---
 
-## 5. Architecture reference
+## 5. Keeping the two operations separate
+
+"Separate" is an infrastructure property, not a styling one. Each item below
+otherwise ties the two sites together in a way that is publicly visible.
+
+| Thing | Why it matters | Action |
+|---|---|---|
+| Phone number | Merges the Business Profiles — §0 | New number, mandatory |
+| Form endpoint | The current Formspree endpoint is in `site.json` and public in page source. Reusing it mixes both sites' leads into one inbox | New Formspree form |
+| Email | Shared mailbox links the brands in every reply header | New addresses on the new domain |
+| Analytics | A shared property ties the domains together in one account | Separate property, or none |
+| Cross-links | A "sister site" link in either footer connects them permanently | None, in either direction |
+| `og:site_name`, schema `name` | Machine-readable identity in every page | Driven by `site.json`; verify after rebrand |
+| WHOIS | Public registrant details link the domains | Registrar privacy on |
+| Business Profile | One per entity | Separate listing, new number |
+
+Shared GitHub account and shared hosting are not publicly visible and do not
+matter.
+
+---
+
+## 6. Architecture reference
 
 Astro 4.16, `output: 'static'`, `build.format: 'directory'`, no runtime
-dependencies. Everything is generated at build time from JSON in `src/data/`.
+dependencies. Everything generates at build time from JSON in `src/data/`.
 
 ```
 src/
   data/          JSON catalog + site.json — all content lives here
   layouts/
     Base.astro   <head>, OG tags, JSON-LD schema, header/footer  ← identity
-    Article.astro  prose pages with a sidebar and optional TOC
+    Article.astro  prose pages with sidebar and optional TOC
   components/    Header, Footer, Placeholder
   pages/         file-based routes; [slug].astro files fan out from data
   scripts/       form-submit.js — shared fetch handler for both forms
@@ -271,7 +248,7 @@ public/
 
 ### Data files
 
-| File | Shape | Contents |
+| File | Shape | Keys |
 |---|---|---|
 | `building-types.json` | array[24] | `slug, name, group, headline, intro, detail, useCases, commonSizes, models, specs` |
 | `models.json` | array[8] | `code, name, family, profile, summary, spanRange, bestFor, notes` |
@@ -281,42 +258,44 @@ public/
 | `portable-buildings.json` | object | `line, construction, categories, products` (16 products) |
 | `locations.json` | object | `base, shared, counties` (8, 74 communities), `cities` (15 detailed) |
 | `images.json` | object | `types, inventory, hero, options, portable` |
-| `site.json` | object | identity, contact, the two launch flags, form endpoint |
+| `site.json` | object | identity, contact, launch flags, form endpoint |
 
-### Things in the codebase that are load-bearing
+### Load-bearing details that fail silently
 
-- **`.nojekyll`** — see §2. Silent total failure without it.
+- **`.nojekyll`** — see §2. Total styling loss, no error.
 - **OG images must be absolute URLs.** `Base.astro` builds them with `new URL(...)`.
-  Social scrapers ignore root-relative paths and simply render no preview.
-- **`noindex` is used, not `robots.txt Disallow`.** Blocking the crawl stops
-  engines from ever *seeing* the noindex directive, which leaves bare URLs
-  indexable and much harder to remove later. `robots.txt.ts` deliberately keeps
-  crawling allowed while `indexable` is false and withholds only the sitemap.
-- **`sitemap.xml.ts` is hand-rolled.** `@astrojs/sitemap` v3.7.3 crashes against
-  Astro 4 (it expects Astro 5's hook signature). The local version generates from
-  the same data the pages use, so it cannot drift from real routes. Do not
-  reinstall the integration.
-- **Inventory slugs must be ASCII.** Prime marks (′) in the source titles produce
+  Scrapers ignore root-relative paths and render no preview at all.
+- **`noindex`, not `robots.txt Disallow`.** Blocking the crawl stops engines from
+  ever seeing the noindex directive, leaving bare URLs indexable and much harder
+  to remove. `robots.txt.ts` keeps crawling allowed while `indexable` is false
+  and withholds only the sitemap.
+- **`sitemap.xml.ts` is hand-rolled.** `@astrojs/sitemap` v3.7.3 crashes on
+  Astro 4 — it expects Astro 5's hook signature. The local version generates from
+  the same data as the pages, so it cannot drift. Do not reinstall the integration.
+- **Inventory slugs must be ASCII.** Prime marks (′) in source titles cause
   `NoMatchingStaticPathFound` at build time.
-- **Floor-plan PNGs are flattened onto white** at download and sit in explicitly
-  white containers; they are black line art and vanish in dark mode otherwise.
+- **Floor-plan PNGs are flattened onto white** and sit in explicitly white
+  containers — black line art, invisible in dark mode otherwise.
+- **The two product lines stay distinct.** Steel kits ship nationwide and need a
+  foundation and permits; portable buildings arrive finished in six states.
+  Different delivery areas, warranties and foundations. Merging the copy
+  misleads people about all three.
 
 ---
 
-## 6. Deploying to GitHub Pages
+## 7. Deploy — GitHub Pages
 
-The source repo publishes via a `gh-pages` branch, not `actions/deploy-pages`
-— the "GitHub Actions" Pages source was not available on this account. Copy
-`.github/workflows/deploy.yml` across unchanged; it needs `permissions:
-contents: write` and it asserts before publishing that the build produced a
-sane page count, a `CNAME`, a `.nojekyll`, an `_astro/` directory and a sitemap.
+The source publishes via a `gh-pages` branch rather than `actions/deploy-pages`;
+the "GitHub Actions" Pages source is not available on this account. Copy
+`.github/workflows/deploy.yml` across unchanged. It needs `permissions: contents:
+write` and asserts before publishing that the build produced a sane page count,
+a `CNAME`, a `.nojekyll`, an `_astro/` directory and a sitemap.
 
-After the first successful run, the repo owner must set
-**Settings → Pages → Branch → `gh-pages` / `(root)` → Save**, signed in. Nothing
-is publicly reachable until that switch is thrown, and it cannot be done from
-the API on this account.
+After the first green run the owner must set **Settings → Pages → Branch →
+`gh-pages` / `(root)` → Save**, signed in. Nothing is publicly reachable until
+that switch is thrown, and it cannot be done via API on this account.
 
-DNS for the new domain, at the registrar:
+Registrar DNS for the new domain:
 
 ```
 A     @    185.199.108.153
@@ -326,36 +305,38 @@ A     @    185.199.111.153
 CNAME www  <github-username>.github.io.
 ```
 
-Then tick **Enforce HTTPS** once the certificate provisions.
+Tick **Enforce HTTPS** once the certificate provisions.
 
 ---
 
-## 7. Launch checklist
+## 8. Launch checklist
 
 - [ ] `grep -ril "any size\|anysize" dist/ src/ public/` returns nothing
-- [ ] `npm run build` succeeds; page count matches the reduced scope
-- [ ] No copy paragraph is shared verbatim with anysize.shop — spot-check ten
-- [ ] Separate phone number, live and answered
-- [ ] OG images regenerated with the new wordmark; test a link in a real DM
-- [ ] Form endpoint set and tested end to end with a real submission
+- [ ] `npm run build` reports 160 pages
+- [ ] Own phone number, live and answered
+- [ ] Own Formspree endpoint, tested with a real submission end to end
 - [ ] Email forwarding live, then `emailPending: false`
+- [ ] OG images regenerated; test a real link in a DM before trusting it
+- [ ] No cross-link to anysize.shop anywhere, in either direction
+- [ ] Registrar WHOIS privacy on
+- [ ] No copy claims or implies the owner manufactures the buildings
 - [ ] Privacy and Terms reviewed by someone qualified — the source ships
-      templates carrying a visible "remove before launch" note, and they are
+      templates carrying a visible "remove before launch" note. They are
       starting points, not legal documents
-- [ ] Warranty page reflects the actual manufacturer terms in writing
-- [ ] Financing figures confirmed against the current program before publishing
-- [ ] Google Business Profile created at the **new phone number** — creating one
-      on (903) 690-5969 will get it suspended as a duplicate of Any Size
+- [ ] Warranty page matches the manufacturer's actual written terms
+- [ ] Financing figures confirmed against the current program
+- [ ] Google Business Profile created on the **new number** — using
+      (903) 690-5969 gets it suspended as a duplicate of Any Size
 - [ ] `indexable: true` — last step
 
 ---
 
-## 8. Handover note for the new session
+## 9. Handover note
 
-Everything about identity flows from `src/data/site.json`. Start there, get a
-clean build, and only then begin the design work — a rebrand and a redesign
-attempted in the same pass produces a build you cannot bisect.
+Identity flows from `src/data/site.json`. Start there, get a clean build, then
+do the interface work as a separate pass. A rebrand and a redesign in one pass
+produces a build you cannot bisect.
 
-The two flags in that file, `indexable` and `emailPending`, are what keep an
-unfinished site from being indexed or from publishing a dead mailbox. Leave both
-set until the checklist above is genuinely complete.
+`indexable` and `emailPending` are what keep an unfinished site out of the index
+and stop it publishing a mailbox that does not receive. Leave both set until the
+checklist above is genuinely done.
