@@ -32,7 +32,7 @@ So the differentiation that counts is not the UI. It is this:
 |---|---|---|
 | Product focus | Engineered **steel kits**, shipped nationwide | Wood **portable buildings**, delivered finished |
 | Geography | National, with East Texas local pages | Marshall / Harrison County and the immediate area |
-| Phone | (903) 690-5969 | **must be a different number** |
+| Phone | (903) 690-5969 | **must be a different number — see below** |
 | Buyer | Someone specifying a 60×100 shop or hangar | Someone buying a 12×24 barn for the back yard |
 | Copy | Existing text | **Rewritten from scratch, not paraphrased** |
 
@@ -41,9 +41,31 @@ one that already exists in the catalog — and both sites can rank, because they
 are answering different searches. Skip the split and you are running two sites
 that compete with each other for the same customer.
 
-A second phone line (Google Voice is free) is the single highest-value item on
-that list. Same address is survivable; same phone number is what merges two
-business entities in Google's eyes.
+A second phone line is not optional, and the reason is harder than a ranking
+penalty. **A Google Business Profile already exists for Any Size** at
+(903) 690-5969, 360 PR 1031, Marshall TX 75672. Google permits one profile per
+business entity, and it resolves entities by address plus phone. A second
+profile at the same address on the same number is filed as a duplicate and
+suspended — it does not rank badly, it stops existing.
+
+Google Voice issues a free second number in about five minutes. Sharing the
+building is fine; plenty of legitimate businesses do. Sharing the phone is what
+merges the two into one record.
+
+Without its own number Marshall Sheds can still be a website, but it cannot hold
+a Business Profile — no map pack, no "near me" results, no reviews. For a local
+shed business that is the majority of local traffic, so decide it before the
+build, not after.
+
+**Verified NAP — use exactly this, do not retype it:**
+
+```
+360 PR 1031, Marshall, TX 75672
+```
+
+The ZIP is 75672. Marshall has only three ZIPs — 75670 and 75672 for street
+delivery, 75671 for PO Boxes. 75673 is not one of them and has been typed by
+mistake at least once; if it appears anywhere, it is wrong.
 
 Everything below assumes the split. If the owner decides against it, build it
 anyway and say plainly in the handover that the two sites will compete.
@@ -322,7 +344,8 @@ Then tick **Enforce HTTPS** once the certificate provisions.
       starting points, not legal documents
 - [ ] Warranty page reflects the actual manufacturer terms in writing
 - [ ] Financing figures confirmed against the current program before publishing
-- [ ] Google Business Profile created at the **new phone number**
+- [ ] Google Business Profile created at the **new phone number** — creating one
+      on (903) 690-5969 will get it suspended as a duplicate of Any Size
 - [ ] `indexable: true` — last step
 
 ---
