@@ -17,7 +17,10 @@ import pb from '../data/portable-buildings.json';
  * rather than silently dropping a lead.
  */
 // Env var wins if set (handy for staging); otherwise the value in site.json.
-const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? site.formEndpoint ?? '';
+// `||`, not `??`. An unset GitHub Actions variable interpolates as an empty
+// string rather than being absent, and `??` only falls through on null and
+// undefined — so `""` would win and silently override the real endpoint.
+const endpoint = (import.meta.env.PUBLIC_FORM_ENDPOINT || site.formEndpoint || '').trim();
 const timelines = ['As soon as possible', 'Within 3 months', '3–6 months', '6–12 months', 'Still researching'];
 const pbProducts = (pb as any).products;
 ---

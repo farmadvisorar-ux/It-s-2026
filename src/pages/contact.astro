@@ -2,7 +2,10 @@
 import Base from '../layouts/Base.astro';
 import site from '../data/site.json';
 
-const endpoint = import.meta.env.PUBLIC_FORM_ENDPOINT ?? site.formEndpoint ?? '';
+// `||`, not `??`. An unset GitHub Actions variable interpolates as an empty
+// string rather than being absent, and `??` only falls through on null and
+// undefined — so `""` would win and silently override the real endpoint.
+const endpoint = (import.meta.env.PUBLIC_FORM_ENDPOINT || site.formEndpoint || '').trim();
 
 // All three land in the same inbox, but publishing what each one is *for*
 // means a warranty question and a price request arrive pre-sorted.
