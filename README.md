@@ -11,7 +11,7 @@ The two are kept deliberately separate throughout. They are different products
 sold to different buyers with different constraints, and conflating them in the
 copy would mislead people about delivery area, foundations and permitting.
 
-Built with [Astro](https://astro.build) as a static site. 136 pages, no runtime
+Built with [Astro](https://astro.build) as a static site. 160 pages, no runtime
 dependencies, deploys anywhere that serves static files.
 
 ---
