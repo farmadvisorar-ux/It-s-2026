@@ -4,6 +4,7 @@ import Placeholder from '../../components/Placeholder.astro';
 import loc from '../../data/locations.json';
 import types from '../../data/building-types.json';
 import pb from '../../data/portable-buildings.json';
+import site from '../../data/site.json';
 import { typeImage } from '../../lib/images';
 
 export function getStaticPaths() {
@@ -30,11 +31,23 @@ const siblingCities = isCounty
   : cities.filter((c: any) => c.countySlug === place.countySlug && c.slug !== place.slug);
 
 const pbStates = (pb as any).line.deliveryStates;
+
+// Google truncates a title around 60 characters, and Base appends " | <brand>".
+// "Lake O' the Pines, TX" overruns the preferred wording on its own, so long
+// place names fall back to the shorter phrasing rather than being cut mid-word.
+const brandSuffix = ` | ${site.name}`.length;
+const preferredTitle = `Steel & Portable Buildings in ${label}`;
+const title =
+  preferredTitle.length + brandSuffix <= 60 ? preferredTitle : `Steel Buildings in ${label}`;
+
+// Blurbs top out at 60 characters, so this lands between 120 and 135 —
+// comfortably inside the 160 Google will show.
+const description = `${place.blurb} Steel kits and wood portable buildings delivered to ${label}.`;
 ---
 
 <Base
-  title={`Steel Buildings & Portable Buildings in ${label}`}
-  description={`${place.blurb} Steel building kits and wood portable buildings delivered to ${label}. Local permitting, ground conditions and what people here actually order.`}
+  title={title}
+  description={description}
   crumbs={[{ label: 'Service Area', href: '/service-area/' }]}
   current={label}
 >

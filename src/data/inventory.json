@@ -164,7 +164,7 @@
   },
   {
     "slug": "40-x-60-steel-building-industrial-agricultural",
-    "title": "40' x 60' Steel Building (Industrial/Agricultural)",
+    "title": "40' x 60' Industrial & Agricultural Building",
     "model": null,
     "width": 40,
     "height": null,
@@ -461,20 +461,6 @@
     "height": null,
     "length": 60,
     "sqft": 1800,
-    "regions": [
-      "usa"
-    ],
-    "tags": [],
-    "featured": false
-  },
-  {
-    "slug": "40-x-40-container-cover-usa",
-    "title": "40' x 40' Container Cover",
-    "model": null,
-    "width": 40,
-    "height": null,
-    "length": 40,
-    "sqft": 1600,
     "regions": [
       "usa"
     ],

@@ -15,7 +15,22 @@ interface Props {
   image?: string;
 }
 
-const { title, description = site.description, crumbs = [], current, image } = Astro.props;
+const { title, description: rawDescription = site.description, crumbs = [], current, image } = Astro.props;
+
+/**
+ * Google shows roughly 160 characters of a description and cuts the rest
+ * mid-word. Templates are written to land well inside that, so this is a net
+ * rather than the mechanism — it should never actually fire. When it does, it
+ * ends on a word boundary so the result reads as a sentence rather than a
+ * severed clause. The build fails on anything it would have to truncate.
+ */
+function clampDescription(text: string, max = 158): string {
+  if (text.length <= max) return text;
+  const cut = text.slice(0, max);
+  const lastSpace = cut.lastIndexOf(' ');
+  return `${(lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).replace(/[\s,;:—-]+$/, '')}…`;
+}
+const description = clampDescription(rawDescription);
 const fullTitle = title === site.name ? `${site.name} — ${site.tagline}` : `${title} | ${site.name}`;
 const origin = (Astro.site ?? new URL('https://anysize.shop')).origin;
 const canonical = new URL(Astro.url.pathname, origin).href;
