@@ -31,6 +31,25 @@ function clampDescription(text: string, max = 158): string {
   return `${(lastSpace > max * 0.6 ? cut.slice(0, lastSpace) : cut).replace(/[\s,;:—-]+$/, '')}…`;
 }
 const description = clampDescription(rawDescription);
+
+/**
+ * Third-party ad slot (SikAds).
+ *
+ * embed.js is fetched from the vendor at run time, so whatever it does can
+ * change without a deploy here. Reviewed at integration: it requests an ad,
+ * renders a banner into #sikads, and posts impression and view telemetry
+ * carrying only campaign and publisher ids. It reads no form fields.
+ *
+ * Excluded from the quote and contact pages all the same. Those two carry
+ * every name, email, phone number and address the site collects, and they are
+ * where a visitor converts — the pages least worth handing to a remote script
+ * for the sake of a fraction of a cent. Drop `excludePaths` in site.json to
+ * run it everywhere.
+ */
+const ads = (site as any).ads;
+const showAds =
+  !!ads?.enabled &&
+  !(ads.excludePaths ?? []).some((p: string) => Astro.url.pathname === p);
 const fullTitle = title === site.name ? `${site.name} — ${site.tagline}` : `${title} | ${site.name}`;
 const origin = (Astro.site ?? new URL('https://anysize.shop')).origin;
 const canonical = new URL(Astro.url.pathname, origin).href;
@@ -153,6 +172,17 @@ const localBusiness = {
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
+    {showAds && (
+      <script
+        is:inline
+        src="https://sikads.com/embed.js"
+        data-site-id={ads.siteId}
+        data-container="#sikads"
+        data-theme={ads.theme}
+        data-floor-cpm={ads.floorCpm}
+        async
+      />
+    )}
   </head>
   <body>
     <Header />
@@ -171,11 +201,30 @@ const localBusiness = {
         </nav>
       )}
       <slot />
+
+      {showAds && (
+        <aside class="ad-slot" aria-label="Advertisement">
+          <div class="wrap">
+            <p class="ad-slot__label">Advertisement</p>
+            <div id="sikads"></div>
+          </div>
+        </aside>
+      )}
     </main>
     <Footer />
 
     <style>
       .crumbs { border-bottom: 1px solid var(--border); background: var(--bg-raised); }
+
+      /* The vendor's own CSS is width:100% !important, so it needs a bounded
+         parent or it spans the viewport. Reserve the height it renders at to
+         keep the ad from shoving the footer down once it loads. */
+      .ad-slot { margin-top: 3rem; }
+      .ad-slot__label {
+        font-size: 0.625rem; text-transform: uppercase; letter-spacing: 0.12em;
+        color: var(--text-faint); margin-bottom: 0.375rem;
+      }
+      .ad-slot #sikads { min-height: 68px; }
       .crumbs ol {
         display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem;
         list-style: none; padding: 0.75rem 0; margin: 0;

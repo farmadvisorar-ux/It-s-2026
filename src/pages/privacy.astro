@@ -67,10 +67,34 @@ import site from '../data/site.json';
 
   <h2>Cookies</h2>
   <p>
-    This site uses cookies only where needed to operate properly. If we add analytics or
-    advertising tools later, this section will be updated to say what they are and what they
-    collect.
+    This site uses cookies only where needed to operate properly. We do not currently use
+    analytics tools. If we add them later, this section will be updated to say what they are
+    and what they collect.
   </p>
+
+  {(site as any).ads?.enabled && (
+    <Fragment>
+      <h2>Advertising</h2>
+      <p>
+        Most pages carry a sponsored banner served by {(site as any).ads.provider}, a
+        third-party advertising network. Loading it means your browser contacts that network
+        directly, which necessarily discloses your IP address and the page you are viewing,
+        as any request to an outside service does.
+      </p>
+      <p>
+        The network records that an advertisement was shown and how long it stayed on screen.
+        It does not receive anything you type into our quote or contact forms — those pages
+        do not carry advertising at all, and the advertising code has no access to form
+        fields anywhere on the site.
+      </p>
+      <p>
+        We do not share your name, email address, phone number or delivery address with the
+        advertising network or with anyone else for advertising purposes. Browser settings
+        and ad-blocking extensions that stop the banner loading will not affect any other
+        part of this site.
+      </p>
+    </Fragment>
+  )}
 
   <h2>Contact</h2>
   <p>

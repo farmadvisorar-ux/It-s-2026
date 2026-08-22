@@ -26,5 +26,13 @@
   "indexable": false,
   "phoneRaw": "+19036905969",
   "emailPending": false,
-  "formEndpoint": "https://formspree.io/f/xkjwyqra"
+  "formEndpoint": "https://formspree.io/f/xkjwyqra",
+  "ads": {
+    "enabled": true,
+    "provider": "SikAds",
+    "siteId": "pub_ai_9948",
+    "theme": "dark",
+    "floorCpm": "2.25",
+    "excludePaths": ["/quote/", "/contact/"]
+  }
 }
