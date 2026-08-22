@@ -1,14 +1,21 @@
 # Marshall Sheds — build brief
 
-Hand this file to a fresh Claude Code session in the new project box.
+**The job:** clone the Any Size site in full, rebrand it to Marshall Sheds, and
+stand it up on its own domain as a completely separate operation. Same catalog,
+same photography, same architecture. The clone may stay as close to the source
+as it likes — visual divergence is explicitly not a goal. Nothing links the two
+sites.
 
-**The job:** clone the Any Size site in full, rebrand it to Marshall Sheds, give
-it a visibly different interface, and stand it up on its own domain as a
-completely separate operation. Same catalog, same photography, same
-architecture. Nothing links the two sites.
+> **Status.** The first pass is built and lives at
+> `https://github.com/farmadvisorar-ux/marshall-sheds` — fresh history, 378
+> files, no CNAME, no Pages workflow, so it cannot reach `anysize.shop`. This
+> file is now reference rather than instructions: read §0 and §5 before touching
+> anything, since those carry the two constraints that still bind. Then read
+> §2a — the fork was taken before several real bugs were found and fixed in the
+> source, and it still carries them.
 
 Source repo: `https://github.com/farmadvisorar-ux/It-s-2026`
-Source site: Any Size — `anysize.shop` (Astro 4, static, 160 pages)
+Source site: Any Size — `anysize.shop` (Astro 4, static, 159 pages)
 
 Everything in the source is the owner's own work — the code, the copy, and the
 manufacturer photography he is licensed to use. There is no permission question
@@ -29,14 +36,15 @@ building is fine; sharing the phone is not.
 Without its own number Marshall Sheds still works as a website, but it cannot
 hold a Business Profile: no map pack, no "near me" results, no reviews.
 
-**2. Identical copy on two sites competes with itself.** Google picks one URL
-per duplicated passage and suppresses the other. With the same catalog on both
-domains, the two sites will collide on many of the same searches, and Any Size
-is the one holding the established Business Profile.
+**2. The two sites will compete on search, and the owner has accepted that.**
+Google picks one URL per duplicated passage and suppresses the other, so with
+the same catalog on both domains the two will collide on many of the same
+queries — and Any Size is the one holding the established Business Profile.
 
-The cheap fix, if it is wanted later, is in §3 — it is an automated pass, not
-weeks of writing. The clone is built either way; this is noted so it is a choice
-rather than a surprise.
+This was raised and decided: the clone stays close. Do not reopen it, do not
+quietly rewrite copy to hedge against it, and do not treat divergence as a
+requirement anywhere in this build. Recorded here only so nobody rediscovers it
+as a surprise later.
 
 **Verified NAP for the source — do not retype from memory:**
 
@@ -58,11 +66,12 @@ rm -rf .git dist
 git init && git add -A && git commit -m "Fork Any Size codebase as Marshall Sheds"
 npm install
 npm run dev          # http://localhost:4321
-npm run build        # must report 160 pages before you change anything
+npm run build        # 159 pages from the source today; the existing fork is 160,
+                     # because it predates the duplicate-record removal in §2a
 ```
 
-Get a clean 160-page build first. Do not debug a broken build and a rebrand at
-the same time.
+Get a clean build first. Do not debug a broken build and a rebrand at the same
+time.
 
 ---
 
@@ -91,7 +100,7 @@ schema and the OG tags together.
 ```
 
 `indexable: false` and `emailPending: true` are safety flags. The first puts
-`noindex` on all 160 pages; the second hides the email address everywhere
+`noindex` on every page; the second hides the email address everywhere
 including the schema. Flipping them is the last step of the project.
 
 | File | Change |
@@ -122,10 +131,47 @@ grep -ril "any size\|anysize" dist/ src/ public/ --exclude-dir=node_modules
 
 ---
 
+## 2a. Fixes made after the fork — port these
+
+The fork was taken at commit `ecd1727`. Real bugs were found in the source
+afterwards and fixed there. None of them announce themselves; each was found by
+auditing the built site, not by anything failing. Port all of them.
+
+**Forms posted nowhere.** `deploy.yml` passes `PUBLIC_FORM_ENDPOINT` from an
+Actions variable that does not exist. GitHub interpolates a missing variable as
+an empty string rather than leaving it unset, and both form pages coalesced with
+`??`, which only falls through on null and undefined — so `""` beat the real
+endpoint and every submission from the deployed site was silently dropped.
+Local builds were fine, which is what hid it. Use `||` with a trim. The fork
+still has `??` on both pages; it is currently masked only because its endpoint
+is blank, and it will bite the moment a real one is set.
+
+**Duplicate inventory record.** `40-x-40-container-cover-usa` is byte-identical
+to `40-x-40-container-cover` in every field but the slug — an extraction
+artifact that publishes the same page at two URLs. The fork still has both, 52
+records where there should be 51.
+
+**Titles and descriptions past what Google prints.** 23 titles over 60
+characters and 25 descriptions over 160, almost all on service-area pages, plus
+two pairs of pages sharing a title. The fork carries all of it, including the
+`40' x 60' Steel Building (Industrial/Agricultural)` title that overruns.
+`scripts/check-meta.mjs` in the source fails a build on any of it and is worth
+copying across with the workflow step that runs it.
+
+**Region in inventory titles.** Two kits differing only in where they sit shared
+a title. Non-US regions now appear in the title, which is freight-relevant
+anyway.
+
+The `[hidden]`/`display` bug that broke the inventory filter and the quote form's
+conditional fields was found independently during the fork and is already fixed
+there — no action needed.
+
+---
+
 ## 3. Copy
 
 Copy the catalog across as-is. All of it transfers: 24 steel building types,
-8 model profiles, 12 option items, 52 clearance listings, 84 FAQs, 16 portable
+8 model profiles, 12 option items, 51 clearance listings, 84 FAQs, 16 portable
 buildings, the location data, all 225 photos.
 
 Two things must change regardless of how much text is reused:
@@ -136,14 +182,9 @@ Two things must change regardless of how much text is reused:
   a customer relies on it.
 - **Anything naming or implying Any Size.** Caught by the grep sweep in §2.
 
-**Optional rewrite pass.** If the duplicate-content collision in §0 is worth
-avoiding, it costs one automated pass rather than weeks of writing: walk each
-data file, rewrite every `intro`, `detail`, `headline`, `summary` and FAQ answer
-in a different voice, and write the result back. The source is written flat and
-technical — spans, gauges, load values, no adjectives. A plainer, more
-conversational second-person register is a genuinely different voice and gives
-each site its own set of pages to rank. Roughly an hour of tool calls. Worth
-raising with the owner once, then doing whichever he picks.
+Nothing else needs rewriting. The owner has decided the clone stays close, so
+the catalog prose ships as it stands — the two edits above are the whole
+requirement.
 
 **Do not add testimonials or reviews.** There are none in the source. Inventing
 social proof for a new brand is fabrication, and review fraud is separately
@@ -151,54 +192,23 @@ illegal.
 
 ---
 
-## 4. Interface — make it visibly different
+## 4. Interface
 
-The brief here is that a visitor seeing both sites should not read them as one
-template used twice. Recolouring the tokens does not achieve that; the shape of
-the pages has to change.
+**Not a requirement.** The owner has said the clone can stay as close to the
+source as it needs to be, so no amount of visual divergence is being asked for.
+Do not spend a build cycle redesigning to hit a similarity target that does not
+exist.
 
-### What the source is, and is moving away from
+What is already in the repo, from the first pass, is a genuine redesign: bone
+ground with a barn-red accent, Bitter over Source Sans 3 instead of single-family
+Inter, softer radii, the two mega menus replaced with a plain nav plus a
+full-screen mobile overlay, index pages built from alternating media rows rather
+than card grids, a 1080px measure, and no dark mode.
 
-Cool steel-gray palette with a warm amber accent. Inter throughout, tight
-letter-spacing. 4px and 8px radii. Sticky translucent header carrying two
-six-column mega menus. Card grids on every index page. 1200px measure.
-Automatic dark mode. It reads industrial, dense, catalog-like.
-
-### Direction for Marshall Sheds
-
-**Palette — warm, not cool.** Bone or cream ground (`#faf7f2`), warm charcoal
-text (`#2b2622`), barn-red or deep-forest accent. Warm-versus-cool ground reads
-instantly at a glance, which is the test being applied.
-
-**Type — two families, not one.** A serif for headings (Bitter, Zilla Slab or
-Fraunces — all on Google Fonts, the only external host the CSP allows) against a
-humanist sans for body. The source is single-family Inter; a serif/sans pairing
-is a different design language, not a different setting.
-
-**Shape — soft, not sharp.** Radii to 12–16px, warmer and softer shadows, 1px
-borders replaced by tonal background steps.
-
-**Navigation — remove the mega menu.** It is the single most recognisable
-element of the source. Replace with a plain horizontal nav plus a full-screen
-overlay on mobile, and push the category depth onto the index pages.
-
-**Layout archetype — rows, not cards.** Replace card grids on index pages with
-full-width media rows, image alternating left and right. Different rhythm,
-different scan pattern.
-
-**Measure and rhythm.** `--maxw` down to 1080px, wider `--gutter`, more section
-padding. A slower, more generous page against a denser one.
-
-**Hero.** The source leads with a headline block. Lead instead with a full-bleed
-photograph and an overlaid card carrying the phone number.
-
-**Dark mode.** Consider dropping it — a single warm light theme is a legitimate
-choice, halves the CSS surface, and removes another structural tell. If kept,
-make it a warm dark (browns), not a cool one.
-
-Most tokens live in `src/styles/global.css`. Do not stop there: token-only edits
-recolour a design without changing it. The nav, the hero, and the card-to-row
-switch are what actually change the shape of the pages.
+Keep it or revert it — both are fine and neither affects anything else in this
+brief. Reverting means taking `src/styles/global.css`, `src/components/Header.astro`,
+`src/components/Footer.astro` and `src/pages/index.astro` from the source repo
+and re-running the §2 brand sweep over them. Everything else is already shared.
 
 ---
 
@@ -312,7 +322,7 @@ Tick **Enforce HTTPS** once the certificate provisions.
 ## 8. Launch checklist
 
 - [ ] `grep -ril "any size\|anysize" dist/ src/ public/` returns nothing
-- [ ] `npm run build` reports 160 pages
+- [ ] `npm run build` succeeds and the page count matches the source
 - [ ] Own phone number, live and answered
 - [ ] Own Formspree endpoint, tested with a real submission end to end
 - [ ] Email forwarding live, then `emailPending: false`
