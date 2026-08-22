@@ -1,0 +1,4 @@
+# Pre-launch. Pages carry <meta name="robots" content="noindex">.
+# Crawling is allowed so that directive is visible; nothing should be indexed.
+User-agent: *
+Allow: /

@@ -1,0 +1,1 @@
+import{w as s}from"./form-submit.D0662E3-.js";import"./hoisted.Djk_Vy7_.js";s("contact-form",{successHeading:"Thanks — message received.",successBody:"We will reply shortly. If it is urgent, call us on (903) 690-5969."});
