@@ -61,6 +61,12 @@ jobs:
           done
           echo "CNAME=$(cat dist/CNAME) assets=$(find dist/_astro -type f | wc -l) forms=wired"
 
+      - name: Type and template check
+        # Catches malformed markup the Astro compiler tolerates but that is not
+        # valid — a JSX comment inside an attribute list built and rendered
+        # fine while quietly being a parse error.
+        run: npm run check
+
       - name: Check titles and meta descriptions
         # Truncated or duplicated titles fail silently — nothing in the build
         # notices, but Google either cuts them mid-word or makes the pages

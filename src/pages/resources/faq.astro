@@ -126,7 +126,7 @@ const schema = {
 </style>
 
 <script>
-  const search = document.getElementById('faq-search');
+  const search = document.getElementById('faq-search') as HTMLInputElement | null;
   const countEl = document.getElementById('search-count');
   const noRes = document.getElementById('no-results');
 
@@ -134,16 +134,16 @@ const schema = {
     const q = search.value.trim().toLowerCase();
     let shown = 0;
 
-    document.querySelectorAll('.qa').forEach((el) => {
-      const hit = !q || el.dataset.q.includes(q) || el.dataset.a.includes(q);
+    document.querySelectorAll<HTMLElement>('.qa').forEach((el) => {
+      const hit = !q || (el.dataset.q ?? '').includes(q) || (el.dataset.a ?? '').includes(q);
       el.hidden = !hit;
       if (hit) shown++;
       if (q && hit) el.setAttribute('open', ''); else if (q) el.removeAttribute('open');
     });
 
     // hide category headers with no visible questions
-    document.querySelectorAll('.cat').forEach((cat) => {
-      const any = [...cat.querySelectorAll('.qa')].some((el) => !el.hidden);
+    document.querySelectorAll<HTMLElement>('.cat').forEach((cat) => {
+      const any = [...cat.querySelectorAll<HTMLElement>('.qa')].some((el) => !el.hidden);
       cat.hidden = !any;
     });
 

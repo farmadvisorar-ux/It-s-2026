@@ -120,7 +120,7 @@ const modelName = (c: string) => (models as any[]).find((m) => m.code === c)?.na
   const grid = document.getElementById('inv-grid');
   const countEl = document.getElementById('count');
   const emptyEl = document.getElementById('empty');
-  const selects = document.querySelectorAll('select[data-filter]');
+  const selects = document.querySelectorAll<HTMLSelectElement>('select[data-filter]');
 
   const buckets = {
     s: (n) => n > 0 && n < 1000,
@@ -130,12 +130,12 @@ const modelName = (c: string) => (models as any[]).find((m) => m.code === c)?.na
   };
 
   function apply() {
-    const region = document.querySelector('[data-filter="region"]').value;
-    const model = document.querySelector('[data-filter="model"]').value;
-    const size = document.querySelector('[data-filter="size"]').value;
+    const region = document.querySelector<HTMLSelectElement>('[data-filter="region"]')!.value;
+    const model = document.querySelector<HTMLSelectElement>('[data-filter="model"]')!.value;
+    const size = document.querySelector<HTMLSelectElement>('[data-filter="size"]')!.value;
     let shown = 0;
 
-    grid.querySelectorAll('.inv').forEach((card) => {
+    grid.querySelectorAll<HTMLElement>('.inv').forEach((card) => {
       const regions = (card.dataset.region || '').split(' ');
       const sqft = Number(card.dataset.sqft || 0);
       const ok =

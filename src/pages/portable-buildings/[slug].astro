@@ -9,7 +9,9 @@ export function getStaticPaths() {
   return products.map((p: any) => ({ params: { slug: p.slug }, props: { product: p } }));
 }
 
-const { product } = Astro.props;
+// getStaticPaths returns `any`, so without this the inferred prop type
+// collapses to `never` and every field access below is a type error.
+const { product } = Astro.props as { product: any };
 const { line, construction, categories, products } = pb as any;
 
 const category = categories.find((c: any) => c.slug === product.category);
