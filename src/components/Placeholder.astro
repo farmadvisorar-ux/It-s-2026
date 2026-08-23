@@ -11,12 +11,26 @@ interface Props {
   alt?: string;
   variant?: 'default' | 'wide' | 'square';
   class?: string;
+  /**
+   * Set on the one image that is the page's largest contentful paint — the
+   * hero. Lazy-loading the LCP element is a well-known own goal: the browser
+   * defers the fetch until layout, so the metric it defines lands late. Every
+   * other image on the page stays lazy.
+   */
+  priority?: boolean;
 }
-const { label, src, alt, variant = 'default', class: cls = '' } = Astro.props;
+const { label, src, alt, variant = 'default', class: cls = '', priority = false } = Astro.props;
 const variantClass = variant === 'wide' ? 'ph--wide' : variant === 'square' ? 'ph--square' : '';
 ---
 {src ? (
-  <img class={`ph-img ${cls}`} src={src} alt={alt ?? label} loading="lazy" decoding="async" />
+  <img
+    class={`ph-img ${cls}`}
+    src={src}
+    alt={alt ?? label}
+    loading={priority ? "eager" : "lazy"}
+    fetchpriority={priority ? "high" : undefined}
+    decoding={priority ? "sync" : "async"}
+  />
 ) : (
   <div class={`ph ${variantClass} ${cls}`} role="img" aria-label={`Placeholder image: ${label}`}>
     <span class="ph__label">{label}</span>

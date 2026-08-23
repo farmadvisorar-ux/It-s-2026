@@ -51,7 +51,7 @@ const steps = [
 ];
 ---
 
-<Base title={site.name}>
+<Base title={site.name} preloadImage={heroImage()}>
   <!-- ================= HERO ================= -->
   <section class="hero">
     <div class="wrap hero__inner">
@@ -75,7 +75,7 @@ const steps = [
         </dl>
       </div>
       <div class="hero__media">
-        <Placeholder label="Steel building exterior" src={heroImage()} alt="Engineered steel building on a finished site" variant="wide" />
+        <Placeholder label="Steel building exterior" src={heroImage()} alt="Engineered steel building on a finished site" variant="wide" priority />
       </div>
     </div>
   </section>
