@@ -3,6 +3,8 @@ import Base from '../../layouts/Base.astro';
 import Placeholder from '../../components/Placeholder.astro';
 import pb from '../../data/portable-buildings.json';
 import { portableImage, portableImages, planImage, detailImages } from '../../lib/images';
+import { priceFor, priceFrom, monthlyFrom, hasPricing, termFor, usd } from '../../lib/pricing';
+import site from '../../data/site.json';
 
 export function getStaticPaths() {
   const { products } = pb as any;
@@ -31,6 +33,45 @@ const isSpecialty = product.warrantyClass === 'specialty';
 const gallery = portableImages(product.slug).slice(1);
 const planShots = product.plans.map((n: string) => ({ n, src: planImage(n) })).filter((x: any) => x.src);
 const details = detailImages();
+
+// Pricing is optional per product. When absent, everything below renders
+// exactly as it did before pricing existed.
+const priced = hasPricing(product);
+const fromCash = priceFrom(product);
+const fromMonthly = monthlyFrom(product);
+const term = termFor(product);
+
+/**
+ * Product schema, emitted only when this building actually has prices.
+ * Without an offer, Product earns a permanent "missing field" warning in
+ * Search Console and no rich result — which is why the steel kits, quoted per
+ * site, do not carry it. Here the offer is real, so the markup is too.
+ */
+const cashPrices = (product.sizes ?? [])
+  .map((s: string) => priceFor(product, s)?.cash)
+  .filter((n: number | undefined): n is number => typeof n === 'number');
+
+const productSchema = cashPrices.length
+  ? {
+      '@context': 'https://schema.org',
+      '@type': 'Product',
+      name: product.name,
+      description: product.headline,
+      category: category?.name,
+      ...(portableImage(product.slug)
+        ? { image: new URL(portableImage(product.slug)!, Astro.site ?? Astro.url.origin).href }
+        : {}),
+      offers: {
+        '@type': 'AggregateOffer',
+        priceCurrency: 'USD',
+        lowPrice: Math.min(...cashPrices),
+        highPrice: Math.max(...cashPrices),
+        offerCount: cashPrices.length,
+        availability: 'https://schema.org/InStock',
+        seller: { '@type': 'Organization', name: site.name },
+      },
+    }
+  : null;
 const stateNames: Record<string, string> = {
   TX: 'Texas', LA: 'Louisiana', MO: 'Missouri', IL: 'Illinois', TN: 'Tennessee', IN: 'Indiana',
 };
@@ -43,6 +84,9 @@ const stateNames: Record<string, string> = {
   crumbs={[{ label: 'Portable Buildings', href: '/portable-buildings/' }]}
   current={product.name}
 >
+  {productSchema && (
+    <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+  )}
   <article>
     <section class="head">
       <div class="wrap head__inner">
@@ -50,6 +94,12 @@ const stateNames: Record<string, string> = {
           <p class="eyebrow">{category?.name}</p>
           <h1 class="page-title">{product.name}</h1>
           <p class="head__line">{product.headline}</p>
+          {fromCash && (
+            <p class="head__price">
+              <strong>From {usd(fromCash)}</strong> delivered
+              {fromMonthly && term && <span class="head__price-alt"> · or {usd(fromMonthly)}/mo over {term} months</span>}
+            </p>
+          )}
           <div class="head__actions">
             <a class="btn btn--primary" href={`/quote/?line=portable&model=${product.slug}`}>Quote this building</a>
             <a class="btn btn--ghost" href="/portable-buildings/#construction">How it is built</a>
@@ -80,18 +130,38 @@ const stateNames: Record<string, string> = {
           <div class="table-scroll">
             <table class="spec size-table">
               <thead>
-                <tr><th scope="col">Size</th><th scope="col">Footprint</th></tr>
+                <tr>
+                  <th scope="col">Size</th>
+                  <th scope="col">Footprint</th>
+                  {priced && <th scope="col">Price</th>}
+                  {priced && term && <th scope="col">Per month</th>}
+                </tr>
               </thead>
               <tbody>
                 {product.sizes.map((s: string) => (
                   <tr>
                     <td class="mono">{fmtSize(s)}</td>
                     <td class="mono">{sqft(s).toLocaleString()} sq ft</td>
+                    {priced && (
+                      <td class="mono price">{priceFor(product, s)?.cash ? usd(priceFor(product, s)!.cash!) : '—'}</td>
+                    )}
+                    {priced && term && (
+                      <td class="mono price">
+                        {priceFor(product, s)?.monthly ? `${usd(priceFor(product, s)!.monthly!)}/mo` : '—'}
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+          {priced && (
+            <p class="price-note">
+              Prices are for the building delivered and set on level ground within our
+              delivery area{term ? `, and the monthly figure is a ${term}-month rent-to-own payment` : ''}.
+              Lease-purchase terms come from the finance provider, not from us, and can change.
+            </p>
+          )}
           <h2>Floor plans</h2>
           <p>
             The floor plan sets where the doors and windows go. This model is offered in
@@ -221,6 +291,11 @@ const stateNames: Record<string, string> = {
   .head :global(.ph), .head :global(.ph-img) { border-radius: var(--radius-lg); border: 1px solid var(--border); }
   .page-title { font-size: clamp(1.875rem, 4.5vw, 3rem); margin-block: 0.5rem 0.75rem; }
   .head__line { font-size: 1.125rem; color: var(--text-muted); }
+  .head__price { margin-top: 0.875rem; font-size: 1.0625rem; }
+  .head__price strong { color: var(--accent); }
+  .head__price-alt { color: var(--text-muted); font-size: 0.9375rem; }
+  .price { white-space: nowrap; }
+  .price-note { margin-top: 0.75rem; font-size: 0.8125rem; color: var(--text-faint); }
   .head__actions { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.75rem; }
 
   .body-grid { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: clamp(2rem, 5vw, 4rem); align-items: start; }
