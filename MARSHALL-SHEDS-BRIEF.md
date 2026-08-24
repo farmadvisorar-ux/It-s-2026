@@ -11,8 +11,9 @@ sites.
 > files, no CNAME, no Pages workflow, so it cannot reach `anysize.shop`. This
 > file is now reference rather than instructions: read §0 and §5 before touching
 > anything, since those carry the two constraints that still bind. Then read
-> §2a — the fork was taken before several real bugs were found and fixed in the
-> source, and it still carries them.
+> §2a — the fork was taken before several real bugs were found in the source;
+> those fixes have since been ported across, and §2a is the record of what and
+> why.
 
 Source repo: `https://github.com/farmadvisorar-ux/It-s-2026`
 Source site: Any Size — `anysize.shop` (Astro 4, static, 159 pages)
@@ -66,8 +67,7 @@ rm -rf .git dist
 git init && git add -A && git commit -m "Fork Any Size codebase as Marshall Sheds"
 npm install
 npm run dev          # http://localhost:4321
-npm run build        # 159 pages from the source today; the existing fork is 160,
-                     # because it predates the duplicate-record removal in §2a
+npm run build        # 159 pages — both sides match since the §2a ports
 ```
 
 Get a clean build first. Do not debug a broken build and a rebrand at the same
@@ -131,40 +131,46 @@ grep -ril "any size\|anysize" dist/ src/ public/ --exclude-dir=node_modules
 
 ---
 
-## 2a. Fixes made after the fork — port these
+## 2a. Fixes made after the fork — ported, done
+
+**All of this is already applied in the `marshall-sheds` repo** (commit
+`59586e4`). Kept here as the record of what those changes were and why, so
+nobody re-derives them or assumes the fork is still behind. Nothing to do.
 
 The fork was taken at commit `ecd1727`. Real bugs were found in the source
 afterwards and fixed there. None of them announce themselves; each was found by
-auditing the built site, not by anything failing. Port all of them.
+auditing the built site, not by anything failing.
 
 **Forms posted nowhere.** `deploy.yml` passes `PUBLIC_FORM_ENDPOINT` from an
 Actions variable that does not exist. GitHub interpolates a missing variable as
 an empty string rather than leaving it unset, and both form pages coalesced with
 `??`, which only falls through on null and undefined — so `""` beat the real
 endpoint and every submission from the deployed site was silently dropped.
-Local builds were fine, which is what hid it. Use `||` with a trim. The fork
-still has `??` on both pages; it is currently masked only because its endpoint
-is blank, and it will bite the moment a real one is set.
+Local builds were fine, which is what hid it. Fixed with `||` and a trim. In
+the fork it was masked only because `formEndpoint` is blank, and would have
+bitten the moment a real one was set.
 
 **Duplicate inventory record.** `40-x-40-container-cover-usa` is byte-identical
 to `40-x-40-container-cover` in every field but the slug — an extraction
-artifact that publishes the same page at two URLs. The fork still has both, 52
-records where there should be 51.
+artifact that publishes the same page at two URLs. Removed on both sides — 52
+records down to 51.
 
 **Titles and descriptions past what Google prints.** 23 titles over 60
 characters and 25 descriptions over 160, almost all on service-area pages, plus
-two pairs of pages sharing a title. The fork carries all of it, including the
-`40' x 60' Steel Building (Industrial/Agricultural)` title that overruns.
-`scripts/check-meta.mjs` in the source fails a build on any of it and is worth
-copying across with the workflow step that runs it.
+two pairs of pages sharing a title. `scripts/check-meta.mjs` fails a build on
+any of it and now runs on both sides — inside `buildCommand` in the fork, since
+Vercel has no separate verify stage. It caught six further overruns there that
+do not exist in the source, because "Marshall Sheds" is six characters longer
+than "Any Size" and pushes borderline titles over.
 
 **Region in inventory titles.** Two kits differing only in where they sit shared
 a title. Non-US regions now appear in the title, which is freight-relevant
 anyway.
 
-The `[hidden]`/`display` bug that broke the inventory filter and the quote form's
-conditional fields was found independently during the fork and is already fixed
-there — no action needed.
+The `[hidden]`/`display` bug was found independently during the fork, but the
+fix there listed `.row` and `.card` by name — which covered the inventory filter
+and missed the quote form, whose conditional field is a `.field`. Both sides now
+match the attribute itself rather than an enumerated list.
 
 ---
 
