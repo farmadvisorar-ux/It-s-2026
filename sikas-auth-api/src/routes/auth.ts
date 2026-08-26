@@ -426,4 +426,296 @@ export async function adminAuthRoutes(fastify: FastifyInstance) {
       }
     }
   );
+
+  // POST /v1/auth/setup-sms
+  fastify.post<{ Body: z.infer<typeof setupSmsSchema> }>(
+    "/setup-sms",
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const body = setupSmsSchema.parse(request.body);
+
+        const session = await authService.getSession(body.session_id);
+        if (!session) {
+          return reply.code(401).send({
+            status: "error",
+            error: "invalid_session",
+          });
+        }
+
+        const user = await authService.getUserById(session.admin_user_id);
+        if (!user) {
+          return reply.code(401).send({
+            status: "error",
+            error: "user_not_found",
+          });
+        }
+
+        // Generate SMS code and store temporarily in Redis
+        const smsCode = cryptoService.generateSmsCode();
+        await fastify.redis.setEx(
+          `sms_setup:${body.session_id}`,
+          300, // 5 minutes
+          JSON.stringify({ phone: body.phone, code: smsCode })
+        );
+
+        // Send SMS (mock for now)
+        fastify.log.info(`SMS code for ${body.phone}: ${smsCode}`);
+        // TODO: Integrate with Twilio or similar
+
+        return reply.code(200).send({
+          status: "success",
+          message: "SMS code sent to your phone",
+        });
+      } catch (err) {
+        if (err instanceof z.ZodError) {
+          return reply.code(400).send({
+            status: "error",
+            error: "validation_error",
+          });
+        }
+        fastify.log.error(err);
+        return reply.code(500).send({
+          status: "error",
+          error: "internal_error",
+        });
+      }
+    }
+  );
+
+  // POST /v1/auth/verify-sms-setup
+  fastify.post<{ Body: z.infer<typeof verifySmsSetupSchema> }>(
+    "/verify-sms-setup",
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const body = verifySmsSetupSchema.parse(request.body);
+
+        const setupData = await fastify.redis.get(`sms_setup:${body.session_id}`);
+        if (!setupData) {
+          return reply.code(401).send({
+            status: "error",
+            error: "setup_expired",
+            message: "SMS setup expired. Start over.",
+          });
+        }
+
+        const { phone, code } = JSON.parse(setupData);
+
+        // Verify SMS code
+        if (body.sms_code !== code) {
+          return reply.code(401).send({
+            status: "error",
+            error: "invalid_code",
+            message: "Invalid SMS code",
+          });
+        }
+
+        const session = await authService.getSession(body.session_id);
+        if (!session) {
+          return reply.code(401).send({
+            status: "error",
+            error: "invalid_session",
+          });
+        }
+
+        // Update user with verified SMS
+        await authService.updateUserSms(session.admin_user_id, phone);
+        await authService.verifyUserSms(session.admin_user_id);
+
+        // Clear setup data
+        await fastify.redis.del(`sms_setup:${body.session_id}`);
+
+        return reply.code(200).send({
+          status: "success",
+          message: "SMS verified successfully",
+        });
+      } catch (err) {
+        if (err instanceof z.ZodError) {
+          return reply.code(400).send({
+            status: "error",
+            error: "validation_error",
+          });
+        }
+        fastify.log.error(err);
+        return reply.code(500).send({
+          status: "error",
+          error: "internal_error",
+        });
+      }
+    }
+  );
+
+  // POST /v1/auth/verify-sms
+  fastify.post<{ Body: z.infer<typeof verifySmsSchema> }>(
+    "/verify-sms",
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const body = verifySmsSchema.parse(request.body);
+
+        const session = await authService.getSession(body.session_id);
+        if (!session) {
+          return reply.code(401).send({
+            status: "error",
+            error: "invalid_session",
+            message: "Session expired or invalid",
+          });
+        }
+
+        const user = await authService.getUserById(session.admin_user_id);
+        if (!user || !user.sms_verified) {
+          return reply.code(401).send({
+            status: "error",
+            error: "sms_not_configured",
+          });
+        }
+
+        // Verify SMS code (in real implementation, would validate against SMS service)
+        const storedCode = await fastify.redis.get(`sms_code:${body.session_id}`);
+        if (!storedCode || storedCode !== body.sms_code) {
+          await authService.auditLog(user.id, "sms_verify", "failure", request.ip);
+          return reply.code(401).send({
+            status: "error",
+            error: "invalid_code",
+            message: "Invalid SMS code",
+          });
+        }
+
+        // Mark session MFA verified
+        await authService.markSessionMfaVerified(body.session_id);
+        await authService.recordLastLogin(user.id);
+
+        // Generate tokens
+        const accessToken = cryptoService.generateAccessToken(user.id, user.role);
+        const refreshToken = cryptoService.generateRefreshToken(user.id);
+
+        await authService.auditLog(user.id, "sms_verify", "success", request.ip);
+
+        return reply.code(200).send({
+          status: "success",
+          access_token: accessToken,
+          refresh_token: refreshToken,
+          expires_in: 3600,
+          user: {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+          },
+        });
+      } catch (err) {
+        if (err instanceof z.ZodError) {
+          return reply.code(400).send({
+            status: "error",
+            error: "validation_error",
+          });
+        }
+        fastify.log.error(err);
+        return reply.code(500).send({
+          status: "error",
+          error: "internal_error",
+        });
+      }
+    }
+  );
+
+  // POST /v1/auth/refresh
+  const refreshTokenSchema = z.object({
+    refresh_token: z.string(),
+  });
+
+  fastify.post<{ Body: z.infer<typeof refreshTokenSchema> }>(
+    "/refresh",
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const body = refreshTokenSchema.parse(request.body);
+
+        const decoded = cryptoService.verifyToken(body.refresh_token);
+        if (!decoded || decoded.type !== "refresh") {
+          return reply.code(401).send({
+            status: "error",
+            error: "invalid_token",
+            message: "Invalid or expired refresh token",
+          });
+        }
+
+        const user = await authService.getUserById(decoded.sub);
+        if (!user) {
+          return reply.code(401).send({
+            status: "error",
+            error: "user_not_found",
+          });
+        }
+
+        // Generate new access token
+        const accessToken = cryptoService.generateAccessToken(user.id, user.role);
+
+        return reply.code(200).send({
+          status: "success",
+          access_token: accessToken,
+          expires_in: 3600,
+        });
+      } catch (err) {
+        if (err instanceof z.ZodError) {
+          return reply.code(400).send({
+            status: "error",
+            error: "validation_error",
+          });
+        }
+        fastify.log.error(err);
+        return reply.code(500).send({
+          status: "error",
+          error: "internal_error",
+        });
+      }
+    }
+  );
+
+  // GET /v1/auth/me
+  fastify.get("/me", async (request: FastifyRequest, reply: FastifyReply) => {
+    try {
+      const authHeader = request.headers.authorization;
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return reply.code(401).send({
+          status: "error",
+          error: "missing_token",
+          message: "Missing or invalid authorization header",
+        });
+      }
+
+      const token = authHeader.substring(7);
+      const decoded = cryptoService.verifyToken(token);
+      if (!decoded || decoded.type !== "access") {
+        return reply.code(401).send({
+          status: "error",
+          error: "invalid_token",
+        });
+      }
+
+      const user = await authService.getUserById(decoded.sub);
+      if (!user) {
+        return reply.code(401).send({
+          status: "error",
+          error: "user_not_found",
+        });
+      }
+
+      return reply.code(200).send({
+        status: "success",
+        user: {
+          id: user.id,
+          email: user.email,
+          role: user.role,
+          email_verified: user.email_verified,
+          totp_verified: user.totp_verified,
+          sms_verified: user.sms_verified,
+          created_at: user.created_at,
+          last_login_at: user.last_login_at,
+        },
+      });
+    } catch (err) {
+      fastify.log.error(err);
+      return reply.code(500).send({
+        status: "error",
+        error: "internal_error",
+      });
+    }
+  });
 }
