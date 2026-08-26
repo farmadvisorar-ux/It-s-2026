@@ -3,6 +3,7 @@ import { z } from "zod";
 import { AuthService } from "../services/auth.service.js";
 import { CryptoService } from "../services/crypto.service.js";
 import QRCode from "qrcode";
+import { EmailService } from "../services/email.service.js";
 
 // Schemas
 const loginSchema = z.object({
@@ -52,6 +53,10 @@ const passwordResetSchema = z.object({
 export async function adminAuthRoutes(fastify: FastifyInstance) {
   const authService = new AuthService(fastify.db);
   const cryptoService = new CryptoService();
+  const emailService = new EmailService({
+    info: (msg) => fastify.log.info(msg),
+    error: (err) => fastify.log.error(err),
+  });
 
   // POST /v1/auth/login
   fastify.post<{ Body: z.infer<typeof loginSchema> }>(
@@ -108,10 +113,10 @@ export async function adminAuthRoutes(fastify: FastifyInstance) {
           status: "success",
           session_id: sessionId,
           mfa_required: true,
-          mfa_method: user.totp_verified ? "totp" : "sms",
+          mfa_method: user.totp_verified ? "totp" : "email",
           message: user.totp_verified
             ? "Enter your authenticator code"
-            : "We'll send an SMS code to your phone",
+            : "We'll email you a login code",
         });
       } catch (err) {
         if (err instanceof z.ZodError) {
@@ -336,9 +341,15 @@ export async function adminAuthRoutes(fastify: FastifyInstance) {
           const token = await cryptoService.randomToken();
           await fastify.redis.setEx(`password_reset:${token}`, 3600, user.id.toString());
 
-          // Send email (mock for now)
-          fastify.log.info(`Password reset link for ${body.email}: ${token}`);
-          // TODO: Integrate with SendGrid or similar
+          // Deliver the reset link over SMTP (logs to console when SMTP is unset).
+          // A delivery failure is logged but never surfaced: returning 500 only
+          // for registered addresses would turn this endpoint into an email
+          // enumeration oracle.
+          try {
+            await emailService.sendPasswordReset(user.email, token);
+          } catch (err) {
+            fastify.log.error({ err }, "password reset email failed to send");
+          }
         }
 
         // Always return success (security: don't reveal if email exists)
@@ -403,7 +414,7 @@ export async function adminAuthRoutes(fastify: FastifyInstance) {
   // POST /v1/auth/logout
   fastify.post<{ Body: { session_id: string } }>(
     "/logout",
-    async (request: FastifyRequest, reply: FastifyReply) => {
+    async (request: FastifyRequest<{ Body: { session_id: string } }>, reply: FastifyReply) => {
       try {
         const { session_id } = request.body;
         const session = await authService.getSession(session_id);
@@ -418,6 +429,150 @@ export async function adminAuthRoutes(fastify: FastifyInstance) {
           message: "Logged out",
         });
       } catch (err) {
+        fastify.log.error(err);
+        return reply.code(500).send({
+          status: "error",
+          error: "internal_error",
+        });
+      }
+    }
+  );
+
+  // POST /v1/auth/send-email-otp
+  // Free backup MFA channel: emails a 6-digit code instead of texting one.
+  const sendEmailOtpSchema = z.object({
+    session_id: z.string(),
+  });
+
+  fastify.post<{ Body: z.infer<typeof sendEmailOtpSchema> }>(
+    "/send-email-otp",
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const body = sendEmailOtpSchema.parse(request.body);
+
+        const session = await authService.getSession(body.session_id);
+        if (!session) {
+          return reply.code(401).send({
+            status: "error",
+            error: "invalid_session",
+            message: "Session expired or invalid",
+          });
+        }
+
+        const user = await authService.getUserById(session.admin_user_id);
+        if (!user) {
+          return reply.code(401).send({
+            status: "error",
+            error: "user_not_found",
+          });
+        }
+
+        // Cooldown: one code per 60s per session, so the endpoint can't be used
+        // to spam a mailbox or burn through the daily SMTP quota.
+        const cooldownKey = `email_otp_cooldown:${body.session_id}`;
+        if (await fastify.redis.get(cooldownKey)) {
+          return reply.code(429).send({
+            status: "error",
+            error: "too_many_requests",
+            message: "A code was just sent. Wait a minute before requesting another.",
+          });
+        }
+
+        const code = cryptoService.generateSmsCode(); // 6-digit numeric code
+        await fastify.redis.setEx(`email_otp:${body.session_id}`, 600, code); // 10 min
+        await fastify.redis.setEx(cooldownKey, 60, "1");
+
+        await emailService.sendLoginCode(user.email, code);
+
+        return reply.code(200).send({
+          status: "success",
+          message: "Login code sent to your email",
+          expires_in: 600,
+        });
+      } catch (err) {
+        if (err instanceof z.ZodError) {
+          return reply.code(400).send({
+            status: "error",
+            error: "validation_error",
+          });
+        }
+        fastify.log.error(err);
+        return reply.code(500).send({
+          status: "error",
+          error: "internal_error",
+        });
+      }
+    }
+  );
+
+  // POST /v1/auth/verify-email-otp
+  const verifyEmailOtpSchema = z.object({
+    session_id: z.string(),
+    code: z.string().length(6),
+  });
+
+  fastify.post<{ Body: z.infer<typeof verifyEmailOtpSchema> }>(
+    "/verify-email-otp",
+    async (request: FastifyRequest, reply: FastifyReply) => {
+      try {
+        const body = verifyEmailOtpSchema.parse(request.body);
+
+        const session = await authService.getSession(body.session_id);
+        if (!session) {
+          return reply.code(401).send({
+            status: "error",
+            error: "invalid_session",
+            message: "Session expired or invalid",
+          });
+        }
+
+        const user = await authService.getUserById(session.admin_user_id);
+        if (!user) {
+          return reply.code(401).send({
+            status: "error",
+            error: "user_not_found",
+          });
+        }
+
+        const storedCode = await fastify.redis.get(`email_otp:${body.session_id}`);
+        if (!storedCode || !cryptoService.timingSafeEqual(storedCode, body.code)) {
+          await authService.auditLog(user.id, "email_otp_verify", "failure", request.ip);
+          return reply.code(401).send({
+            status: "error",
+            error: "invalid_code",
+            message: "Invalid or expired login code",
+          });
+        }
+
+        // Single use: burn the code so it can't be replayed
+        await fastify.redis.del(`email_otp:${body.session_id}`);
+
+        await authService.markSessionMfaVerified(body.session_id);
+        await authService.recordLastLogin(user.id);
+
+        const accessToken = cryptoService.generateAccessToken(user.id, user.role);
+        const refreshToken = cryptoService.generateRefreshToken(user.id);
+
+        await authService.auditLog(user.id, "email_otp_verify", "success", request.ip);
+
+        return reply.code(200).send({
+          status: "success",
+          access_token: accessToken,
+          refresh_token: refreshToken,
+          expires_in: 3600,
+          user: {
+            id: user.id,
+            email: user.email,
+            role: user.role,
+          },
+        });
+      } catch (err) {
+        if (err instanceof z.ZodError) {
+          return reply.code(400).send({
+            status: "error",
+            error: "validation_error",
+          });
+        }
         fastify.log.error(err);
         return reply.code(500).send({
           status: "error",

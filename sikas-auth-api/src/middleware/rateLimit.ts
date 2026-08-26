@@ -35,7 +35,7 @@ export async function rateLimitMiddleware(
         });
       }
     } catch (err) {
-      request.server.log.error("Rate limit check failed", err);
+      request.server.log.error({ err }, "Rate limit check failed");
       // Don't fail the request if rate limiting fails
     }
   }

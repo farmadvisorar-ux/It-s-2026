@@ -58,8 +58,8 @@ export class CryptoService {
 
   generateBackupCodes(count: number = 10): string[] {
     return Array.from({ length: count }, () => {
-      const bytes = crypto.randomBytes(5);
-      const hex = bytes.toString("hex").toUpperCase();
+      // 6 bytes -> 12 hex chars -> XXXX-XXXX-XXXX
+      const hex = crypto.randomBytes(6).toString("hex").toUpperCase();
       return `${hex.slice(0, 4)}-${hex.slice(4, 8)}-${hex.slice(8)}`;
     });
   }
@@ -104,6 +104,14 @@ export class CryptoService {
       .createHash("sha256")
       .update(`${userAgent}:${ip}`)
       .digest("hex");
+  }
+
+  // Constant-time string comparison for short secrets (OTP codes, tokens)
+  timingSafeEqual(a: string, b: string): boolean {
+    const bufA = Buffer.from(a, "utf8");
+    const bufB = Buffer.from(b, "utf8");
+    if (bufA.length !== bufB.length) return false;
+    return crypto.timingSafeEqual(bufA, bufB);
   }
 
   // SMS OTP

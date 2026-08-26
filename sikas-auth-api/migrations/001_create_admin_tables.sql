@@ -16,8 +16,8 @@ CREATE TABLE IF NOT EXISTS admin_users (
   last_login_at TIMESTAMP WITH TIME ZONE
 );
 
-CREATE INDEX idx_admin_users_email ON admin_users(email);
-CREATE INDEX idx_admin_users_status ON admin_users(status);
+CREATE INDEX IF NOT EXISTS idx_admin_users_email ON admin_users(email);
+CREATE INDEX IF NOT EXISTS idx_admin_users_status ON admin_users(status);
 
 -- Admin sessions table
 CREATE TABLE IF NOT EXISTS admin_sessions (
@@ -32,8 +32,8 @@ CREATE TABLE IF NOT EXISTS admin_sessions (
   last_activity_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_admin_sessions_user_id ON admin_sessions(admin_user_id);
-CREATE INDEX idx_admin_sessions_expires_at ON admin_sessions(expires_at);
+CREATE INDEX IF NOT EXISTS idx_admin_sessions_user_id ON admin_sessions(admin_user_id);
+CREATE INDEX IF NOT EXISTS idx_admin_sessions_expires_at ON admin_sessions(expires_at);
 
 -- Admin audit log table
 CREATE TABLE IF NOT EXISTS admin_audit_log (
@@ -46,6 +46,6 @@ CREATE TABLE IF NOT EXISTS admin_audit_log (
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
-CREATE INDEX idx_audit_log_user_id ON admin_audit_log(admin_user_id);
-CREATE INDEX idx_audit_log_action ON admin_audit_log(action);
-CREATE INDEX idx_audit_log_created_at ON admin_audit_log(created_at);
+CREATE INDEX IF NOT EXISTS idx_audit_log_user_id ON admin_audit_log(admin_user_id);
+CREATE INDEX IF NOT EXISTS idx_audit_log_action ON admin_audit_log(action);
+CREATE INDEX IF NOT EXISTS idx_audit_log_created_at ON admin_audit_log(created_at);

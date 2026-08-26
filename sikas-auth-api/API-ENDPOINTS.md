@@ -4,7 +4,7 @@ Complete documentation of all authentication endpoints.
 
 ## Base URL
 ```
-http://localhost:3000/v1/auth
+http://localhost:9000/v1/auth
 ```
 
 ## Authentication
@@ -82,7 +82,57 @@ Verify TOTP code from authenticator app during login.
 
 ---
 
-### 3. Verify SMS
+### 3a. Send Email Login Code
+**POST** `/send-email-otp`
+
+Emails a 6-digit login code. This is the **free** backup MFA channel — it uses
+the SMTP settings (Gmail works) rather than a paid SMS provider. `/login`
+returns `mfa_method: "email"` whenever the account has no TOTP configured.
+
+**Request:**
+```json
+{
+  "session_id": "base64_encoded_session_token"
+}
+```
+
+**Response (200):**
+```json
+{
+  "status": "success",
+  "message": "Login code sent to your email",
+  "expires_in": 600
+}
+```
+
+**Errors:**
+- 401: Invalid session
+- 429: A code was sent within the last 60 seconds
+
+---
+
+### 3b. Verify Email Login Code
+**POST** `/verify-email-otp`
+
+Verifies the emailed code and issues tokens. Codes are single-use and expire
+after 10 minutes.
+
+**Request:**
+```json
+{
+  "session_id": "base64_encoded_session_token",
+  "code": "123456"
+}
+```
+
+**Response (200):** Same shape as `/verify-totp`
+
+**Errors:**
+- 401: Invalid session, invalid or expired code
+
+---
+
+### 3c. Verify SMS *(optional, requires paid Twilio)*
 **POST** `/verify-sms`
 
 Verify SMS code during login (if SMS is configured as MFA method).
@@ -157,7 +207,7 @@ Verify TOTP code and save secret to database.
 
 ---
 
-### 6. Setup SMS
+### 6. Setup SMS *(optional, requires paid Twilio)*
 **POST** `/setup-sms`
 
 Request SMS code for SMS 2FA setup.
@@ -184,7 +234,7 @@ Request SMS code for SMS 2FA setup.
 
 ---
 
-### 7. Verify SMS Setup
+### 7. Verify SMS Setup *(optional, requires paid Twilio)*
 **POST** `/verify-sms-setup`
 
 Verify SMS code and enable SMS as backup 2FA method.
@@ -394,10 +444,24 @@ npm run dev
 npm run build
 ```
 
+### Seed the first admin
+```bash
+npm run seed:admin -- you@example.com 'YourPassword123' owner
+```
+
 ### Environment Variables
 ```env
 DATABASE_URL=postgresql://user:password@localhost/sikas_auth
 REDIS_URL=redis://localhost:6379
 JWT_SECRET=your_secret_key_here
 NODE_ENV=development
+
+# Email — free via Gmail (500/day). Leave unset in dev to print to console.
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=you@gmail.com
+SMTP_PASS=your_16_char_app_password
+APP_URL=http://localhost:5173
 ```
+
+See `.env.example` for the full list, including the optional paid Twilio vars.

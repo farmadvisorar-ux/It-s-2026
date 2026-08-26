@@ -1,6 +1,10 @@
-import { Pool } from "pg";
+import pkg from "pg";
 import fs from "fs";
 import path from "path";
+import { fileURLToPath } from "url";
+
+const { Pool } = pkg;
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL || "postgresql://localhost/sikas_auth",

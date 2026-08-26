@@ -2,7 +2,7 @@ import { describe, it, expect, beforeAll, afterAll } from "@jest/globals";
 import axios from "axios";
 import { Pool } from "pg";
 
-const API_URL = "http://localhost:3000/v1/auth";
+const API_URL = "http://localhost:9000/v1/auth";
 const TEST_EMAIL = "test@example.com";
 const TEST_PASSWORD = "TestPassword123";
 

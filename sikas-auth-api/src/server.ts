@@ -5,16 +5,24 @@ import { auditMiddleware } from "./middleware/audit.js";
 import { pool } from "./db/pool.js";
 import { redis } from "./db/redis.js";
 
+// pino-pretty is a dev-only dependency; production emits structured JSON
+// straight to stdout for the log collector to pick up.
+const prettyLogs = process.env.NODE_ENV !== "production";
+
 const fastify = Fastify({
   logger: {
     level: process.env.LOG_LEVEL || "info",
-    transport: {
-      target: "pino-pretty",
-      options: {
-        colorize: true,
-        singleLine: false,
-      },
-    },
+    ...(prettyLogs
+      ? {
+          transport: {
+            target: "pino-pretty",
+            options: {
+              colorize: true,
+              singleLine: false,
+            },
+          },
+        }
+      : {}),
   },
   trustProxy: true,
 });
@@ -61,8 +69,10 @@ fastify.setErrorHandler((error, request, reply) => {
 // Start server
 const start = async () => {
   try {
-    await fastify.listen({ port: 9000, host: "0.0.0.0" });
-    fastify.log.info("Auth API running on :9000");
+    const port = parseInt(process.env.PORT || "9000", 10);
+    const host = process.env.HOST || "0.0.0.0";
+    await fastify.listen({ port, host });
+    fastify.log.info(`Auth API running on ${host}:${port}`);
   } catch (err) {
     fastify.log.error(err);
     process.exit(1);

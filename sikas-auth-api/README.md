@@ -4,10 +4,11 @@ Enterprise-grade authentication and authorization backend for the Sikas Admin Da
 
 ## Features
 
-- **Multi-factor Authentication (MFA)**
-  - TOTP (Time-based One-Time Password) via Google Authenticator
-  - SMS verification as backup MFA method
+- **Multi-factor Authentication (MFA)** — all free
+  - TOTP (Time-based One-Time Password) via Google Authenticator — no service, no cost
+  - Emailed 6-digit login codes as the backup channel, over plain SMTP
   - Backup codes for account recovery
+  - SMS is supported but optional, and is the only part that needs a paid provider
 
 - **Session Management**
   - Device fingerprinting
@@ -59,12 +60,20 @@ Enterprise-grade authentication and authorization backend for the Sikas Admin Da
    npm run migrate
    ```
 
-4. **Start development server**
+4. **Create your first admin account**
+   ```bash
+   npm run seed:admin -- you@example.com 'YourPassword123' owner
+   ```
+
+5. **Start development server**
    ```bash
    npm run dev
    ```
 
-   API will be running at `http://localhost:3000/v1/auth`
+   API will be running at `http://localhost:9000/v1/auth`
+
+With no SMTP configured, password-reset links and login codes print to the
+server console — so you can run the whole flow locally without credentials.
 
 ### Environment Variables
 
@@ -77,6 +86,27 @@ JWT_SECRET=your_secret_key
 NODE_ENV=development
 ```
 
+### Sending real email for free (Gmail SMTP)
+
+Gmail sends up to 500 messages/day at no cost, which covers admin password
+resets and login codes comfortably.
+
+1. Turn on 2-Step Verification at <https://myaccount.google.com/security>
+2. Create an App Password at <https://myaccount.google.com/apppasswords>
+3. Add to `.env`:
+
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=587
+SMTP_USER=you@gmail.com
+SMTP_PASS=your_16_char_app_password
+SMTP_FROM=Sikas Admin <you@gmail.com>
+APP_URL=http://localhost:5173
+```
+
+Any other SMTP provider works by changing `SMTP_HOST`/`SMTP_PORT`. Leave these
+unset and email is printed to the console instead of sent.
+
 ## API Endpoints
 
 See [API-ENDPOINTS.md](./API-ENDPOINTS.md) for complete documentation.
@@ -84,7 +114,9 @@ See [API-ENDPOINTS.md](./API-ENDPOINTS.md) for complete documentation.
 ### Core Endpoints
 - `POST /login` - User login with email/password
 - `POST /verify-totp` - Verify TOTP code
-- `POST /verify-sms` - Verify SMS code
+- `POST /send-email-otp` - Email a 6-digit login code (free backup MFA)
+- `POST /verify-email-otp` - Verify the emailed login code
+- `POST /verify-sms` - Verify SMS code *(optional, paid)*
 - `POST /setup-2fa` - Initialize TOTP setup
 - `POST /confirm-2fa` - Confirm TOTP and save secret
 - `POST /setup-sms` - Request SMS verification
@@ -105,7 +137,8 @@ sikas-auth-api/
 │   ├── routes/auth.ts      # Auth endpoint handlers
 │   ├── services/
 │   │   ├── auth.service.ts # Auth business logic
-│   │   └── crypto.service.ts # Cryptographic operations
+│   │   ├── crypto.service.ts # Cryptographic operations
+│   │   └── email.service.ts # SMTP delivery (Gmail-friendly)
 │   ├── middleware/
 │   │   ├── audit.ts        # Audit logging
 │   │   └── rateLimit.ts    # Rate limiting
@@ -113,7 +146,11 @@ sikas-auth-api/
 │       ├── pool.ts         # Postgres connection pool
 │       └── redis.ts        # Redis client
 ├── migrations/
-│   └── 001_create_admin_tables.sql
+│   ├── 001_create_admin_tables.sql
+│   └── 002_widen_totp_secret.sql
+├── scripts/
+│   ├── migrate.ts          # Migration runner
+│   └── seed-admin.ts       # Create the first admin account
 ├── tests/
 │   └── auth.test.ts
 ├── Dockerfile
@@ -128,6 +165,7 @@ sikas-auth-api/
 - **Database**: PostgreSQL 16
 - **Cache**: Redis 7
 - **Authentication**: JWT (HS256), TOTP (speakeasy), Bcrypt
+- **Email**: Nodemailer over SMTP
 - **Validation**: Zod
 - **Logging**: Pino
 
@@ -140,8 +178,10 @@ sikas-auth-api/
 
 ### MFA
 - TOTP: ±2 time window (±60 seconds) to prevent clock skew
-- SMS: 6-digit codes with 5-minute expiration
-- Backup codes: 10 codes in XXXX-XXXX-XXXX format
+- Email OTP: 6-digit codes, 10-minute expiry, single use, 60s resend cooldown,
+  compared in constant time
+- SMS: 6-digit codes with 5-minute expiration *(optional, paid)*
+- Backup codes: 10 codes in XXXX-XXXX-XXXX format, stored as SHA-256 hashes
 
 ### Session Security
 - Random 32-byte session tokens
@@ -197,7 +237,7 @@ docker build -t sikas-auth-api:latest .
 
 ### Docker Run
 ```bash
-docker run -p 3000:3000 \
+docker run -p 9000:9000 \
   -e DATABASE_URL="postgresql://..." \
   -e REDIS_URL="redis://..." \
   -e JWT_SECRET="..." \
@@ -215,7 +255,7 @@ DATABASE_URL=postgresql://prod_user:prod_pass@prod-db.example.com/sikas_auth
 REDIS_URL=redis://prod-redis.example.com:6379
 JWT_SECRET=your_production_secret_key_min_32_chars
 NODE_ENV=production
-PORT=3000
+PORT=9000
 LOG_LEVEL=info
 ```
 
@@ -246,7 +286,7 @@ Currently no automatic rollback. To rollback manually:
 
 ### Health Check
 ```bash
-curl http://localhost:3000/health
+curl http://localhost:9000/health
 ```
 
 ### Metrics (Future)
@@ -257,9 +297,9 @@ curl http://localhost:3000/health
 
 ## Common Issues
 
-### Port 3000 Already in Use
+### Port 9000 Already in Use
 ```bash
-lsof -i :3000
+lsof -i :9000
 kill -9 <PID>
 ```
 
@@ -295,7 +335,7 @@ npm run migrate
 ### Load Testing
 ```bash
 # Using Apache Bench
-ab -n 1000 -c 10 http://localhost:3000/health
+ab -n 1000 -c 10 http://localhost:9000/health
 
 # Using Artillery
 artillery run artillery-config.yml
