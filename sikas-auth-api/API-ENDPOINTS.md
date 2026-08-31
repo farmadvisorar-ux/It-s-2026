@@ -389,6 +389,146 @@ Authorization: Bearer <access_token>
 
 ---
 
+## Admin Endpoints
+
+All routes below live under `/v1/admin` and require a verified access token:
+
+```
+Authorization: Bearer <access_token>
+```
+
+A missing or expired token returns 401. A role that lacks access returns 403.
+
+---
+
+### GET /v1/admin/stats
+
+Headline counts for the overview screen.
+
+```json
+{
+  "status": "success",
+  "stats": {
+    "active_admins": 4,
+    "admins_with_2fa": 3,
+    "active_sessions": 7,
+    "events_24h": 52,
+    "failures_24h": 2,
+    "logins_7d": 31
+  }
+}
+```
+
+---
+
+### GET /v1/admin/activity
+
+Daily authentication event counts for the last 14 days, zero-filled so every
+day is present.
+
+```json
+{
+  "status": "success",
+  "activity": [
+    { "day": "2026-08-18", "successes": 4, "failures": 0 },
+    { "day": "2026-08-19", "successes": 0, "failures": 0 }
+  ]
+}
+```
+
+---
+
+### GET /v1/admin/audit-log
+
+Paginated audit trail, newest first.
+
+**Query parameters:**
+- `limit` — 1 to 200, default 50
+- `offset` — default 0
+- `status` — `success` or `failure`
+- `action` — exact action name
+
+```json
+{
+  "status": "success",
+  "total": 128,
+  "limit": 25,
+  "offset": 0,
+  "events": [
+    {
+      "id": 128,
+      "action": "login",
+      "status": "failure",
+      "ip_address": "203.0.113.4",
+      "error_msg": "invalid_password",
+      "created_at": "2026-08-31T00:20:43.000Z",
+      "admin_email": "admin@example.com"
+    }
+  ]
+}
+```
+
+---
+
+### GET /v1/admin/sessions
+
+The calling admin's own live sessions.
+
+```json
+{
+  "status": "success",
+  "sessions": [
+    {
+      "id": "…",
+      "ip_address": "203.0.113.4",
+      "user_agent": "Mozilla/5.0 …",
+      "is_mfa_verified": true,
+      "created_at": "2026-08-30T23:27:22.000Z",
+      "expires_at": "2026-09-06T23:27:22.000Z",
+      "last_activity_at": "2026-08-31T00:20:43.000Z"
+    }
+  ]
+}
+```
+
+---
+
+### DELETE /v1/admin/sessions/:id
+
+Revoke one of the caller's own sessions. Scoped by admin id, so one admin can
+never revoke another's session.
+
+**Errors:** 404 if the session isn't the caller's or doesn't exist.
+
+---
+
+### GET /v1/admin/users
+
+The admin roster. **Requires role `owner` or `platform_admin`** — any other
+role gets 403.
+
+```json
+{
+  "status": "success",
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@example.com",
+      "role": "owner",
+      "status": "active",
+      "email_verified": true,
+      "totp_verified": true,
+      "sms_verified": false,
+      "created_at": "2026-08-26T04:51:22.000Z",
+      "last_login_at": "2026-08-31T00:20:41.000Z",
+      "active_sessions": 2
+    }
+  ]
+}
+```
+
+---
+
 ## Rate Limiting
 
 Login endpoint is rate limited to 5 attempts per 15 minutes per IP address.
@@ -399,6 +539,16 @@ X-RateLimit-Limit: 5
 X-RateLimit-Remaining: 4
 X-RateLimit-Reset: 2026-08-26T15:37:00Z
 ```
+
+---
+
+## CORS
+
+Browser clients must be listed in `CORS_ORIGINS` (comma separated).
+Default: `http://localhost:5173,http://127.0.0.1:5173`.
+
+`localhost` and `127.0.0.1` are distinct origins to a browser — list the
+exact origin the dashboard is served from, or its requests fail CORS.
 
 ---
 

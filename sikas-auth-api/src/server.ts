@@ -1,5 +1,7 @@
 import Fastify from "fastify";
 import { adminAuthRoutes } from "./routes/auth.js";
+import { adminRoutes } from "./routes/admin.js";
+import cors from "@fastify/cors";
 import { rateLimitMiddleware } from "./middleware/rateLimit.js";
 import { auditMiddleware } from "./middleware/audit.js";
 import { pool } from "./db/pool.js";
@@ -31,12 +33,31 @@ const fastify = Fastify({
 fastify.decorate("db", pool);
 fastify.decorate("redis", redis);
 
+// Browser clients (the admin dashboard) are served from a different origin
+// in development, so the allowed origins are configurable.
+// localhost and 127.0.0.1 are distinct origins to the browser, so dev
+// needs both or the dashboard's fetches fail CORS depending on the URL typed.
+const allowedOrigins = (
+  process.env.CORS_ORIGINS || "http://localhost:5173,http://127.0.0.1:5173"
+)
+  .split(",")
+  .map((o) => o.trim())
+  .filter(Boolean);
+
+await fastify.register(cors, {
+  origin: allowedOrigins,
+  methods: ["GET", "POST", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  credentials: true,
+});
+
 // Middleware
 fastify.addHook("onRequest", rateLimitMiddleware);
 fastify.addHook("onResponse", auditMiddleware);
 
 // Routes
 fastify.register(adminAuthRoutes, { prefix: "/v1/auth" });
+fastify.register(adminRoutes, { prefix: "/v1/admin" });
 
 // Health check
 fastify.get("/health", async (request, reply) => {

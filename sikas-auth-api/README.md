@@ -65,6 +65,10 @@ Enterprise-grade authentication and authorization backend for the Sikas Admin Da
    npm run seed:admin -- you@example.com 'YourPassword123' owner
    ```
 
+   Email and password are required — there is no default account. The password
+   must be at least 12 characters with an uppercase letter, a lowercase letter,
+   and a digit.
+
 5. **Start development server**
    ```bash
    npm run dev
@@ -74,6 +78,14 @@ Enterprise-grade authentication and authorization backend for the Sikas Admin Da
 
 With no SMTP configured, password-reset links and login codes print to the
 server console — so you can run the whole flow locally without credentials.
+
+6. **Start the dashboard** (separate terminal)
+   ```bash
+   cd ../sikas-admin-dashboard && npm install && npm run dev
+   ```
+
+   Open <http://localhost:5173> and sign in. See
+   [`../sikas-admin-dashboard/README.md`](../sikas-admin-dashboard/README.md).
 
 ### Environment Variables
 
@@ -127,6 +139,16 @@ See [API-ENDPOINTS.md](./API-ENDPOINTS.md) for complete documentation.
 - `POST /refresh` - Get new access token
 - `GET /me` - Get current user info
 
+### Admin Endpoints
+All require a Bearer access token; see [API-ENDPOINTS.md](./API-ENDPOINTS.md).
+
+- `GET /v1/admin/stats` - Headline counts for the overview
+- `GET /v1/admin/activity` - Daily auth events, last 14 days
+- `GET /v1/admin/audit-log` - Paginated, filterable audit trail
+- `GET /v1/admin/sessions` - The caller's live sessions
+- `DELETE /v1/admin/sessions/:id` - Revoke one of the caller's sessions
+- `GET /v1/admin/users` - Admin roster *(owner / platform_admin only)*
+
 ## Architecture
 
 ### Directory Structure
@@ -139,9 +161,11 @@ sikas-auth-api/
 │   │   ├── auth.service.ts # Auth business logic
 │   │   ├── crypto.service.ts # Cryptographic operations
 │   │   └── email.service.ts # SMTP delivery (Gmail-friendly)
+│   ├── routes/admin.ts     # Admin data endpoints
 │   ├── middleware/
 │   │   ├── audit.ts        # Audit logging
-│   │   └── rateLimit.ts    # Rate limiting
+│   │   ├── rateLimit.ts    # Rate limiting
+│   │   └── requireAuth.ts  # JWT verification + role gate
 │   └── db/
 │       ├── pool.ts         # Postgres connection pool
 │       └── redis.ts        # Redis client
@@ -189,10 +213,23 @@ sikas-auth-api/
 - 7-day expiration
 - IP/User-Agent validation on session reuse
 
+### Access Control
+- Every `/v1/admin` route requires a verified Bearer access token
+- `requireRole(...)` gates routes by role; the admin roster is owner /
+  platform_admin only
+- Session queries are scoped by admin id, so one admin cannot read or revoke
+  another's sessions
+
+### CORS
+- Browser origins are allowlisted via `CORS_ORIGINS` (comma separated)
+- Defaults to `http://localhost:5173,http://127.0.0.1:5173` for local dev
+
 ### Rate Limiting
 - Login: 5 attempts per 15 minutes per IP
 - Configurable per endpoint
 - Redis-backed counter with auto-expiry
+- Note: successful sign-ins count toward the limit, and the key is the IP, so
+  several admins behind one NAT address share the budget
 
 ### Audit Logging
 - All auth events logged (login, TOTP verify, password reset, etc.)
