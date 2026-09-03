@@ -68,6 +68,13 @@ export const GET: APIRoute = () => {
       priority: 0.8,
       changefreq: 'monthly',
     })),
+    // One configurator per wood model. Worth indexing in its own right —
+    // "design your own shed" is a different search from the product page.
+    ...((pb as any).products as any[]).map((x) => ({
+      path: `/design/${x.slug}/`,
+      priority: 0.6,
+      changefreq: 'monthly',
+    })),
     ...[
       ...(locations as any).counties.map((c: any) => c.slug),
       ...(locations as any).cities.map((c: any) => c.slug),

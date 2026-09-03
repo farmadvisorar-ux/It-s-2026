@@ -122,7 +122,7 @@ const details = detailImages();
       <div class="swatch-group">
         <h3 class="swatch-head">Paint</h3>
         <p class="swatch-sub">
-          {colors.paint.brand} on {colors.paint.surface}. The siding is factory-primed and
+          {colors.paint.brand} on {colors.paint.surface}, {colors.paint.year} range. The siding is factory-primed and
           finished before assembly, so the coat reaches the edges and laps that a brush
           cannot once a wall is standing.
         </p>
@@ -139,13 +139,21 @@ const details = detailImages();
       <div class="swatch-group">
         <h3 class="swatch-head">Shingles</h3>
         <p class="swatch-sub">
-          {colors.shingles.type}, over synthetic underlayment and a drip edge. The standard
-          roof on every building unless you ask for steel.
+          {colors.shingles.brand} — {colors.shingles.type.toLowerCase()} over synthetic
+          underlayment and a drip edge. The standard roof on every building unless you ask
+          for steel.
         </p>
         <ul class="swatches">
           {colors.shingles.options.map((c: any) => (
             <li class="swatch">
-              <span class="swatch__chip" style={`background:${c.hex}`} aria-hidden="true"></span>
+              {/* A flat hex is a poor stand-in for a shingle — the granule mix is
+                  the whole character of it — so these chips are photographs of
+                  the product, with the sampled colour behind as a fallback. */}
+              <span
+                class="swatch__chip swatch__chip--photo"
+                style={`background-color:${c.hex}; background-image:url(${c.image})`}
+                aria-hidden="true"
+              ></span>
               <span class="swatch__name">{c.name}</span>
             </li>
           ))}
@@ -259,6 +267,7 @@ const details = detailImages();
     display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 0.875rem;
   }
   .swatch { display: flex; align-items: center; gap: 0.625rem; font-size: 0.875rem; }
+  .swatch__chip--photo { background-size: cover; background-position: center; }
   .swatch__chip {
     width: 2.25rem; height: 2.25rem; flex-shrink: 0;
     border-radius: var(--radius);

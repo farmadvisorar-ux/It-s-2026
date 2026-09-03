@@ -145,7 +145,9 @@
         "Workshop",
         "Seasonal and bulk storage",
         "Yard and garden equipment"
-      ]
+      ],
+      "roof": "gambrel",
+      "overallHeightFt": 11.5
     },
     {
       "slug": "tool-shed",
@@ -175,7 +177,8 @@
         "Mower and yard tools",
         "Garden storage",
         "Small backyard storage"
-      ]
+      ],
+      "roof": "gable"
     },
     {
       "slug": "tool-shed-tall",
@@ -218,7 +221,9 @@
         "Storage with wall shelving",
         "Equipment storage",
         "Hobby space"
-      ]
+      ],
+      "roof": "gable",
+      "overallHeightFt": 10.5
     },
     {
       "slug": "cottage-shed",
@@ -251,7 +256,9 @@
         "Visible backyard storage",
         "Garden storage",
         "Neighbourhood-sensitive sites"
-      ]
+      ],
+      "roof": "gable",
+      "overallHeightFt": 9.67
     },
     {
       "slug": "cottage-shed-tall",
@@ -282,7 +289,9 @@
         "Storage plus light work",
         "Garden and potting space",
         "Hobby storage"
-      ]
+      ],
+      "roof": "gable",
+      "overallHeightFt": 11.33
     },
     {
       "slug": "slim-shed",
@@ -310,7 +319,8 @@
         "Side-yard storage",
         "Bin and tool storage",
         "Narrow lot storage"
-      ]
+      ],
+      "roof": "lean-to"
     },
     {
       "slug": "utility-handyman",
@@ -337,7 +347,9 @@
         "Workshop plus storage",
         "Home business",
         "Tool and material separation"
-      ]
+      ],
+      "roof": "gable",
+      "overallHeightFt": 11.5
     },
     {
       "slug": "barn-handyman",
@@ -364,7 +376,9 @@
         "Workshop plus bulk storage",
         "Hobby and equipment",
         "Small business storage"
-      ]
+      ],
+      "roof": "gambrel",
+      "overallHeightFt": 11.5
     },
     {
       "slug": "utility-cabin",
@@ -392,7 +406,9 @@
         "Guest space",
         "Hunting or lake cabin",
         "Backyard retreat"
-      ]
+      ],
+      "roof": "gable",
+      "overallHeightFt": 11.42
     },
     {
       "slug": "barn-cabin",
@@ -419,7 +435,8 @@
         "Cabin or guest quarters",
         "Studio with storage above",
         "Recreational property"
-      ]
+      ],
+      "roof": "gambrel"
     },
     {
       "slug": "utility-garage",
@@ -447,7 +464,9 @@
         "Boat and ATV storage",
         "Workshop",
         "Hobby space"
-      ]
+      ],
+      "roof": "gable",
+      "overallHeightFt": 10.67
     },
     {
       "slug": "barn-garage",
@@ -474,7 +493,9 @@
         "Vehicle plus equipment storage",
         "Boat and motorcycle storage",
         "Garage with overhead storage"
-      ]
+      ],
+      "roof": "gambrel",
+      "overallHeightFt": 11.5
     },
     {
       "slug": "chicken-coop",
@@ -500,7 +521,8 @@
         "Backyard flock",
         "Small-scale poultry"
       ],
-      "warrantyClass": "specialty"
+      "warrantyClass": "specialty",
+      "roof": "gable"
     },
     {
       "slug": "k9-condo",
@@ -527,7 +549,8 @@
         "Kennel and run",
         "Working dog shelter"
       ],
-      "warrantyClass": "specialty"
+      "warrantyClass": "specialty",
+      "roof": "gable"
     },
     {
       "slug": "greenhouse",
@@ -555,7 +578,8 @@
         "Overwintering plants",
         "Propagation"
       ],
-      "warrantyClass": "specialty"
+      "warrantyClass": "specialty",
+      "roof": "gable"
     },
     {
       "slug": "playhouse",
@@ -582,12 +606,14 @@
         "Garden room",
         "Future storage building"
       ],
-      "warrantyClass": "specialty"
+      "warrantyClass": "specialty",
+      "roof": "gable"
     }
   ],
   "colors": {
-    "note": "Swatches are sampled from the manufacturer's colour chart. Screens vary, so treat them as a guide and ask for a physical sample before committing to a colour.",
+    "note": "Paint swatches are sampled from the manufacturer's colour chart and shingle swatches are photographs of the product. Screens vary, so treat both as a guide and ask for a physical sample before committing.",
     "paint": {
+      "year": 2026,
       "brand": "Glidden exterior",
       "surface": "LP SmartSide siding and trim",
       "options": [
@@ -638,19 +664,33 @@
       ]
     },
     "shingles": {
+      "year": 2026,
+      "brand": "GAF Natural Shadow",
       "type": "Architectural asphalt",
       "options": [
         {
           "name": "Charcoal",
-          "hex": "#313336"
+          "slug": "charcoal",
+          "hex": "#393a3c",
+          "image": "/img/portable/shingles/charcoal.webp"
         },
         {
           "name": "Pewter Gray",
-          "hex": "#515459"
+          "slug": "pewter-gray",
+          "hex": "#5d6665",
+          "image": "/img/portable/shingles/pewter-gray.webp"
         },
         {
           "name": "Weathered Wood",
-          "hex": "#5e5a4e"
+          "slug": "weathered-wood",
+          "hex": "#716b5c",
+          "image": "/img/portable/shingles/weathered-wood.webp"
+        },
+        {
+          "name": "Shakewood",
+          "slug": "shakewood",
+          "hex": "#897053",
+          "image": "/img/portable/shingles/shakewood.webp"
         }
       ]
     },
@@ -680,5 +720,80 @@
         }
       ]
     }
+  },
+  "addOns": {
+    "note": "Add-on prices are per item, fitted at the shop before delivery, and are added to the price of the building.",
+    "groups": [
+      {
+        "name": "Windows",
+        "items": [
+          {
+            "slug": "transom",
+            "name": "Transom window",
+            "size": "10\" x 30\"",
+            "price": 110,
+            "tiers": [
+              {
+                "minQty": 3,
+                "price": 95
+              }
+            ],
+            "note": "$110 each for one or two, $95 each once you order three or more"
+          },
+          {
+            "slug": "vinyl-window",
+            "name": "White vinyl window",
+            "size": "24\" x 36\"",
+            "price": 200,
+            "note": "The standard window"
+          }
+        ]
+      },
+      {
+        "name": "Doors",
+        "items": [
+          {
+            "slug": "single-door",
+            "name": "Single door",
+            "price": 175
+          },
+          {
+            "slug": "double-door",
+            "name": "Double door",
+            "price": 250
+          },
+          {
+            "slug": "nine-lite-door",
+            "name": "9-lite residential door",
+            "price": 450
+          },
+          {
+            "slug": "garage-door",
+            "name": "Garage door",
+            "size": "8' x 7'",
+            "price": 1100
+          }
+        ]
+      },
+      {
+        "name": "Ramps",
+        "items": [
+          {
+            "slug": "ramp-48",
+            "name": "Heavy-duty metal ramps",
+            "size": "24\" x 48\"",
+            "price": 349,
+            "unit": "pair"
+          },
+          {
+            "slug": "ramp-72",
+            "name": "Heavy-duty metal ramps",
+            "size": "24\" x 72\"",
+            "price": 449,
+            "unit": "pair"
+          }
+        ]
+      }
+    ]
   }
 }

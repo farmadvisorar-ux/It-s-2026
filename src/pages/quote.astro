@@ -305,9 +305,13 @@ const pbProducts = (pb as any).products;
 
   const kit = params.get('kit');
   const opt = params.get('option');
+  const build = params.get('build');
   const notes = document.getElementById('notes') as HTMLTextAreaElement | null;
-  if (notes && (kit || opt)) {
+  if (notes && (kit || opt || build)) {
     const bits = [];
+    // A spec handed over by the 3D designer — carried through verbatim so the
+    // customer does not have to retype what they just configured.
+    if (build) bits.push(build);
     if (kit) bits.push(`Interested in clearance kit: ${kit}`);
     if (opt) bits.push(`Please include pricing for: ${opt.replace(/-/g, ' ')}`);
     notes.value = bits.join('\n');
