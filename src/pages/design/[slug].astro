@@ -47,7 +47,7 @@ const category = data.categories.find((c: any) => c.slug === product.category);
         </div>
       </noscript>
       <div class="stage__bar">
-        <p class="stage__label">{category?.name} · <strong>{product.name}</strong></p>
+        <h1 class="stage__label">{category?.name} · <strong>{product.name}</strong></h1>
         <div class="stage__actions">
           <button type="button" class="btn btn--ghost btn--sm" id="reset-view">Reset view</button>
         </div>
@@ -139,7 +139,7 @@ const category = data.categories.find((c: any) => c.slug === product.category);
     background: color-mix(in srgb, var(--bg-raised) 88%, transparent);
     backdrop-filter: blur(8px); border-top: 1px solid var(--border);
   }
-  .stage__label { font-size: 0.875rem; color: var(--text-muted); }
+  .stage__label { margin: 0; font-size: 0.875rem; font-weight: 400; color: var(--text-muted); }
   .btn--sm { padding: 0.5rem 0.875rem; font-size: 0.8125rem; }
   .fallback { position: absolute; inset: 0; display: grid; place-content: center; gap: 1rem; padding: 2rem; text-align: center; }
   .fallback img { max-width: 26rem; border-radius: var(--radius-lg); }
@@ -233,18 +233,32 @@ const category = data.categories.find((c: any) => c.slug === product.category);
     roofKind: 'shingle' as 'shingle' | 'metal',
     roof: catalog.shingles.options[0],
     wall: 'front' as WallId,
+    /**
+     * How many of each add-on, per wall, keyed "<wall>|<slug>".
+     *
+     * A flat slug -> count map looked simpler but was wrong: every opening got
+     * stamped with whatever wall happened to be selected when the model was
+     * drawn, so switching walls silently moved the whole lot, and the fit
+     * check measured them all against one span.
+     */
     qty: new Map<string, number>(),
   };
+
+  const WALLS: WallId[] = ['front', 'back', 'left', 'right'];
+  const key = (wall: WallId, slug: string) => `${wall}|${slug}`;
+  const qtyOn = (wall: WallId, slug: string) => state.qty.get(key(wall, slug)) ?? 0;
+  const totalOf = (slug: string) => WALLS.reduce((n, w) => n + qtyOn(w, slug), 0);
 
   const scene = new BuildingScene(document.getElementById('viewport')!);
 
   /** Expand quantities into individual placed openings for the model. */
   function placements(): PlacedAddOn[] {
     const out: PlacedAddOn[] = [];
-    for (const [slug, n] of state.qty) {
+    for (const [k, n] of state.qty) {
+      const [wall, slug] = k.split('|') as [WallId, string];
       const g = addOnGeometry[slug];
       if (!g) continue;
-      for (let i = 0; i < n; i++) out.push({ slug, kind: g.kind, wall: state.wall, w: g.w, h: g.h });
+      for (let i = 0; i < n; i++) out.push({ slug, kind: g.kind, wall, w: g.w, h: g.h });
     }
     return out;
   }
@@ -263,28 +277,44 @@ const category = data.categories.find((c: any) => c.slug === product.category);
     });
   }
 
+  /**
+   * Add-on total.
+   *
+   * Quantities are summed per item across every wall before pricing, because
+   * the sheet's breaks are volume discounts on the order — three transoms are
+   * three transoms whether or not they end up on the same side.
+   */
   function subtotal() {
     let n = 0;
-    for (const [slug, q] of state.qty) n += lineTotal(byslug.get(slug)!, q);
+    for (const i of items) {
+      const q = totalOf(i.slug);
+      if (q > 0) n += lineTotal(i, q);
+    }
     return n;
   }
 
   function refresh() {
+    // The stepper counts what is on the selected wall; the price is the line
+    // across the whole build, so a quantity break shows as soon as it applies.
     for (const i of items) {
-      const q = state.qty.get(i.slug) ?? 0;
-      const out = document.querySelector(`[data-qty-for="${i.slug}"]`)!;
-      out.textContent = String(q);
-      const price = document.querySelector(`[data-price-for="${i.slug}"]`)!;
-      price.textContent = q > 0
-        ? `${q} × ${usd(unitPriceAt(i, q))}${i.unit ? ` / ${i.unit}` : ''} = ${usd(lineTotal(i, q))}`
+      const here = qtyOn(state.wall, i.slug);
+      const all = totalOf(i.slug);
+      document.querySelector(`[data-qty-for="${i.slug}"]`)!.textContent = String(here);
+      const elsewhere = all - here;
+      document.querySelector(`[data-price-for="${i.slug}"]`)!.textContent = all > 0
+        ? `${all} × ${usd(unitPriceAt(i, all))}${i.unit ? ` / ${i.unit}` : ''} = ${usd(lineTotal(i, all))}`
+          + (elsewhere > 0 ? ` · ${elsewhere} on other walls` : '')
         : `${usd(i.price)}${i.unit ? ` / ${i.unit}` : ' each'}`;
     }
     document.getElementById('subtotal')!.textContent = usd(subtotal());
 
-    // an opening can only be added while it still physically fits the wall
+    // An opening can only be added while it still fits the selected wall, so
+    // only that wall's openings count toward the space already taken.
     const { w, l } = parseSize(state.size);
     const span = state.wall === 'front' || state.wall === 'back' ? w : l;
-    const placedWidths = placements().filter((p) => p.kind !== 'ramp').map((p) => p.w);
+    const placedWidths = placements()
+      .filter((p) => p.kind !== 'ramp' && p.wall === state.wall)
+      .map((p) => p.w);
     document.querySelectorAll('.opt').forEach((li) => {
       const slug = (li as HTMLElement).dataset.slug!;
       const plus = li.querySelector('[data-step="1"]') as HTMLButtonElement;
@@ -297,15 +327,22 @@ const category = data.categories.find((c: any) => c.slug === product.category);
   }
 
   function syncQuoteLink() {
-    const lines = [...state.qty.entries()]
-      .filter(([, q]) => q > 0)
-      .map(([slug, q]) => `${q} x ${byslug.get(slug)!.name} (${usd(lineTotal(byslug.get(slug)!, q))})`);
+    const byWall = WALLS.flatMap((wall) => {
+      const rows = items
+        .filter((i) => qtyOn(wall, i.slug) > 0)
+        .map((i) => `  ${qtyOn(wall, i.slug)} x ${i.name}`);
+      return rows.length ? [`${wall[0].toUpperCase()}${wall.slice(1)} wall:`, ...rows] : [];
+    });
+    const priced = items
+      .filter((i) => totalOf(i.slug) > 0)
+      .map((i) => `  ${totalOf(i.slug)} x ${i.name} — ${usd(lineTotal(i, totalOf(i.slug)))}`);
     const spec = [
       `${product.name} — ${state.size.replace('x', "' x ")}'`,
       `Paint: ${state.paint.name}`,
       `Roof: ${state.roof.name} ${state.roofKind === 'shingle' ? catalog.shingles.brand : 'metal'}`,
-      ...(lines.length ? [`Options on the ${state.wall} wall:`, ...lines.map((l) => `  ${l}`),
-                          `Options subtotal: ${usd(subtotal())}`] : ['No added options']),
+      ...(priced.length
+        ? [...byWall, 'Options:', ...priced, `Options subtotal: ${usd(subtotal())}`]
+        : ['No added options']),
     ].join('\n');
     const a = document.getElementById('to-quote') as HTMLAnchorElement;
     a.href = `/quote/?line=portable&model=${encodeURIComponent(product.slug)}&build=${encodeURIComponent(spec)}`;
@@ -369,6 +406,7 @@ const category = data.categories.find((c: any) => c.slug === product.category);
     state.wall = b.dataset.wall as WallId;
     document.querySelectorAll('#wall .seg__btn').forEach((x) => x.classList.toggle('is-on', x === b));
     refresh();
+    scene.faceWall(state.wall);
   });
 
   document.getElementById('panel')!.addEventListener('click', (e) => {
@@ -376,9 +414,11 @@ const category = data.categories.find((c: any) => c.slug === product.category);
     if (!b) return;
     e.preventDefault();
     const slug = b.closest('.opt')!.getAttribute('data-slug')!;
-    const next = Math.max(0, (state.qty.get(slug) ?? 0) + Number(b.dataset.step));
-    state.qty.set(slug, next);
+    const next = Math.max(0, qtyOn(state.wall, slug) + Number(b.dataset.step));
+    state.qty.set(key(state.wall, slug), next);
     refresh();
+    // Show what was just placed. A ramp sits in front of the chosen wall too.
+    if (Number(b.dataset.step) > 0) scene.faceWall(state.wall);
   });
 
   document.getElementById('panel')!.addEventListener('submit', (e) => e.preventDefault());

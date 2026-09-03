@@ -37,6 +37,20 @@ export interface DesignState {
 }
 
 const TRIM_DEPTH = 0.12;
+/** Wall thickness. Deep enough that an opening has a reveal you can see. */
+const WALL_DEPTH = 0.34;
+
+/**
+ * Whether a colour is light, by relative luminance.
+ *
+ * Openings used to be filled with a fixed cream panel, which vanished against
+ * Delicate White and Waves of Grain -- a visitor placed a garage door and the
+ * building looked unchanged. The fill now flips with the wall behind it.
+ */
+function isLight(hex: string) {
+  const c = new THREE.Color(hex);
+  return 0.2126 * c.r + 0.7152 * c.g + 0.0722 * c.b > 0.45;
+}
 
 export class BuildingScene {
   private renderer: THREE.WebGLRenderer;
@@ -49,6 +63,8 @@ export class BuildingScene {
   private texCache = new Map<string, THREE.Texture>();
   private raf = 0;
   private state!: DesignState;
+  /** Where the camera is gliding to, while it is gliding there. */
+  private flyTo: THREE.Vector3 | null = null;
 
   constructor(host: HTMLElement) {
     this.host = host;
@@ -68,6 +84,8 @@ export class BuildingScene {
     this.controls.maxDistance = 140;
     // Stop the camera dropping below the ground plane, which reads as a bug.
     this.controls.maxPolarAngle = Math.PI / 2 - 0.04;
+    // A drag wins over an in-flight camera move; otherwise the two fight.
+    this.controls.addEventListener('start', () => { this.flyTo = null; });
 
     this.addLighting();
     this.scene.add(this.group);
@@ -209,33 +227,60 @@ export class BuildingScene {
       shape.holes.push(hole);
     });
 
-    const geo = new THREE.ExtrudeGeometry(shape, { depth: 0.22, bevelEnabled: false });
+    const geo = new THREE.ExtrudeGeometry(shape, { depth: WALL_DEPTH, bevelEnabled: false });
     const mesh = new THREE.Mesh(geo, paint);
     mesh.castShadow = mesh.receiveShadow = true;
 
     const g = new THREE.Group();
     g.add(mesh);
 
-    // fill each opening with a framed panel so it reads as a door or a window
+    // Fill each opening so it reads as a door or a window from any angle:
+    // a dark cavity for depth, the leaf recessed into it, and the casing
+    // standing proud of the cladding the way a real trim board does.
+    const wallIsLight = isLight(state.paintHex);
+    const leafHex = wallIsLight ? 0x6f6a63 : 0xe8e4dc;
     placements.forEach(({ item, x }) => {
       const sill = item.kind === 'door' ? 0.02 : Math.max(0.9, wallH * 0.42);
       const h = Math.min(item.h, wallH - 0.25 - sill);
       const isGlass = item.kind === 'window' || item.slug === 'nine-lite-door';
-      const panel = new THREE.Mesh(
-        new THREE.BoxGeometry(item.w, h, 0.1),
-        isGlass
-          ? new THREE.MeshStandardMaterial({ color: 0x9fc4d6, roughness: 0.12, metalness: 0.1 })
-          : new THREE.MeshStandardMaterial({ color: 0xf2f0ec, roughness: 0.6 })
-      );
-      panel.position.set(x, sill + h / 2, 0.11);
-      g.add(panel);
 
-      const frame = new THREE.Mesh(
-        new THREE.BoxGeometry(item.w + 0.24, h + 0.24, TRIM_DEPTH),
-        trim
+      // Cavity: closes the hole and gives the reveal something dark to shade
+      // against, so the opening is legible even on a white building.
+      const cavity = new THREE.Mesh(
+        new THREE.BoxGeometry(item.w, h, 0.06),
+        new THREE.MeshStandardMaterial({ color: 0x241f1c, roughness: 1 })
       );
-      frame.position.set(x, sill + h / 2, 0.05);
-      g.add(frame);
+      cavity.position.set(x, sill + h / 2, 0.03);
+      g.add(cavity);
+
+      const leaf = new THREE.Mesh(
+        new THREE.BoxGeometry(item.w - 0.12, h - 0.12, 0.08),
+        isGlass
+          ? new THREE.MeshStandardMaterial({
+              color: 0x8fb6cc, roughness: 0.08, metalness: 0.25,
+              transparent: true, opacity: 0.86,
+            })
+          : new THREE.MeshStandardMaterial({ color: leafHex, roughness: 0.55 })
+      );
+      leaf.position.set(x, sill + h / 2, 0.13);
+      leaf.castShadow = true;
+      g.add(leaf);
+
+      // Casing, mitred look: four boards rather than one slab, so the corners
+      // read and the opening keeps its outline against same-tone paint.
+      const board = 0.16;
+      const casing: [number, number, number, number][] = [
+        [item.w + board * 2, board, x, sill + h + board / 2],
+        [item.w + board * 2, board, x, sill - board / 2],
+        [board, h, x - item.w / 2 - board / 2, sill + h / 2],
+        [board, h, x + item.w / 2 + board / 2, sill + h / 2],
+      ];
+      for (const [bw, bh, bx, by] of casing) {
+        const m = new THREE.Mesh(new THREE.BoxGeometry(bw, bh, TRIM_DEPTH), trim);
+        m.position.set(bx, by, WALL_DEPTH + TRIM_DEPTH / 2 - 0.02);
+        m.castShadow = m.receiveShadow = true;
+        g.add(m);
+      }
     });
 
     if (horizontal) {
@@ -340,9 +385,15 @@ export class BuildingScene {
     return mesh;
   }
 
+  /** Distance at which the whole building fits the frame. */
+  private fitDistance(w: number, l: number, ridge: number) {
+    const radius = Math.hypot(w, l) * 0.5 + ridge * 0.4;
+    return (radius / Math.tan((this.camera.fov * Math.PI) / 360)) * 1.35;
+  }
+
   private frameCamera(w: number, l: number, ridge: number) {
     const radius = Math.hypot(w, l) * 0.5 + ridge * 0.4;
-    const dist = radius / Math.tan((this.camera.fov * Math.PI) / 360) * 1.35;
+    const dist = this.fitDistance(w, l, ridge);
     this.controls.target.set(0, ridge * 0.42, 0);
     if (!this.camera.userData.placed) {
       this.camera.position.set(dist * 0.72, dist * 0.46, dist * 0.72);
@@ -356,7 +407,44 @@ export class BuildingScene {
   /** Frame the model again — used by the "reset view" control. */
   resetView() {
     this.camera.userData.placed = false;
+    this.flyTo = null;
     if (this.state) this.frameCamera(this.state.widthFt, this.state.lengthFt, this.state.ridgeFt);
+  }
+
+  /**
+   * Swing round to look at one wall.
+   *
+   * Without this the configurator looks broken: openings are placed on the
+   * chosen wall, and three of the four faces are away from the default camera,
+   * so adding a garage door changed nothing on screen. Called when the wall
+   * selector moves and when an opening lands, three-quarter on rather than
+   * straight on so the roof and the return wall stay in frame.
+   */
+  faceWall(wall: WallId) {
+    if (!this.state) return;
+    const { widthFt: w, lengthFt: l, ridgeFt: ridge } = this.state;
+    const bearing: Record<WallId, number> = {
+      front: 0,
+      back: Math.PI,
+      right: Math.PI / 2,
+      left: -Math.PI / 2,
+    };
+    // A quarter turn off square so it reads as a building rather than an
+    // elevation drawing, swung toward the near corner of the long side.
+    const skew = (w > l ? 1 : -1) * 0.42;
+    const a = bearing[wall] + skew;
+
+    // Sit on the same orbit shell the default view uses, derived from the
+    // footprint. Deriving it from the camera's current distance instead let
+    // the radius shrink on each turn until the camera was inside the wall.
+    const fit = this.fitDistance(w, l, ridge);
+    const held = this.camera.position.distanceTo(this.controls.target);
+    const dist = Math.min(Math.max(held, fit * 0.8), fit * 1.6);
+    this.flyTo = new THREE.Vector3(
+      Math.sin(a) * dist * 0.9,
+      this.controls.target.y + Math.max(dist * 0.4, ridge * 0.3),
+      Math.cos(a) * dist * 0.9
+    );
   }
 
   private onResize() {
@@ -369,6 +457,11 @@ export class BuildingScene {
 
   private tick = () => {
     this.raf = requestAnimationFrame(this.tick);
+    if (this.flyTo) {
+      this.camera.position.lerp(this.flyTo, 0.12);
+      // Close enough that another frame would not move a pixel.
+      if (this.camera.position.distanceTo(this.flyTo) < 0.05) this.flyTo = null;
+    }
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
   };
