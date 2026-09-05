@@ -85,7 +85,7 @@ const stateNames: Record<string, string> = {
   current={product.name}
 >
   {productSchema && (
-    <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(productSchema)} />
   )}
   <article>
     <section class="head">

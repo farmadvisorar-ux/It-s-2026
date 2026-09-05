@@ -1,7 +1,6 @@
 ---
 import Base from '../../layouts/Base.astro';
 import pb from '../../data/portable-buildings.json';
-import site from '../../data/site.json';
 import { portableImage } from '../../lib/images';
 
 export function getStaticPaths() {
@@ -34,6 +33,7 @@ const category = data.categories.find((c: any) => c.slug === product.category);
   <section class="designer" data-product={JSON.stringify({
     slug: product.slug, name: product.name, roof: product.roof,
     sizes: product.sizes, overallHeightFt: product.overallHeightFt ?? null,
+    pricing: product.pricing ?? null,
   })} data-catalog={JSON.stringify({ paint, shingles, metalRoof, groups })}>
     <div class="stage">
       <div class="viewport" id="viewport" role="img"
@@ -62,8 +62,13 @@ const category = data.categories.find((c: any) => c.slug === product.category);
         </fieldset>
 
         <fieldset class="fs">
-          <legend>Paint <span class="fs__meta">{paint.brand}</span></legend>
+          <legend>Siding Paint <span class="fs__meta">{paint.brand}</span></legend>
           <div class="chips chips--swatch" id="paints"></div>
+        </fieldset>
+
+        <fieldset class="fs">
+          <legend>Trim Paint <span class="fs__meta">{paint.brand}</span></legend>
+          <div class="chips chips--swatch" id="trims"></div>
         </fieldset>
 
         <fieldset class="fs">
@@ -110,14 +115,25 @@ const category = data.categories.find((c: any) => c.slug === product.category);
 
       <div class="summary">
         <div class="summary__row">
+          <span>Base building (<span id="summary-size">{product.sizes[0]?.replace('x', "' × ")}'</span>)</span>
+          <strong id="base-price">$0</strong>
+        </div>
+        <div class="summary__row">
           <span>Options subtotal</span>
-          <strong id="subtotal">$0</strong>
+          <span id="subtotal">$0</span>
+        </div>
+        <div class="summary__row summary__row--total">
+          <span>Total Cash Price</span>
+          <strong id="total-price" class="summary__highlight">$0</strong>
+        </div>
+        <div class="summary__rto" id="rto-container">
+          <span>36-mo Rent-To-Own:</span>
+          <strong id="rto-price">$0/mo</strong>
         </div>
         <p class="summary__note">
-          Add-ons only. The building itself is quoted separately — send this through and we
-          will price the whole thing in writing.
+          Free delivery & setup within 50 miles. Instant approval Rent-To-Own with no credit check.
         </p>
-        <a class="btn btn--primary summary__cta" id="to-quote" href="/quote/">Send this build to a quote</a>
+        <a class="btn btn--primary summary__cta" id="to-quote" href="/quote/">Get Official Quote & Order</a>
       </div>
     </form>
   </section>
@@ -197,9 +213,36 @@ const category = data.categories.find((c: any) => c.slug === product.category);
   .stepper output { min-width: 1.5rem; text-align: center; font-variant-numeric: tabular-nums; font-size: 0.875rem; }
 
   .summary { border-top: 1px solid var(--border); padding: 1rem var(--gutter) 1.25rem; background: var(--bg-sunken); }
-  .summary__row { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.9375rem; }
-  .summary__row strong { font-size: 1.375rem; }
-  .summary__note { font-size: 0.75rem; color: var(--text-faint); margin: 0.375rem 0 0.875rem; }
+  .summary__row { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.9375rem; margin-bottom: 0.25rem; }
+  .summary__row strong { font-size: 1.125rem; }
+  .summary__row--total {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--border-strong);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .summary__highlight {
+    font-size: 1.375rem !important;
+    color: var(--accent);
+  }
+  .summary__rto {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: color-mix(in srgb, var(--accent) 10%, var(--bg));
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: var(--radius);
+    font-size: 0.8125rem;
+    color: var(--text);
+  }
+  .summary__rto strong {
+    color: var(--accent);
+    font-size: 1.0625rem;
+  }
+  .summary__note { font-size: 0.75rem; color: var(--text-faint); margin: 0.5rem 0 0.875rem; line-height: 1.4; }
   .summary__cta { width: 100%; justify-content: center; }
 
   @media (max-width: 960px) {
@@ -223,13 +266,13 @@ const category = data.categories.find((c: any) => c.slug === product.category);
   const items: AddOn[] = catalog.groups.flatMap((g: any) =>
     g.items.map((i: any) => ({ ...i, group: g.name } as AddOn))
   );
-  const byslug = new Map<string, AddOn>(items.map((i) => [i.slug, i]));
 
   const usd = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
 
   const state = {
     size: product.sizes[0] as string,
     paint: catalog.paint.options[0],
+    trim: catalog.paint.options[0],
     roofKind: 'shingle' as 'shingle' | 'metal',
     roof: catalog.shingles.options[0],
     wall: 'front' as WallId,
@@ -270,7 +313,7 @@ const category = data.categories.find((c: any) => c.slug === product.category);
       widthFt: w, lengthFt: l, wallFt: wall, ridgeFt: ridge,
       roof: product.roof ?? 'gable',
       paintHex: state.paint.hex,
-      trimHex: '#f3f1ec',
+      trimHex: state.trim.hex,
       roofHex: state.roof.hex,
       roofTexture: state.roofKind === 'shingle' ? state.roof.image : undefined,
       addOns: placements(),
@@ -306,7 +349,28 @@ const category = data.categories.find((c: any) => c.slug === product.category);
           + (elsewhere > 0 ? ` · ${elsewhere} on other walls` : '')
         : `${usd(i.price)}${i.unit ? ` / ${i.unit}` : ' each'}`;
     }
-    document.getElementById('subtotal')!.textContent = usd(subtotal());
+
+    // Pricing breakdown calculations
+    const sizePricing = product.pricing?.sizes?.[state.size];
+    const baseCash = sizePricing?.cash ?? 0;
+    const optSubtotal = subtotal();
+    const totalCash = baseCash > 0 ? baseCash + optSubtotal : optSubtotal;
+    const monthlyRto = Math.round(totalCash / 25);
+
+    const sizeEl = document.getElementById('summary-size');
+    if (sizeEl) sizeEl.textContent = state.size.replace('x', "' × ") + "'";
+
+    const baseEl = document.getElementById('base-price');
+    if (baseEl) baseEl.textContent = baseCash > 0 ? usd(baseCash) : 'Quote req.';
+
+    const subtotalEl = document.getElementById('subtotal');
+    if (subtotalEl) subtotalEl.textContent = usd(optSubtotal);
+
+    const totalEl = document.getElementById('total-price');
+    if (totalEl) totalEl.textContent = usd(totalCash);
+
+    const rtoEl = document.getElementById('rto-price');
+    if (rtoEl) rtoEl.textContent = monthlyRto > 0 ? `${usd(monthlyRto)}/mo` : 'Call';
 
     // An opening can only be added while it still fits the selected wall, so
     // only that wall's openings count toward the space already taken.
@@ -323,10 +387,10 @@ const category = data.categories.find((c: any) => c.slug === product.category);
       plus.title = plus.disabled ? `No room left on the ${state.wall} wall at ${span}'` : '';
     });
     draw();
-    syncQuoteLink();
+    syncQuoteLink(baseCash, optSubtotal, totalCash, monthlyRto);
   }
 
-  function syncQuoteLink() {
+  function syncQuoteLink(baseCash: number, optSubtotal: number, totalCash: number, monthlyRto: number) {
     const byWall = WALLS.flatMap((wall) => {
       const rows = items
         .filter((i) => qtyOn(wall, i.slug) > 0)
@@ -338,11 +402,15 @@ const category = data.categories.find((c: any) => c.slug === product.category);
       .map((i) => `  ${totalOf(i.slug)} x ${i.name} — ${usd(lineTotal(i, totalOf(i.slug)))}`);
     const spec = [
       `${product.name} — ${state.size.replace('x', "' x ")}'`,
-      `Paint: ${state.paint.name}`,
+      `Base Price: ${baseCash > 0 ? usd(baseCash) : 'Quote req.'}`,
+      `Siding Paint: ${state.paint.name}`,
+      `Trim Paint: ${state.trim.name}`,
       `Roof: ${state.roof.name} ${state.roofKind === 'shingle' ? catalog.shingles.brand : 'metal'}`,
       ...(priced.length
-        ? [...byWall, 'Options:', ...priced, `Options subtotal: ${usd(subtotal())}`]
+        ? [...byWall, 'Options:', ...priced, `Options subtotal: ${usd(optSubtotal)}`]
         : ['No added options']),
+      `Total Cash Price: ${usd(totalCash)}`,
+      `Estimated 36-mo RTO: ${monthlyRto > 0 ? `${usd(monthlyRto)}/mo` : 'Call'}`,
     ].join('\n');
     const a = document.getElementById('to-quote') as HTMLAnchorElement;
     a.href = `/quote/?line=portable&model=${encodeURIComponent(product.slug)}&build=${encodeURIComponent(spec)}`;
@@ -378,6 +446,14 @@ const category = data.categories.find((c: any) => c.slug === product.category);
     host.replaceChildren(...catalog.paint.options.map((c: any) => {
       const b = chip(c.name, c.name === state.paint.name, c);
       b.onclick = () => { state.paint = c; buildPaints(); refresh(); };
+      return b;
+    }));
+  }
+  function buildTrims() {
+    const host = document.getElementById('trims')!;
+    host.replaceChildren(...catalog.paint.options.map((c: any) => {
+      const b = chip(c.name, c.name === state.trim.name, c);
+      b.onclick = () => { state.trim = c; buildTrims(); refresh(); };
       return b;
     }));
   }
@@ -424,5 +500,5 @@ const category = data.categories.find((c: any) => c.slug === product.category);
   document.getElementById('panel')!.addEventListener('submit', (e) => e.preventDefault());
   document.getElementById('reset-view')!.addEventListener('click', () => scene.resetView());
 
-  buildSizes(); buildPaints(); buildRoofs(); refresh();
+  buildSizes(); buildPaints(); buildTrims(); buildRoofs(); refresh();
 </script>

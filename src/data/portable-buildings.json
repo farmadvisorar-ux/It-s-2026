@@ -3,7 +3,7 @@
     "name": "Portable Buildings",
     "family": "wood",
     "tagline": "Delivered finished, ready to use",
-    "intro": "Wood portable buildings arrive complete. They are built in a shop, trucked to your property, and set on your prepared spot in a single visit — no assembly, no kit, no crew. Because they sit on treated skids rather than a poured foundation, most sites need nothing more than level ground, and the building can be relocated later if you move.",
+    "intro": "Wood portable buildings arrive complete. They are built in a shop, trucked to your property, and set on your prepared spot in a single visit \u2014 no assembly, no kit, no crew. Because they sit on treated skids rather than a poured foundation, most sites need nothing more than level ground, and the building can be relocated later if you move.",
     "deliveryStates": [
       "TX",
       "LA",
@@ -34,6 +34,10 @@
         "10% down payment"
       ],
       "note": "Financing and lease-purchase programs are administered by third-party finance companies, and availability varies by area. Terms come from the finance provider, not from us."
+    },
+    "pricing": {
+      "term": 36,
+      "note": "Free delivery & setup within 50 miles. Instant approval Rent-To-Own with no credit check."
     }
   },
   "construction": [
@@ -42,7 +46,7 @@
       "heading": "Built not to sag or rot",
       "points": [
         "Treated skids and joists on 16\" centers, rated for ground contact",
-        "4x6 notched floor skids — two on 8' wide buildings, four on 10' and 12' wide",
+        "4x6 notched floor skids \u2014 two on 8' wide buildings, four on 10' and 12' wide",
         "5/8\" LP ProStruct treated floor decking with interlocking SmartFinish",
         "Pulling blocks at the centermost skids so the building can be moved without damage"
       ]
@@ -90,7 +94,7 @@
     {
       "slug": "cabins",
       "name": "Cabins",
-      "blurb": "Covered porch, residential door and windows — a building you would actually sit in."
+      "blurb": "Covered porch, residential door and windows \u2014 a building you would actually sit in."
     },
     {
       "slug": "garages",
@@ -100,7 +104,7 @@
     {
       "slug": "specialty",
       "name": "Specialty Buildings",
-      "blurb": "Purpose-built structures — growing, poultry, dogs and play."
+      "blurb": "Purpose-built structures \u2014 growing, poultry, dogs and play."
     }
   ],
   "products": [
@@ -109,8 +113,8 @@
       "name": "The Barn",
       "category": "sheds",
       "headline": "The best-seller, and the one with a real loft",
-      "intro": "The Barn is the most-ordered building in the line, and the reason is vertical space. The gambrel roof shape that makes it look like a barn is doing structural work — it lifts the sidewalls of the loft high enough that the space above is genuinely usable rather than a crawl.",
-      "detail": "If you are storing anything seasonal — decorations, camping gear, off-season furniture — the loft is where it goes, and it frees the entire floor for the things you actually reach for weekly. Available with single or double doors, and with the widest size range in the lineup.",
+      "intro": "The Barn is the most-ordered building in the line, and the reason is vertical space. The gambrel roof shape that makes it look like a barn is doing structural work \u2014 it lifts the sidewalls of the loft high enough that the space above is genuinely usable rather than a crawl.",
+      "detail": "If you are storing anything seasonal \u2014 decorations, camping gear, off-season furniture \u2014 the loft is where it goes, and it frees the entire floor for the things you actually reach for weekly. Available with single or double doors, and with the widest size range in the lineup.",
       "sizes": [
         "8x12",
         "10x12",
@@ -147,7 +151,52 @@
         "Yard and garden equipment"
       ],
       "roof": "gambrel",
-      "overallHeightFt": 11.5
+      "overallHeightFt": 11.5,
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "8x12": {
+            "cash": 4199,
+            "monthly": 168
+          },
+          "10x12": {
+            "cash": 4899,
+            "monthly": 196
+          },
+          "10x14": {
+            "cash": 5499,
+            "monthly": 220
+          },
+          "10x16": {
+            "cash": 5799,
+            "monthly": 232
+          },
+          "10x20": {
+            "cash": 6999,
+            "monthly": 280
+          },
+          "12x16": {
+            "cash": 6799,
+            "monthly": 272
+          },
+          "12x20": {
+            "cash": 7799,
+            "monthly": 312
+          },
+          "12x24": {
+            "cash": 9199,
+            "monthly": 368
+          },
+          "12x28": {
+            "cash": 10499,
+            "monthly": 420
+          },
+          "12x32": {
+            "cash": 11999,
+            "monthly": 480
+          }
+        }
+      }
     },
     {
       "slug": "tool-shed",
@@ -178,14 +227,27 @@
         "Garden storage",
         "Small backyard storage"
       ],
-      "roof": "gable"
+      "roof": "gable",
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "8x12": {
+            "cash": 3699,
+            "monthly": 148
+          },
+          "10x12": {
+            "cash": 4299,
+            "monthly": 172
+          }
+        }
+      }
     },
     {
       "slug": "tool-shed-tall",
       "name": "Tool Shed Tall",
       "category": "sheds",
       "headline": "Ranch styling with the wall height added back",
-      "intro": "The most popular ranch-style building in the line. Same clean single-ridge roof as the Tool Shed, with taller sidewalls — which is the difference between a building you store things in and one you can work in.",
+      "intro": "The most popular ranch-style building in the line. Same clean single-ridge roof as the Tool Shed, with taller sidewalls \u2014 which is the difference between a building you store things in and one you can work in.",
       "detail": "The extra wall height is what makes shelving, pegboard and a bench worth installing. It also covers the full size range up to 12' x 32', so it scales from a backyard shed to something closer to a workshop.",
       "sizes": [
         "8x12",
@@ -223,14 +285,59 @@
         "Hobby space"
       ],
       "roof": "gable",
-      "overallHeightFt": 10.5
+      "overallHeightFt": 10.5,
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "8x12": {
+            "cash": 3999,
+            "monthly": 160
+          },
+          "10x12": {
+            "cash": 4699,
+            "monthly": 188
+          },
+          "10x14": {
+            "cash": 5199,
+            "monthly": 208
+          },
+          "10x16": {
+            "cash": 5699,
+            "monthly": 228
+          },
+          "10x20": {
+            "cash": 6799,
+            "monthly": 272
+          },
+          "12x16": {
+            "cash": 6499,
+            "monthly": 260
+          },
+          "12x20": {
+            "cash": 7599,
+            "monthly": 304
+          },
+          "12x24": {
+            "cash": 8699,
+            "monthly": 348
+          },
+          "12x28": {
+            "cash": 10099,
+            "monthly": 404
+          },
+          "12x32": {
+            "cash": 11699,
+            "monthly": 468
+          }
+        }
+      }
     },
     {
       "slug": "cottage-shed",
       "name": "Cottage Shed",
       "category": "sheds",
       "headline": "The one that suits a front-yard-visible spot",
-      "intro": "A distinctive roof profile that reads more like a small cottage than a utility building. If your shed will be visible from the house or the street — or if a covenant has opinions about outbuildings — this is the one that tends to pass without argument.",
+      "intro": "A distinctive roof profile that reads more like a small cottage than a utility building. If your shed will be visible from the house or the street \u2014 or if a covenant has opinions about outbuildings \u2014 this is the one that tends to pass without argument.",
       "detail": "The roof shape sheds weather well and gives the building a finished look without costing more than a plain gable. Practical storage capacity is comparable to a ranch-style building of the same footprint.",
       "sizes": [
         "8x12",
@@ -258,7 +365,24 @@
         "Neighbourhood-sensitive sites"
       ],
       "roof": "gable",
-      "overallHeightFt": 9.67
+      "overallHeightFt": 9.67,
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "8x12": {
+            "cash": 4499,
+            "monthly": 180
+          },
+          "10x12": {
+            "cash": 5199,
+            "monthly": 208
+          },
+          "10x16": {
+            "cash": 6299,
+            "monthly": 252
+          }
+        }
+      }
     },
     {
       "slug": "cottage-shed-tall",
@@ -291,7 +415,24 @@
         "Hobby storage"
       ],
       "roof": "gable",
-      "overallHeightFt": 11.33
+      "overallHeightFt": 11.33,
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "8x12": {
+            "cash": 4799,
+            "monthly": 192
+          },
+          "10x12": {
+            "cash": 5499,
+            "monthly": 220
+          },
+          "10x16": {
+            "cash": 6799,
+            "monthly": 272
+          }
+        }
+      }
     },
     {
       "slug": "slim-shed",
@@ -320,14 +461,27 @@
         "Bin and tool storage",
         "Narrow lot storage"
       ],
-      "roof": "lean-to"
+      "roof": "lean-to",
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "6x12": {
+            "cash": 3399,
+            "monthly": 136
+          },
+          "8x12": {
+            "cash": 4199,
+            "monthly": 168
+          }
+        }
+      }
     },
     {
       "slug": "utility-handyman",
       "name": "Utility Handyman",
       "category": "sheds",
       "headline": "Two rooms, one building",
-      "intro": "An interior partition splits this building into two separate spaces with their own access. One side becomes the workshop; the other stays storage — and the sawdust, the mess and the half-finished project stay on their own side of the wall.",
+      "intro": "An interior partition splits this building into two separate spaces with their own access. One side becomes the workshop; the other stays storage \u2014 and the sawdust, the mess and the half-finished project stay on their own side of the wall.",
       "detail": "The partition is the whole point, and it is worth thinking about which side gets the window and which gets the wider door before you order. Ranch-style roofline with the taller utility sidewalls.",
       "sizes": [
         "12x24",
@@ -349,7 +503,20 @@
         "Tool and material separation"
       ],
       "roof": "gable",
-      "overallHeightFt": 11.5
+      "overallHeightFt": 11.5,
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "12x24": {
+            "cash": 10299,
+            "monthly": 412
+          },
+          "12x32": {
+            "cash": 12899,
+            "monthly": 516
+          }
+        }
+      }
     },
     {
       "slug": "barn-handyman",
@@ -357,7 +524,7 @@
       "category": "sheds",
       "headline": "The partitioned workshop, with a loft on top",
       "intro": "Same two-room layout as the Utility Handyman, built under a barn roof. You get the interior partition dividing workshop from storage, plus the overhead loft that the gambrel shape makes possible.",
-      "detail": "This is the most storage-dense building in the range — two usable ground-floor rooms and a loft above both. If you are trying to get a workshop and a season's worth of storage onto one pad, this is the one that does it.",
+      "detail": "This is the most storage-dense building in the range \u2014 two usable ground-floor rooms and a loft above both. If you are trying to get a workshop and a season's worth of storage onto one pad, this is the one that does it.",
       "sizes": [
         "12x24",
         "12x32"
@@ -378,14 +545,27 @@
         "Small business storage"
       ],
       "roof": "gambrel",
-      "overallHeightFt": 11.5
+      "overallHeightFt": 11.5,
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "12x24": {
+            "cash": 10399,
+            "monthly": 416
+          },
+          "12x32": {
+            "cash": 12999,
+            "monthly": 520
+          }
+        }
+      }
     },
     {
       "slug": "utility-cabin",
       "name": "Utility Cabin",
       "category": "cabins",
       "headline": "A covered porch changes what the building is for",
-      "intro": "Add a covered front porch, a residential entry door, three windows and taller sidewalls, and a storage building stops being storage. The Utility Cabin is built to be occupied — as a studio, an office, a guest space or a retreat at the back of the property.",
+      "intro": "Add a covered front porch, a residential entry door, three windows and taller sidewalls, and a storage building stops being storage. The Utility Cabin is built to be occupied \u2014 as a studio, an office, a guest space or a retreat at the back of the property.",
       "detail": "It arrives as a finished shell with the porch, door and windows in place. Insulation, wiring, interior finishes and anything else needed for regular occupancy are local work, and whether that requires a permit depends entirely on your jurisdiction and how you intend to use it.",
       "sizes": [
         "12x24",
@@ -408,14 +588,27 @@
         "Backyard retreat"
       ],
       "roof": "gable",
-      "overallHeightFt": 11.42
+      "overallHeightFt": 11.42,
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "12x24": {
+            "cash": 9999,
+            "monthly": 400
+          },
+          "12x32": {
+            "cash": 10999,
+            "monthly": 440
+          }
+        }
+      }
     },
     {
       "slug": "barn-cabin",
       "name": "Barn Cabin",
       "category": "cabins",
       "headline": "Cabin below, loft above",
-      "intro": "The cabin package — covered porch, residential door, three windows, tall sidewalls — under a barn roof, which adds a loft over the living space. The loft is what makes a small footprint feel like more than one room.",
+      "intro": "The cabin package \u2014 covered porch, residential door, three windows, tall sidewalls \u2014 under a barn roof, which adds a loft over the living space. The loft is what makes a small footprint feel like more than one room.",
       "detail": "The gambrel roof gives real standing room upstairs rather than a token shelf, so a 12' x 32' Barn Cabin has meaningfully more usable volume than the same footprint under a ranch roof. Same caveats apply on insulation, utilities and permits.",
       "sizes": [
         "12x24",
@@ -436,15 +629,28 @@
         "Studio with storage above",
         "Recreational property"
       ],
-      "roof": "gambrel"
+      "roof": "gambrel",
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "12x24": {
+            "cash": 10999,
+            "monthly": 440
+          },
+          "12x32": {
+            "cash": 11999,
+            "monthly": 480
+          }
+        }
+      }
     },
     {
       "slug": "utility-garage",
       "name": "Utility Garage",
       "category": "garages",
       "headline": "Vehicle storage that arrives finished",
-      "intro": "A portable garage delivered complete and set on your prepared ground. There is no slab to pour and no crew to schedule — which is most of the appeal when the alternative is a construction project.",
-      "detail": "Sized for a car, a truck, a boat, motorcycles, mowers or ATVs, and equally useful as workshop or hobby space. Because it sits on skids rather than a foundation, check with your building department about how a portable garage is classified locally — the answer varies and it affects permitting.",
+      "intro": "A portable garage delivered complete and set on your prepared ground. There is no slab to pour and no crew to schedule \u2014 which is most of the appeal when the alternative is a construction project.",
+      "detail": "Sized for a car, a truck, a boat, motorcycles, mowers or ATVs, and equally useful as workshop or hobby space. Because it sits on skids rather than a foundation, check with your building department about how a portable garage is classified locally \u2014 the answer varies and it affects permitting.",
       "sizes": [
         "12x24",
         "12x32"
@@ -466,7 +672,20 @@
         "Hobby space"
       ],
       "roof": "gable",
-      "overallHeightFt": 10.67
+      "overallHeightFt": 10.67,
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "12x24": {
+            "cash": 10799,
+            "monthly": 432
+          },
+          "12x32": {
+            "cash": 13899,
+            "monthly": 556
+          }
+        }
+      }
     },
     {
       "slug": "barn-garage",
@@ -474,7 +693,7 @@
       "category": "garages",
       "headline": "Park below, store overhead",
       "intro": "Vehicle storage under a barn roof, which buys you an overhead loft the ranch-style garage does not have. Park the vehicle, put everything else upstairs.",
-      "detail": "For anyone storing a seasonal vehicle — a boat, a bike, a classic — the loft usually ends up holding the covers, the spares and the gear that would otherwise crowd the floor around it.",
+      "detail": "For anyone storing a seasonal vehicle \u2014 a boat, a bike, a classic \u2014 the loft usually ends up holding the covers, the spares and the gear that would otherwise crowd the floor around it.",
       "sizes": [
         "12x24",
         "12x32"
@@ -495,7 +714,20 @@
         "Garage with overhead storage"
       ],
       "roof": "gambrel",
-      "overallHeightFt": 11.5
+      "overallHeightFt": 11.5,
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "12x24": {
+            "cash": 11299,
+            "monthly": 452
+          },
+          "12x32": {
+            "cash": 14449,
+            "monthly": 578
+          }
+        }
+      }
     },
     {
       "slug": "chicken-coop",
@@ -503,7 +735,7 @@
       "category": "specialty",
       "headline": "Built around egg collection and cleaning out",
       "intro": "A purpose-built wooden coop designed around the two jobs you do most: getting the eggs out and cleaning the thing. Latching doors and a ridge vent handle security and airflow, which are the two variables that decide whether a coop works.",
-      "detail": "Ventilation matters more than most first-time keepers expect — a sealed coop holds moisture and ammonia, and that is what causes respiratory problems in a flock. The ridge vent lets that escape at the peak while the latching doors keep predators out.",
+      "detail": "Ventilation matters more than most first-time keepers expect \u2014 a sealed coop holds moisture and ammonia, and that is what causes respiratory problems in a flock. The ridge vent lets that escape at the peak while the latching doors keep predators out.",
       "sizes": [
         "6x6"
       ],
@@ -522,14 +754,23 @@
         "Small-scale poultry"
       ],
       "warrantyClass": "specialty",
-      "roof": "gable"
+      "roof": "gable",
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "6x6": {
+            "cash": 2099,
+            "monthly": 84
+          }
+        }
+      }
     },
     {
       "slug": "k9-condo",
       "name": "K-9 Condo",
       "category": "specialty",
       "headline": "Enclosed inside, fenced run outside",
-      "intro": "An 8' x 4' fully enclosed interior for warmth and shelter, opening through a large dog door onto a fully fenced, covered 8' x 8' porch. The dog moves between the two freely — sheltered when it wants to be, outside and in air when it does not.",
+      "intro": "An 8' x 4' fully enclosed interior for warmth and shelter, opening through a large dog door onto a fully fenced, covered 8' x 8' porch. The dog moves between the two freely \u2014 sheltered when it wants to be, outside and in air when it does not.",
       "detail": "The covered run is the part that matters in practice. A kennel with no shade is unusable half the year in most of the delivery region, and one with no enclosed space is unusable the other half.",
       "sizes": [
         "8x12"
@@ -550,7 +791,16 @@
         "Working dog shelter"
       ],
       "warrantyClass": "specialty",
-      "roof": "gable"
+      "roof": "gable",
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "8x12": {
+            "cash": 5499,
+            "monthly": 220
+          }
+        }
+      }
     },
     {
       "slug": "greenhouse",
@@ -558,7 +808,7 @@
       "category": "specialty",
       "headline": "Extend the growing season at both ends",
       "intro": "A bright, roomy greenhouse with interior shelving on three sides and hooks overhead for hanging plants. Built to the same standard as the rest of the line rather than as a seasonal kit, which is the difference between a structure that lasts a decade and one that lasts two winters.",
-      "detail": "Shelving on three walls plus overhead hooks gives you far more growing surface than the 8' x 12' footprint suggests. Think about orientation before it is set — which way it faces determines how much light it gets through the shoulder seasons.",
+      "detail": "Shelving on three walls plus overhead hooks gives you far more growing surface than the 8' x 12' footprint suggests. Think about orientation before it is set \u2014 which way it faces determines how much light it gets through the shoulder seasons.",
       "sizes": [
         "8x12"
       ],
@@ -579,14 +829,23 @@
         "Propagation"
       ],
       "warrantyClass": "specialty",
-      "roof": "gable"
+      "roof": "gable",
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "8x12": {
+            "cash": 5999,
+            "monthly": 240
+          }
+        }
+      }
     },
     {
       "slug": "playhouse",
       "name": "Playhouse",
       "category": "specialty",
       "headline": "A real building, scaled for the people using it",
-      "intro": "An 8' x 12' structure with a four-foot-deep covered front porch, built to the same standards as every other building in the range — the same treated floor, the same siding, the same warranted roof.",
+      "intro": "An 8' x 12' structure with a four-foot-deep covered front porch, built to the same standards as every other building in the range \u2014 the same treated floor, the same siding, the same warranted roof.",
       "detail": "That construction standard is the point. A playhouse built like a toy lasts a couple of seasons outdoors; this one is built like a shed, which means it survives the weather and converts easily into storage or a garden room once the kids outgrow it.",
       "sizes": [
         "8x12"
@@ -607,7 +866,16 @@
         "Future storage building"
       ],
       "warrantyClass": "specialty",
-      "roof": "gable"
+      "roof": "gable",
+      "pricing": {
+        "term": 36,
+        "sizes": {
+          "8x12": {
+            "cash": 5199,
+            "monthly": 208
+          }
+        }
+      }
     }
   ],
   "colors": {
@@ -619,47 +887,47 @@
       "options": [
         {
           "name": "Delicate White",
-          "hex": "#e5e6e2"
-        },
-        {
-          "name": "Julep Green",
-          "hex": "#c7dbdb"
+          "hex": "#f0f1ec"
         },
         {
           "name": "Waves of Grain",
-          "hex": "#eed7ac"
+          "hex": "#eed6aa"
+        },
+        {
+          "name": "Julep Green",
+          "hex": "#c6dad8"
         },
         {
           "name": "Notorious",
-          "hex": "#bbaa99"
-        },
-        {
-          "name": "Dover Gray",
-          "hex": "#858585"
+          "hex": "#bba897"
         },
         {
           "name": "Autumn Gray",
-          "hex": "#80806d"
-        },
-        {
-          "name": "Ground Coffee",
-          "hex": "#64554c"
-        },
-        {
-          "name": "Brick Dust",
-          "hex": "#854340"
+          "hex": "#515e67"
         },
         {
           "name": "Goblin",
-          "hex": "#526167"
+          "hex": "#807f6d"
         },
         {
-          "name": "Dark Green Velvet",
-          "hex": "#4b5d52"
+          "name": "Dover Gray",
+          "hex": "#848484"
+        },
+        {
+          "name": "Dark Velvet Green",
+          "hex": "#495a50"
+        },
+        {
+          "name": "Ground Coffee",
+          "hex": "#62544b"
+        },
+        {
+          "name": "Brick Dust",
+          "hex": "#84423d"
         },
         {
           "name": "Black Magic",
-          "hex": "#423f40"
+          "hex": "#403e3f"
         }
       ]
     },
@@ -668,6 +936,12 @@
       "brand": "GAF Natural Shadow",
       "type": "Architectural asphalt",
       "options": [
+        {
+          "name": "Weathered Wood",
+          "slug": "weathered-wood",
+          "hex": "#716b5c",
+          "image": "/img/portable/shingles/weathered-wood.webp"
+        },
         {
           "name": "Charcoal",
           "slug": "charcoal",
@@ -681,12 +955,6 @@
           "image": "/img/portable/shingles/pewter-gray.webp"
         },
         {
-          "name": "Weathered Wood",
-          "slug": "weathered-wood",
-          "hex": "#716b5c",
-          "image": "/img/portable/shingles/weathered-wood.webp"
-        },
-        {
           "name": "Shakewood",
           "slug": "shakewood",
           "hex": "#897053",
@@ -695,27 +963,100 @@
       ]
     },
     "metalRoof": {
-      "type": "Ribbed steel panel",
+      "brand": "Central States Panel-Loc Plus",
+      "type": "29ga / 26ga Ribbed steel panel",
       "options": [
         {
-          "name": "Brown",
-          "hex": "#3f2b1f"
-        },
-        {
           "name": "Black",
-          "hex": "#191918"
+          "hex": "#1c1d1f"
         },
         {
-          "name": "Red",
-          "hex": "#841b1f"
+          "name": "Charcoal",
+          "hex": "#383b3e"
         },
         {
-          "name": "Green",
-          "hex": "#2d493b"
+          "name": "Pewter",
+          "hex": "#8b8c8d"
+        },
+        {
+          "name": "Gray",
+          "hex": "#9ea0a2"
+        },
+        {
+          "name": "Alamo",
+          "hex": "#e6e6dc"
+        },
+        {
+          "name": "Brilliant White",
+          "hex": "#f4f5f5"
+        },
+        {
+          "name": "Forest Green",
+          "hex": "#1b382b"
+        },
+        {
+          "name": "Hunter Green",
+          "hex": "#2d4a3e"
+        },
+        {
+          "name": "Colony Green",
+          "hex": "#606e57"
+        },
+        {
+          "name": "Crimson Red",
+          "hex": "#c8232b"
+        },
+        {
+          "name": "Rustic Red",
+          "hex": "#7c2b2d"
+        },
+        {
+          "name": "Burgundy",
+          "hex": "#4a2129"
+        },
+        {
+          "name": "Gallery Blue",
+          "hex": "#133e5c"
+        },
+        {
+          "name": "Ocean Blue",
+          "hex": "#3f667f"
+        },
+        {
+          "name": "Ivory",
+          "hex": "#e7d8b5"
+        },
+        {
+          "name": "Light Stone",
+          "hex": "#c8c3b4"
+        },
+        {
+          "name": "Desert",
+          "hex": "#9d9275"
+        },
+        {
+          "name": "Burnished Slate",
+          "hex": "#3b3735"
+        },
+        {
+          "name": "Brown",
+          "hex": "#432e23"
+        },
+        {
+          "name": "Tan",
+          "hex": "#9c7f60"
+        },
+        {
+          "name": "Taupe",
+          "hex": "#888172"
+        },
+        {
+          "name": "Copper Metallic",
+          "hex": "#8f533a"
         },
         {
           "name": "Galvalume",
-          "hex": "#a2a19d",
+          "hex": "#9fa1a4",
           "note": "mill finish"
         }
       ]

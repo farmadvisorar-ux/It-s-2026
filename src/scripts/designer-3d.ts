@@ -149,9 +149,11 @@ export class BuildingScene {
     const { widthFt: w, lengthFt: l, wallFt: wallH, ridgeFt: ridgeH, roof } = state;
     const paint = new THREE.MeshStandardMaterial({ color: state.paintHex, roughness: 0.86 });
     const trim = new THREE.MeshStandardMaterial({ color: state.trimHex, roughness: 0.7 });
+    const isMetal = !state.roofTexture;
     const roofMat = new THREE.MeshStandardMaterial({
-      color: state.roofHex,
-      roughness: 0.92,
+      color: state.roofTexture ? 0xffffff : state.roofHex,
+      roughness: state.roofTexture ? 0.92 : 0.42,
+      metalness: isMetal ? 0.28 : 0.0,
       ...(state.roofTexture ? { map: this.texture(state.roofTexture, Math.max(2, Math.round(l / 3))) } : {}),
     });
 

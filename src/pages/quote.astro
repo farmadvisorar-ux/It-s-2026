@@ -272,7 +272,7 @@ const pbProducts = (pb as any).products;
 <script>
   // Prefill from query string: /quote/?building=garages&model=S&kit=slug
   const params = new URLSearchParams(location.search);
-  const setIf = (id, val) => {
+  const setIf = (id: string, val: string | null) => {
     const el = document.getElementById(id) as HTMLInputElement | null;
     if (el && val) el.value = val;
   };
