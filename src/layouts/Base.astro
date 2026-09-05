@@ -4,6 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import site from '../data/site.json';
 import locations from '../data/locations.json';
+import { themeColor } from '../lib/theme';
 
 interface Props {
   title: string;
@@ -13,9 +14,12 @@ interface Props {
   current?: string;
   /** Root-relative OG image, e.g. "/og/types/garages.jpg". Falls back to the default. */
   image?: string;
+  /** Root-relative path of the page's LCP image, preloaded so the fetch starts
+   *  with the HTML rather than after layout. */
+  preloadImage?: string;
 }
 
-const { title, description: rawDescription = site.description, crumbs = [], current, image } = Astro.props;
+const { title, description: rawDescription = site.description, crumbs = [], current, image, preloadImage } = Astro.props;
 
 /**
  * Google shows roughly 160 characters of a description and cuts the rest
@@ -55,6 +59,30 @@ const origin = (Astro.site ?? new URL('https://anysize.shop')).origin;
 const canonical = new URL(Astro.url.pathname, origin).href;
 // Social scrapers require an absolute URL — a root-relative path silently yields no preview.
 const ogImage = new URL(image ?? '/og/default.jpg', origin).href;
+
+/**
+ * Breadcrumb structured data, built from the same `crumbs` the visual trail
+ * uses — so the two can never disagree, and adding a crumb to a page gets the
+ * markup for free.
+ */
+const breadcrumbTrail = [
+  { label: 'Home', href: '/' },
+  ...crumbs,
+  ...(current ? [{ label: current, href: Astro.url.pathname }] : []),
+];
+const breadcrumbSchema =
+  breadcrumbTrail.length > 1
+    ? {
+        '@context': 'https://schema.org',
+        '@type': 'BreadcrumbList',
+        itemListElement: breadcrumbTrail.map((c, i) => ({
+          '@type': 'ListItem',
+          position: i + 1,
+          name: c.label,
+          item: new URL(c.href, origin).href,
+        })),
+      }
+    : null;
 
 const localBusiness = {
   '@context': 'https://schema.org',
@@ -101,12 +129,15 @@ const localBusiness = {
     ...(site.address.postal ? { postalCode: site.address.postal } : {}),
     addressCountry: 'US',
   },
-  areaServed: [
-    ...locations.counties.map((c: any) => ({ '@type': 'AdministrativeArea', name: `${c.name}, Texas` })),
-    ...locations.counties.flatMap((c: any) =>
-      c.communities.map((t: string) => ({ '@type': 'City', name: `${t}, Texas` }))
-    ),
-  ],
+  // Counties, not every community in them. Listing 77 individual towns put a
+  // 4.5 KB block of structured data on all 159 pages — half a megabyte across
+  // the site — including pages like the privacy policy where it means nothing.
+  // The service-area pages carry the detailed coverage in their own copy,
+  // which is where a reader and a crawler both expect to find it.
+  areaServed: locations.counties.map((c: any) => ({
+    '@type': 'AdministrativeArea',
+    name: `${c.name}, ${locations.base.state}`,
+  })),
   openingHoursSpecification: [{
     '@type': 'OpeningHoursSpecification',
     dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
@@ -152,6 +183,12 @@ const localBusiness = {
         crawl instead would leave bare URLs indexable and harder to remove.
         Flip `indexable` to true in site.json at launch. */}
     {!site.indexable && <meta name="robots" content="noindex, nofollow" />}
+    {/* Once indexable, let Google use a full-size image thumbnail and an
+        unclipped snippet. Without this it defaults to a small preview, which
+        costs the photography its place in image and rich results. */}
+    {site.indexable && (
+      <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    )}
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
@@ -165,7 +202,14 @@ const localBusiness = {
     <meta name="twitter:title" content={fullTitle} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <script type="application/ld+json" set:html={JSON.stringify(localBusiness)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(localBusiness)} />
+    {breadcrumbSchema && (
+      <script is:inline type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
+    )}
+    {preloadImage && <link rel="preload" as="image" href={preloadImage} fetchpriority="high" />}
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="theme-color" content={themeColor} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link

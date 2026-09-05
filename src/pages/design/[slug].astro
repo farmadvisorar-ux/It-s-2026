@@ -1,0 +1,504 @@
+---
+import Base from '../../layouts/Base.astro';
+import pb from '../../data/portable-buildings.json';
+import { portableImage } from '../../lib/images';
+
+export function getStaticPaths() {
+  // Wood buildings only. Steel kits are engineered and quoted per site, with no
+  // fixed finish catalogue to choose from, so there is nothing to configure.
+  return ((pb as any).products ?? []).map((p: any) => ({
+    params: { slug: p.slug },
+    props: { product: p },
+  }));
+}
+
+const { product } = Astro.props as { product: any };
+const data = pb as any;
+const paint = data.colors.paint;
+const shingles = data.colors.shingles;
+const metalRoof = data.colors.metalRoof;
+const groups = data.addOns.groups;
+const category = data.categories.find((c: any) => c.slug === product.category);
+---
+
+<Base
+  title={`Design — ${product.name}`}
+  description={`Configure a ${product.name} — pick the size, ${paint.options.length} paint colours, ${shingles.brand} shingles and the doors, windows and ramps you want, and see it in 3D before you ask for a quote.`}
+  crumbs={[
+    { label: 'Portable Buildings', href: '/portable-buildings/' },
+    { label: product.name, href: `/portable-buildings/${product.slug}/` },
+  ]}
+  current="Design"
+>
+  <section class="designer" data-product={JSON.stringify({
+    slug: product.slug, name: product.name, roof: product.roof,
+    sizes: product.sizes, overallHeightFt: product.overallHeightFt ?? null,
+    pricing: product.pricing ?? null,
+  })} data-catalog={JSON.stringify({ paint, shingles, metalRoof, groups })}>
+    <div class="stage">
+      <div class="viewport" id="viewport" role="img"
+           aria-label={`3D preview of the ${product.name}. Use the panel to change size, colours and options.`}></div>
+      <noscript>
+        <div class="fallback">
+          <img src={portableImage(product.slug)} alt={product.name} />
+          <p>The 3D designer needs JavaScript. The colours and options are all listed on the
+             <a href="/portable-buildings/">portable buildings page</a>, and the
+             <a href="/quote/">quote form</a> takes them in writing.</p>
+        </div>
+      </noscript>
+      <div class="stage__bar">
+        <h1 class="stage__label">{category?.name} · <strong>{product.name}</strong></h1>
+        <div class="stage__actions">
+          <button type="button" class="btn btn--ghost btn--sm" id="reset-view">Reset view</button>
+        </div>
+      </div>
+    </div>
+
+    <form class="panel" id="panel">
+      <div class="panel__scroll">
+        <fieldset class="fs">
+          <legend>Size</legend>
+          <div class="chips" id="sizes"></div>
+        </fieldset>
+
+        <fieldset class="fs">
+          <legend>Siding Paint <span class="fs__meta">{paint.brand}</span></legend>
+          <div class="chips chips--swatch" id="paints"></div>
+        </fieldset>
+
+        <fieldset class="fs">
+          <legend>Trim Paint <span class="fs__meta">{paint.brand}</span></legend>
+          <div class="chips chips--swatch" id="trims"></div>
+        </fieldset>
+
+        <fieldset class="fs">
+          <legend>Roof</legend>
+          <div class="seg" id="roof-kind">
+            <button type="button" data-kind="shingle" class="seg__btn is-on">Shingles</button>
+            <button type="button" data-kind="metal" class="seg__btn">Metal</button>
+          </div>
+          <div class="chips chips--swatch" id="roofs"></div>
+        </fieldset>
+
+        <fieldset class="fs">
+          <legend>Wall for new openings</legend>
+          <div class="seg seg--4" id="wall">
+            <button type="button" data-wall="front" class="seg__btn is-on">Front</button>
+            <button type="button" data-wall="back" class="seg__btn">Back</button>
+            <button type="button" data-wall="left" class="seg__btn">Left</button>
+            <button type="button" data-wall="right" class="seg__btn">Right</button>
+          </div>
+        </fieldset>
+
+        {groups.map((g: any) => (
+          <fieldset class="fs">
+            <legend>{g.name}</legend>
+            <ul class="opts">
+              {g.items.map((i: any) => (
+                <li class="opt" data-slug={i.slug}>
+                  <div class="opt__text">
+                    <span class="opt__name">{i.name}{i.size && <span class="opt__size"> · {i.size}</span>}</span>
+                    <span class="opt__price" data-price-for={i.slug}></span>
+                    {i.note && <span class="opt__note">{i.note}</span>}
+                  </div>
+                  <div class="stepper">
+                    <button type="button" data-step="-1" aria-label={`Remove one ${i.name}`}>−</button>
+                    <output data-qty-for={i.slug}>0</output>
+                    <button type="button" data-step="1" aria-label={`Add one ${i.name}`}>+</button>
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </fieldset>
+        ))}
+      </div>
+
+      <div class="summary">
+        <div class="summary__row">
+          <span>Base building (<span id="summary-size">{product.sizes[0]?.replace('x', "' × ")}'</span>)</span>
+          <strong id="base-price">$0</strong>
+        </div>
+        <div class="summary__row">
+          <span>Options subtotal</span>
+          <span id="subtotal">$0</span>
+        </div>
+        <div class="summary__row summary__row--total">
+          <span>Total Cash Price</span>
+          <strong id="total-price" class="summary__highlight">$0</strong>
+        </div>
+        <div class="summary__rto" id="rto-container">
+          <span>36-mo Rent-To-Own:</span>
+          <strong id="rto-price">$0/mo</strong>
+        </div>
+        <p class="summary__note">
+          Free delivery & setup within 50 miles. Instant approval Rent-To-Own with no credit check.
+        </p>
+        <a class="btn btn--primary summary__cta" id="to-quote" href="/quote/">Get Official Quote & Order</a>
+      </div>
+    </form>
+  </section>
+</Base>
+
+<style>
+  .designer {
+    display: grid; grid-template-columns: minmax(0, 1fr) 25rem;
+    min-height: calc(100dvh - 68px);
+    border-top: 1px solid var(--border);
+  }
+  .stage { position: relative; background: linear-gradient(180deg, #cfe0ef 0%, #eef2f5 62%); }
+  .viewport { position: absolute; inset: 0; }
+  .viewport canvas { display: block; width: 100% !important; height: 100% !important; }
+  .stage__bar {
+    position: absolute; left: 0; right: 0; bottom: 0;
+    display: flex; justify-content: space-between; align-items: center; gap: 1rem;
+    padding: 0.75rem var(--gutter);
+    background: color-mix(in srgb, var(--bg-raised) 88%, transparent);
+    backdrop-filter: blur(8px); border-top: 1px solid var(--border);
+  }
+  .stage__label { margin: 0; font-size: 0.875rem; font-weight: 400; color: var(--text-muted); }
+  .btn--sm { padding: 0.5rem 0.875rem; font-size: 0.8125rem; }
+  .fallback { position: absolute; inset: 0; display: grid; place-content: center; gap: 1rem; padding: 2rem; text-align: center; }
+  .fallback img { max-width: 26rem; border-radius: var(--radius-lg); }
+
+  .panel {
+    display: flex; flex-direction: column;
+    border-left: 1px solid var(--border); background: var(--bg-raised);
+    max-height: calc(100dvh - 68px);
+  }
+  .panel__scroll { overflow-y: auto; padding: 1.25rem var(--gutter) 1rem; flex: 1; }
+  .fs { border: 0; padding: 0; margin: 0 0 1.5rem; }
+  .fs legend {
+    font-size: 0.6875rem; text-transform: uppercase; letter-spacing: 0.12em;
+    color: var(--accent); font-weight: 700; margin-bottom: 0.625rem; padding: 0;
+  }
+  .fs__meta { color: var(--text-faint); font-weight: 500; letter-spacing: 0.04em; text-transform: none; }
+
+  .chips { display: flex; flex-wrap: wrap; gap: 0.4375rem; }
+  .chip {
+    border: 1px solid var(--border-strong); background: var(--bg);
+    border-radius: var(--radius); padding: 0.4375rem 0.75rem;
+    font-size: 0.8125rem; cursor: pointer; color: var(--text);
+  }
+  .chip[aria-pressed='true'] { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+  .chips--swatch { gap: 0.5rem; }
+  .chip--swatch { display: flex; align-items: center; gap: 0.5rem; padding: 0.3125rem 0.625rem 0.3125rem 0.3125rem; }
+  .chip__dot {
+    width: 1.375rem; height: 1.375rem; border-radius: 2px; flex-shrink: 0;
+    background-size: cover; background-position: center;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25);
+  }
+
+  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 0; margin-bottom: 0.75rem; }
+  .seg--4 { grid-template-columns: repeat(4, 1fr); }
+  .seg__btn {
+    border: 1px solid var(--border-strong); background: var(--bg); color: var(--text-muted);
+    padding: 0.5rem 0.25rem; font-size: 0.8125rem; cursor: pointer;
+  }
+  .seg__btn + .seg__btn { border-left: 0; }
+  .seg__btn.is-on { background: var(--accent); border-color: var(--accent); color: var(--accent-contrast); }
+
+  .opts { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem; }
+  .opt { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.75rem; }
+  .opt__text { display: flex; flex-direction: column; gap: 0.125rem; }
+  .opt__name { font-size: 0.875rem; }
+  .opt__size, .opt__price { color: var(--text-faint); font-size: 0.8125rem; }
+  .opt__note { color: var(--text-faint); font-size: 0.75rem; max-width: 22ch; }
+  .stepper { display: flex; align-items: center; gap: 0.25rem; flex-shrink: 0; }
+  .stepper button {
+    width: 1.75rem; height: 1.75rem; border: 1px solid var(--border-strong);
+    background: var(--bg); color: var(--text); cursor: pointer; border-radius: var(--radius);
+    font-size: 1rem; line-height: 1;
+  }
+  .stepper button:disabled { opacity: 0.35; cursor: not-allowed; }
+  .stepper output { min-width: 1.5rem; text-align: center; font-variant-numeric: tabular-nums; font-size: 0.875rem; }
+
+  .summary { border-top: 1px solid var(--border); padding: 1rem var(--gutter) 1.25rem; background: var(--bg-sunken); }
+  .summary__row { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.9375rem; margin-bottom: 0.25rem; }
+  .summary__row strong { font-size: 1.125rem; }
+  .summary__row--total {
+    margin-top: 0.5rem;
+    padding-top: 0.5rem;
+    border-top: 1px dashed var(--border-strong);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .summary__highlight {
+    font-size: 1.375rem !important;
+    color: var(--accent);
+  }
+  .summary__rto {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    background: color-mix(in srgb, var(--accent) 10%, var(--bg));
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: var(--radius);
+    font-size: 0.8125rem;
+    color: var(--text);
+  }
+  .summary__rto strong {
+    color: var(--accent);
+    font-size: 1.0625rem;
+  }
+  .summary__note { font-size: 0.75rem; color: var(--text-faint); margin: 0.5rem 0 0.875rem; line-height: 1.4; }
+  .summary__cta { width: 100%; justify-content: center; }
+
+  @media (max-width: 960px) {
+    .designer { grid-template-columns: 1fr; min-height: 0; }
+    .stage { height: 58vh; }
+    .panel { max-height: none; border-left: 0; border-top: 1px solid var(--border); }
+  }
+</style>
+
+<script>
+  import { BuildingScene } from '../../scripts/designer-3d';
+  import type { PlacedAddOn, WallId } from '../../scripts/designer-3d';
+  import { parseSize, heights, unitPriceAt, lineTotal, addOnGeometry, wallFits } from '../../lib/designer';
+  import type { AddOn } from '../../lib/designer';
+
+  const root = document.querySelector('.designer') as HTMLElement;
+  const product = JSON.parse(root.dataset.product!);
+  const catalog = JSON.parse(root.dataset.catalog!);
+  // The catalogue arrives as JSON on a data attribute, so it comes back
+  // untyped; assert it once here rather than casting at every use.
+  const items: AddOn[] = catalog.groups.flatMap((g: any) =>
+    g.items.map((i: any) => ({ ...i, group: g.name } as AddOn))
+  );
+
+  const usd = (n: number) => `$${Math.round(n).toLocaleString('en-US')}`;
+
+  const state = {
+    size: product.sizes[0] as string,
+    paint: catalog.paint.options[0],
+    trim: catalog.paint.options[0],
+    roofKind: 'shingle' as 'shingle' | 'metal',
+    roof: catalog.shingles.options[0],
+    wall: 'front' as WallId,
+    /**
+     * How many of each add-on, per wall, keyed "<wall>|<slug>".
+     *
+     * A flat slug -> count map looked simpler but was wrong: every opening got
+     * stamped with whatever wall happened to be selected when the model was
+     * drawn, so switching walls silently moved the whole lot, and the fit
+     * check measured them all against one span.
+     */
+    qty: new Map<string, number>(),
+  };
+
+  const WALLS: WallId[] = ['front', 'back', 'left', 'right'];
+  const key = (wall: WallId, slug: string) => `${wall}|${slug}`;
+  const qtyOn = (wall: WallId, slug: string) => state.qty.get(key(wall, slug)) ?? 0;
+  const totalOf = (slug: string) => WALLS.reduce((n, w) => n + qtyOn(w, slug), 0);
+
+  const scene = new BuildingScene(document.getElementById('viewport')!);
+
+  /** Expand quantities into individual placed openings for the model. */
+  function placements(): PlacedAddOn[] {
+    const out: PlacedAddOn[] = [];
+    for (const [k, n] of state.qty) {
+      const [wall, slug] = k.split('|') as [WallId, string];
+      const g = addOnGeometry[slug];
+      if (!g) continue;
+      for (let i = 0; i < n; i++) out.push({ slug, kind: g.kind, wall, w: g.w, h: g.h });
+    }
+    return out;
+  }
+
+  function draw() {
+    const { w, l } = parseSize(state.size);
+    const { wall, ridge } = heights(product, state.size);
+    scene.render({
+      widthFt: w, lengthFt: l, wallFt: wall, ridgeFt: ridge,
+      roof: product.roof ?? 'gable',
+      paintHex: state.paint.hex,
+      trimHex: state.trim.hex,
+      roofHex: state.roof.hex,
+      roofTexture: state.roofKind === 'shingle' ? state.roof.image : undefined,
+      addOns: placements(),
+    });
+  }
+
+  /**
+   * Add-on total.
+   *
+   * Quantities are summed per item across every wall before pricing, because
+   * the sheet's breaks are volume discounts on the order — three transoms are
+   * three transoms whether or not they end up on the same side.
+   */
+  function subtotal() {
+    let n = 0;
+    for (const i of items) {
+      const q = totalOf(i.slug);
+      if (q > 0) n += lineTotal(i, q);
+    }
+    return n;
+  }
+
+  function refresh() {
+    // The stepper counts what is on the selected wall; the price is the line
+    // across the whole build, so a quantity break shows as soon as it applies.
+    for (const i of items) {
+      const here = qtyOn(state.wall, i.slug);
+      const all = totalOf(i.slug);
+      document.querySelector(`[data-qty-for="${i.slug}"]`)!.textContent = String(here);
+      const elsewhere = all - here;
+      document.querySelector(`[data-price-for="${i.slug}"]`)!.textContent = all > 0
+        ? `${all} × ${usd(unitPriceAt(i, all))}${i.unit ? ` / ${i.unit}` : ''} = ${usd(lineTotal(i, all))}`
+          + (elsewhere > 0 ? ` · ${elsewhere} on other walls` : '')
+        : `${usd(i.price)}${i.unit ? ` / ${i.unit}` : ' each'}`;
+    }
+
+    // Pricing breakdown calculations
+    const sizePricing = product.pricing?.sizes?.[state.size];
+    const baseCash = sizePricing?.cash ?? 0;
+    const optSubtotal = subtotal();
+    const totalCash = baseCash > 0 ? baseCash + optSubtotal : optSubtotal;
+    const monthlyRto = Math.round(totalCash / 25);
+
+    const sizeEl = document.getElementById('summary-size');
+    if (sizeEl) sizeEl.textContent = state.size.replace('x', "' × ") + "'";
+
+    const baseEl = document.getElementById('base-price');
+    if (baseEl) baseEl.textContent = baseCash > 0 ? usd(baseCash) : 'Quote req.';
+
+    const subtotalEl = document.getElementById('subtotal');
+    if (subtotalEl) subtotalEl.textContent = usd(optSubtotal);
+
+    const totalEl = document.getElementById('total-price');
+    if (totalEl) totalEl.textContent = usd(totalCash);
+
+    const rtoEl = document.getElementById('rto-price');
+    if (rtoEl) rtoEl.textContent = monthlyRto > 0 ? `${usd(monthlyRto)}/mo` : 'Call';
+
+    // An opening can only be added while it still fits the selected wall, so
+    // only that wall's openings count toward the space already taken.
+    const { w, l } = parseSize(state.size);
+    const span = state.wall === 'front' || state.wall === 'back' ? w : l;
+    const placedWidths = placements()
+      .filter((p) => p.kind !== 'ramp' && p.wall === state.wall)
+      .map((p) => p.w);
+    document.querySelectorAll('.opt').forEach((li) => {
+      const slug = (li as HTMLElement).dataset.slug!;
+      const plus = li.querySelector('[data-step="1"]') as HTMLButtonElement;
+      const geo = addOnGeometry[slug];
+      plus.disabled = !!geo && geo.kind !== 'ramp' && !wallFits(placedWidths, geo.w, span);
+      plus.title = plus.disabled ? `No room left on the ${state.wall} wall at ${span}'` : '';
+    });
+    draw();
+    syncQuoteLink(baseCash, optSubtotal, totalCash, monthlyRto);
+  }
+
+  function syncQuoteLink(baseCash: number, optSubtotal: number, totalCash: number, monthlyRto: number) {
+    const byWall = WALLS.flatMap((wall) => {
+      const rows = items
+        .filter((i) => qtyOn(wall, i.slug) > 0)
+        .map((i) => `  ${qtyOn(wall, i.slug)} x ${i.name}`);
+      return rows.length ? [`${wall[0].toUpperCase()}${wall.slice(1)} wall:`, ...rows] : [];
+    });
+    const priced = items
+      .filter((i) => totalOf(i.slug) > 0)
+      .map((i) => `  ${totalOf(i.slug)} x ${i.name} — ${usd(lineTotal(i, totalOf(i.slug)))}`);
+    const spec = [
+      `${product.name} — ${state.size.replace('x', "' x ")}'`,
+      `Base Price: ${baseCash > 0 ? usd(baseCash) : 'Quote req.'}`,
+      `Siding Paint: ${state.paint.name}`,
+      `Trim Paint: ${state.trim.name}`,
+      `Roof: ${state.roof.name} ${state.roofKind === 'shingle' ? catalog.shingles.brand : 'metal'}`,
+      ...(priced.length
+        ? [...byWall, 'Options:', ...priced, `Options subtotal: ${usd(optSubtotal)}`]
+        : ['No added options']),
+      `Total Cash Price: ${usd(totalCash)}`,
+      `Estimated 36-mo RTO: ${monthlyRto > 0 ? `${usd(monthlyRto)}/mo` : 'Call'}`,
+    ].join('\n');
+    const a = document.getElementById('to-quote') as HTMLAnchorElement;
+    a.href = `/quote/?line=portable&model=${encodeURIComponent(product.slug)}&build=${encodeURIComponent(spec)}`;
+  }
+
+  // ---- controls ----
+  const chip = (label: string, on: boolean, sw?: { hex: string; image?: string }) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = sw ? 'chip chip--swatch' : 'chip';
+    b.setAttribute('aria-pressed', String(on));
+    if (sw) {
+      const dot = document.createElement('span');
+      dot.className = 'chip__dot';
+      dot.style.backgroundColor = sw.hex;
+      if (sw.image) dot.style.backgroundImage = `url(${sw.image})`;
+      b.appendChild(dot);
+    }
+    b.appendChild(document.createTextNode(label));
+    return b;
+  };
+
+  function buildSizes() {
+    const host = document.getElementById('sizes')!;
+    host.replaceChildren(...product.sizes.map((s: string) => {
+      const b = chip(s.replace('x', "' × ") + "'", s === state.size);
+      b.onclick = () => { state.size = s; buildSizes(); refresh(); };
+      return b;
+    }));
+  }
+  function buildPaints() {
+    const host = document.getElementById('paints')!;
+    host.replaceChildren(...catalog.paint.options.map((c: any) => {
+      const b = chip(c.name, c.name === state.paint.name, c);
+      b.onclick = () => { state.paint = c; buildPaints(); refresh(); };
+      return b;
+    }));
+  }
+  function buildTrims() {
+    const host = document.getElementById('trims')!;
+    host.replaceChildren(...catalog.paint.options.map((c: any) => {
+      const b = chip(c.name, c.name === state.trim.name, c);
+      b.onclick = () => { state.trim = c; buildTrims(); refresh(); };
+      return b;
+    }));
+  }
+  function buildRoofs() {
+    const list = state.roofKind === 'shingle' ? catalog.shingles.options : catalog.metalRoof.options;
+    if (!list.some((c: any) => c.name === state.roof.name)) state.roof = list[0];
+    const host = document.getElementById('roofs')!;
+    host.replaceChildren(...list.map((c: any) => {
+      const b = chip(c.name, c.name === state.roof.name, c);
+      b.onclick = () => { state.roof = c; buildRoofs(); refresh(); };
+      return b;
+    }));
+  }
+
+  document.getElementById('roof-kind')!.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('[data-kind]') as HTMLElement | null;
+    if (!b) return;
+    state.roofKind = b.dataset.kind as 'shingle' | 'metal';
+    document.querySelectorAll('#roof-kind .seg__btn').forEach((x) => x.classList.toggle('is-on', x === b));
+    buildRoofs(); refresh();
+  });
+
+  document.getElementById('wall')!.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('[data-wall]') as HTMLElement | null;
+    if (!b) return;
+    state.wall = b.dataset.wall as WallId;
+    document.querySelectorAll('#wall .seg__btn').forEach((x) => x.classList.toggle('is-on', x === b));
+    refresh();
+    scene.faceWall(state.wall);
+  });
+
+  document.getElementById('panel')!.addEventListener('click', (e) => {
+    const b = (e.target as HTMLElement).closest('[data-step]') as HTMLButtonElement | null;
+    if (!b) return;
+    e.preventDefault();
+    const slug = b.closest('.opt')!.getAttribute('data-slug')!;
+    const next = Math.max(0, qtyOn(state.wall, slug) + Number(b.dataset.step));
+    state.qty.set(key(state.wall, slug), next);
+    refresh();
+    // Show what was just placed. A ramp sits in front of the chosen wall too.
+    if (Number(b.dataset.step) > 0) scene.faceWall(state.wall);
+  });
+
+  document.getElementById('panel')!.addEventListener('submit', (e) => e.preventDefault());
+  document.getElementById('reset-view')!.addEventListener('click', () => scene.resetView());
+
+  buildSizes(); buildPaints(); buildTrims(); buildRoofs(); refresh();
+</script>

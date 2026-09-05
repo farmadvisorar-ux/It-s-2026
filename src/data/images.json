@@ -1,322 +1,321 @@
 {
- "types": {
-  "garages": [
-   "/img/types/garages-1.webp",
-   "/img/types/garages-2.webp",
-   "/img/types/garages-3.webp"
-  ],
-  "single-garage-kits": [
-   "/img/types/single-garage-kits-1.webp",
-   "/img/types/single-garage-kits-2.webp",
-   "/img/types/single-garage-kits-3.webp"
-  ],
-  "multi-door-garage-kits": [
-   "/img/types/multi-door-garage-kits-1.webp",
-   "/img/types/multi-door-garage-kits-2.webp",
-   "/img/types/multi-door-garage-kits-3.webp"
-  ],
-  "combo-garage-kits": [
-   "/img/types/combo-garage-kits-1.webp",
-   "/img/types/combo-garage-kits-2.webp",
-   "/img/types/combo-garage-kits-3.webp"
-  ],
-  "workshops": [
-   "/img/types/workshops-1.webp",
-   "/img/types/workshops-2.webp",
-   "/img/types/workshops-3.webp"
-  ],
-  "workshops/large-workshops": [
-   "/img/types/workshops-large-workshops-1.webp",
-   "/img/types/workshops-large-workshops-2.webp",
-   "/img/types/workshops-large-workshops-3.webp"
-  ],
-  "workshops/small-business-shops": [
-   "/img/types/workshops-small-business-shops-1.webp",
-   "/img/types/workshops-small-business-shops-2.webp",
-   "/img/types/workshops-small-business-shops-3.webp"
-  ],
-  "barndominium": [
-   "/img/types/barndominium-1.webp",
-   "/img/types/barndominium-2.webp",
-   "/img/types/barndominium-3.webp"
-  ],
-  "carport-kits": [
-   "/img/types/carport-kits-1.webp",
-   "/img/types/carport-kits-2.webp",
-   "/img/types/carport-kits-3.webp"
-  ],
-  "storage": [
-   "/img/types/storage-1.webp",
-   "/img/types/storage-2.webp",
-   "/img/types/storage-3.webp"
-  ],
-  "large-storage-buildings": [
-   "/img/types/large-storage-buildings-1.webp",
-   "/img/types/large-storage-buildings-2.webp",
-   "/img/types/large-storage-buildings-3.webp"
-  ],
-  "container-covers": [
-   "/img/types/container-covers-1.webp",
-   "/img/types/container-covers-2.webp"
-  ],
-  "quonset-buildings": [
-   "/img/types/quonset-buildings-1.webp",
-   "/img/types/quonset-buildings-2.webp",
-   "/img/types/quonset-buildings-3.webp"
-  ],
-  "straight-wall": [
-   "/img/types/straight-wall-1.webp",
-   "/img/types/straight-wall-2.webp",
-   "/img/types/straight-wall-3.webp"
-  ],
-  "roofing-systems": [
-   "/img/types/roofing-systems-1.webp",
-   "/img/types/roofing-systems-2.webp",
-   "/img/types/roofing-systems-3.webp"
-  ],
-  "agricultural-and-farm": [
-   "/img/types/agricultural-and-farm-1.webp",
-   "/img/types/agricultural-and-farm-2.webp",
-   "/img/types/agricultural-and-farm-3.webp"
-  ],
-  "commercial": [
-   "/img/types/commercial-1.webp",
-   "/img/types/commercial-2.webp",
-   "/img/types/commercial-3.webp"
-  ],
-  "warehouses": [
-   "/img/types/warehouses-1.webp",
-   "/img/types/warehouses-2.webp",
-   "/img/types/warehouses-3.webp"
-  ],
-  "manufacturing-facilities": [
-   "/img/types/manufacturing-facilities-1.webp",
-   "/img/types/manufacturing-facilities-2.webp",
-   "/img/types/manufacturing-facilities-3.webp"
-  ],
-  "aviation": [
-   "/img/types/aviation-1.webp",
-   "/img/types/aviation-2.webp",
-   "/img/types/aviation-3.webp"
-  ],
-  "arenas-recreational": [
-   "/img/types/arenas-recreational-1.webp",
-   "/img/types/arenas-recreational-2.webp",
-   "/img/types/arenas-recreational-3.webp"
-  ],
-  "churches": [
-   "/img/types/churches-1.webp",
-   "/img/types/churches-2.webp",
-   "/img/types/churches-3.webp"
-  ],
-  "energy-oil-gas": [
-   "/img/types/energy-oil-gas-1.webp",
-   "/img/types/energy-oil-gas-2.webp"
-  ],
-  "marijuana": [
-   "/img/types/marijuana-1.webp",
-   "/img/types/marijuana-2.webp"
-  ]
- },
- "inventory": {
-  "20-x-40-container-cover": "/img/inventory/20-x-40-container-cover.webp",
-  "25-x-40-container-cover": "/img/inventory/25-x-40-container-cover.webp",
-  "30-x-40-container-cover": "/img/inventory/30-x-40-container-cover.webp",
-  "35-x-40-container-cover": "/img/inventory/35-x-40-container-cover.webp",
-  "40-x-40-container-cover": "/img/inventory/40-x-40-container-cover.webp",
-  "t-60-x-16-x-80": "/img/inventory/t-60-x-16-x-80.webp",
-  "t-60-x-20-x-120": "/img/inventory/t-60-x-20-x-120.webp",
-  "t-70-x-18-x-100": "/img/inventory/t-70-x-18-x-100.webp",
-  "t-100-x-18-x-200": "/img/inventory/t-100-x-18-x-200.webp",
-  "30x62-barndo-shell": "/img/inventory/30x62-barndo-shell.webp",
-  "40-x-80-equipment-shed": "/img/inventory/40-x-80-equipment-shed.webp",
-  "40-x-60-steel-building-industrial-agricultural": "/img/inventory/40-x-60-steel-building-industrial-agricultural.webp",
-  "30-x-40-workshop-building": "/img/inventory/30-x-40-workshop-building.webp",
-  "30-x-30-two-car-garage": "/img/inventory/30-x-30-two-car-garage.webp",
-  "20-x-30-one-car-garage-workshop": "/img/inventory/20-x-30-one-car-garage-workshop.webp",
-  "20-x-20-small-garage": "/img/inventory/20-x-20-small-garage.webp",
-  "20-x-24-backyard-garage": "/img/inventory/20-x-24-backyard-garage.webp",
-  "s-12-x-11-x-12": "/img/inventory/s-12-x-11-x-12.webp",
-  "a-20-x-13-x-30": "/img/inventory/a-20-x-13-x-30.webp",
-  "x-22-x-17-x-32": "/img/inventory/x-22-x-17-x-32.webp",
-  "x-22-x-17-x-44": "/img/inventory/x-22-x-17-x-44.webp",
-  "x-30-x-19-x-40": "/img/inventory/x-30-x-19-x-40.webp",
-  "x-30-x-19-x-60": "/img/inventory/x-30-x-19-x-60.webp",
-  "r-20-x-7-x-20": "/img/inventory/r-20-x-7-x-20.webp",
-  "r-20-x-7-x-40": "/img/inventory/r-20-x-7-x-40.webp",
-  "r-25-x-9-x-40": "/img/inventory/r-25-x-9-x-40.webp",
-  "t-40-x-16-x-40": "/img/inventory/t-40-x-16-x-40.webp",
-  "t-60-x-16-x-80-quebec": "/img/inventory/t-60-x-16-x-80-quebec.webp",
-  "t-50-x-20-x-100": "/img/inventory/t-50-x-20-x-100.webp",
-  "28-x-40-container-cover": "/img/inventory/28-x-40-container-cover.webp",
-  "40-x-60-industrial-use": "/img/inventory/40-x-60-industrial-use.webp",
-  "30-x-60-ultra-shop": "/img/inventory/30-x-60-ultra-shop.webp",
-  "36-x-26-workshop": "/img/inventory/36-x-26-workshop.webp",
-  "32-x-40-container-cover": "/img/inventory/32-x-40-container-cover.webp",
-  "16-x-20-shed-with-leanto": "/img/inventory/16-x-20-shed-with-leanto.webp",
-  "16-x-18-gambrel-shed": "/img/inventory/16-x-18-gambrel-shed.webp",
-  "a-model-25-x-13-x-34": "/img/inventory/a-model-25-x-13-x-34.webp",
-  "a-model-20-x-12-x-24": "/img/inventory/a-model-20-x-12-x-24.webp",
-  "a-model-17-x-12-x-20": "/img/inventory/a-model-17-x-12-x-20.webp",
-  "a-model-25-x-13-x-24": "/img/inventory/a-model-25-x-13-x-24.webp",
-  "c-model-12-x-8-x-18": "/img/inventory/c-model-12-x-8-x-18.webp",
-  "a-model-30-x-18-x-50": "/img/inventory/a-model-30-x-18-x-50.webp",
-  "r-model-20-x-7-x-20": "/img/inventory/r-model-20-x-7-x-20.webp",
-  "a-model-20-x-12-x-26": "/img/inventory/a-model-20-x-12-x-26.webp",
-  "x-model-35-x-20-x-60-package": "/img/inventory/x-model-35-x-20-x-60-package.webp",
-  "r-model-25-x-9-x-40": "/img/inventory/r-model-25-x-9-x-40.webp",
-  "x-model-41-x-21-x-80-package": "/img/inventory/x-model-41-x-21-x-80-package.webp",
-  "s-model-34-x-18-x-50-package": "/img/inventory/s-model-34-x-18-x-50-package.webp",
-  "b-model-20-x-30": "/img/inventory/b-model-20-x-30.webp",
-  "b-model-30-x-40": "/img/inventory/b-model-30-x-40.webp",
-  "b-model-40-x-60": "/img/inventory/b-model-40-x-60.webp",
-  "40-x-40-container-cover-usa": "/img/inventory/40-x-40-container-cover-usa.webp"
- },
- "hero": "/img/types/barndominium-1.webp",
- "options": {
-  "arch-insulation": "/img/options/arch-insulation.webp",
-  "arch-man-doors": "/img/options/arch-man-doors.webp",
-  "arch-overhead-doors": "/img/options/arch-overhead-doors.webp",
-  "arch-skylights": "/img/options/arch-skylights.webp",
-  "arch-sliding-doors": "/img/options/arch-sliding-doors.webp",
-  "arch-turbine-vents": "/img/options/arch-turbine-vents.webp",
-  "straight-wall-color-my-building": "/img/options/straight-wall-color-my-building.webp",
-  "straight-wall-wall-accessories": "/img/options/straight-wall-wall-accessories.webp"
- },
- "portable": {
-  "products": {
-   "barn": [
-    "/img/portable/barn-1.webp",
-    "/img/portable/barn-2.webp",
-    "/img/portable/barn-3.webp",
-    "/img/portable/barn-4.webp",
-    "/img/portable/barn-5.webp",
-    "/img/portable/barn-6.webp"
-   ],
-   "barn-cabin": [
-    "/img/portable/barn-cabin-1.webp",
-    "/img/portable/barn-cabin-2.webp",
-    "/img/portable/barn-cabin-3.webp",
-    "/img/portable/barn-cabin-4.webp"
-   ],
-   "barn-garage": [
-    "/img/portable/barn-garage-1.webp",
-    "/img/portable/barn-garage-2.webp",
-    "/img/portable/barn-garage-3.webp",
-    "/img/portable/barn-garage-4.webp",
-    "/img/portable/barn-garage-5.webp"
-   ],
-   "barn-handyman": [
-    "/img/portable/barn-handyman-1.webp",
-    "/img/portable/barn-handyman-2.webp",
-    "/img/portable/barn-handyman-3.webp",
-    "/img/portable/barn-handyman-4.webp"
-   ],
-   "chicken-coop": [
-    "/img/portable/chicken-coop-1.webp",
-    "/img/portable/chicken-coop-2.webp",
-    "/img/portable/chicken-coop-3.webp",
-    "/img/portable/chicken-coop-4.webp",
-    "/img/portable/chicken-coop-5.webp"
-   ],
-   "cottage-shed": [
-    "/img/portable/cottage-shed-1.webp",
-    "/img/portable/cottage-shed-2.webp",
-    "/img/portable/cottage-shed-3.webp"
-   ],
-   "cottage-shed-tall": [
-    "/img/portable/cottage-shed-tall-1.webp",
-    "/img/portable/cottage-shed-tall-2.webp",
-    "/img/portable/cottage-shed-tall-3.webp",
-    "/img/portable/cottage-shed-tall-4.webp",
-    "/img/portable/cottage-shed-tall-5.webp"
-   ],
-   "greenhouse": [
-    "/img/portable/greenhouse-1.webp",
-    "/img/portable/greenhouse-2.webp",
-    "/img/portable/greenhouse-3.webp",
-    "/img/portable/greenhouse-4.webp",
-    "/img/portable/greenhouse-5.webp"
-   ],
-   "k9-condo": [
-    "/img/portable/k9-condo-1.webp",
-    "/img/portable/k9-condo-2.webp",
-    "/img/portable/k9-condo-3.webp",
-    "/img/portable/k9-condo-4.webp"
-   ],
-   "playhouse": [
-    "/img/portable/playhouse-1.webp",
-    "/img/portable/playhouse-2.webp",
-    "/img/portable/playhouse-3.webp",
-    "/img/portable/playhouse-4.webp"
-   ],
-   "slim-shed": [
-    "/img/portable/slim-shed-1.webp",
-    "/img/portable/slim-shed-2.webp",
-    "/img/portable/slim-shed-3.webp",
-    "/img/portable/slim-shed-4.webp",
-    "/img/portable/slim-shed-5.webp"
-   ],
-   "tool-shed": [
-    "/img/portable/tool-shed-1.webp",
-    "/img/portable/tool-shed-2.webp",
-    "/img/portable/tool-shed-3.webp"
-   ],
-   "tool-shed-tall": [
-    "/img/portable/tool-shed-tall-1.webp",
-    "/img/portable/tool-shed-tall-2.webp",
-    "/img/portable/tool-shed-tall-3.webp"
-   ],
-   "utility-cabin": [
-    "/img/portable/utility-cabin-1.webp",
-    "/img/portable/utility-cabin-2.webp",
-    "/img/portable/utility-cabin-3.webp"
-   ],
-   "utility-garage": [
-    "/img/portable/utility-garage-1.webp",
-    "/img/portable/utility-garage-2.webp",
-    "/img/portable/utility-garage-3.webp",
-    "/img/portable/utility-garage-4.webp",
-    "/img/portable/utility-garage-5.webp",
-    "/img/portable/utility-garage-6.webp"
-   ],
-   "utility-handyman": [
-    "/img/portable/utility-handyman-1.webp",
-    "/img/portable/utility-handyman-2.webp",
-    "/img/portable/utility-handyman-3.webp",
-    "/img/portable/utility-handyman-4.webp"
-   ]
+  "types": {
+    "garages": [
+      "/img/types/garages-1.webp",
+      "/img/types/garages-2.webp",
+      "/img/types/garages-3.webp"
+    ],
+    "single-garage-kits": [
+      "/img/types/single-garage-kits-1.webp",
+      "/img/types/single-garage-kits-2.webp",
+      "/img/types/single-garage-kits-3.webp"
+    ],
+    "multi-door-garage-kits": [
+      "/img/types/multi-door-garage-kits-1.webp",
+      "/img/types/multi-door-garage-kits-2.webp",
+      "/img/types/multi-door-garage-kits-3.webp"
+    ],
+    "combo-garage-kits": [
+      "/img/types/combo-garage-kits-1.webp",
+      "/img/types/combo-garage-kits-2.webp",
+      "/img/types/combo-garage-kits-3.webp"
+    ],
+    "workshops": [
+      "/img/types/workshops-1.webp",
+      "/img/types/workshops-2.webp",
+      "/img/types/workshops-3.webp"
+    ],
+    "workshops/large-workshops": [
+      "/img/types/workshops-large-workshops-1.webp",
+      "/img/types/workshops-large-workshops-2.webp",
+      "/img/types/workshops-large-workshops-3.webp"
+    ],
+    "workshops/small-business-shops": [
+      "/img/types/workshops-small-business-shops-1.webp",
+      "/img/types/workshops-small-business-shops-2.webp",
+      "/img/types/workshops-small-business-shops-3.webp"
+    ],
+    "barndominium": [
+      "/img/types/barndominium-1.webp",
+      "/img/types/barndominium-2.webp",
+      "/img/types/barndominium-3.webp"
+    ],
+    "carport-kits": [
+      "/img/types/carport-kits-1.webp",
+      "/img/types/carport-kits-2.webp",
+      "/img/types/carport-kits-3.webp"
+    ],
+    "storage": [
+      "/img/types/storage-1.webp",
+      "/img/types/storage-2.webp",
+      "/img/types/storage-3.webp"
+    ],
+    "large-storage-buildings": [
+      "/img/types/large-storage-buildings-1.webp",
+      "/img/types/large-storage-buildings-2.webp",
+      "/img/types/large-storage-buildings-3.webp"
+    ],
+    "container-covers": [
+      "/img/types/container-covers-1.webp",
+      "/img/types/container-covers-2.webp"
+    ],
+    "quonset-buildings": [
+      "/img/types/quonset-buildings-1.webp",
+      "/img/types/quonset-buildings-2.webp",
+      "/img/types/quonset-buildings-3.webp"
+    ],
+    "straight-wall": [
+      "/img/types/straight-wall-1.webp",
+      "/img/types/straight-wall-2.webp",
+      "/img/types/straight-wall-3.webp"
+    ],
+    "roofing-systems": [
+      "/img/types/roofing-systems-1.webp",
+      "/img/types/roofing-systems-2.webp",
+      "/img/types/roofing-systems-3.webp"
+    ],
+    "agricultural-and-farm": [
+      "/img/types/agricultural-and-farm-1.webp",
+      "/img/types/agricultural-and-farm-2.webp",
+      "/img/types/agricultural-and-farm-3.webp"
+    ],
+    "commercial": [
+      "/img/types/commercial-1.webp",
+      "/img/types/commercial-2.webp",
+      "/img/types/commercial-3.webp"
+    ],
+    "warehouses": [
+      "/img/types/warehouses-1.webp",
+      "/img/types/warehouses-2.webp",
+      "/img/types/warehouses-3.webp"
+    ],
+    "manufacturing-facilities": [
+      "/img/types/manufacturing-facilities-1.webp",
+      "/img/types/manufacturing-facilities-2.webp",
+      "/img/types/manufacturing-facilities-3.webp"
+    ],
+    "aviation": [
+      "/img/types/aviation-1.webp",
+      "/img/types/aviation-2.webp",
+      "/img/types/aviation-3.webp"
+    ],
+    "arenas-recreational": [
+      "/img/types/arenas-recreational-1.webp",
+      "/img/types/arenas-recreational-2.webp",
+      "/img/types/arenas-recreational-3.webp"
+    ],
+    "churches": [
+      "/img/types/churches-1.webp",
+      "/img/types/churches-2.webp",
+      "/img/types/churches-3.webp"
+    ],
+    "energy-oil-gas": [
+      "/img/types/energy-oil-gas-1.webp",
+      "/img/types/energy-oil-gas-2.webp"
+    ],
+    "marijuana": [
+      "/img/types/marijuana-1.webp",
+      "/img/types/marijuana-2.webp"
+    ]
   },
-  "plans": {
-   "001": "/img/portable/plans/001.webp",
-   "002": "/img/portable/plans/002.webp",
-   "140": "/img/portable/plans/140.webp",
-   "800": "/img/portable/plans/800.webp",
-   "801": "/img/portable/plans/801.webp",
-   "804": "/img/portable/plans/804.webp",
-   "805": "/img/portable/plans/805.webp",
-   "806": "/img/portable/plans/806.webp",
-   "807": "/img/portable/plans/807.webp",
-   "809": "/img/portable/plans/809.webp",
-   "810": "/img/portable/plans/810.webp",
-   "811": "/img/portable/plans/811.webp",
-   "812": "/img/portable/plans/812.webp",
-   "813": "/img/portable/plans/813.webp",
-   "814": "/img/portable/plans/814.webp",
-   "815": "/img/portable/plans/815.webp",
-   "816": "/img/portable/plans/816.webp",
-   "817": "/img/portable/plans/817.webp",
-   "818": "/img/portable/plans/818.webp",
-   "819": "/img/portable/plans/819.webp",
-   "820": "/img/portable/plans/820.webp",
-   "850": "/img/portable/plans/850.webp"
+  "inventory": {
+    "20-x-40-container-cover": "/img/inventory/20-x-40-container-cover.webp",
+    "25-x-40-container-cover": "/img/inventory/25-x-40-container-cover.webp",
+    "30-x-40-container-cover": "/img/inventory/30-x-40-container-cover.webp",
+    "35-x-40-container-cover": "/img/inventory/35-x-40-container-cover.webp",
+    "40-x-40-container-cover": "/img/inventory/40-x-40-container-cover.webp",
+    "t-60-x-16-x-80": "/img/inventory/t-60-x-16-x-80.webp",
+    "t-60-x-20-x-120": "/img/inventory/t-60-x-20-x-120.webp",
+    "t-70-x-18-x-100": "/img/inventory/t-70-x-18-x-100.webp",
+    "t-100-x-18-x-200": "/img/inventory/t-100-x-18-x-200.webp",
+    "30x62-barndo-shell": "/img/inventory/30x62-barndo-shell.webp",
+    "40-x-80-equipment-shed": "/img/inventory/40-x-80-equipment-shed.webp",
+    "40-x-60-steel-building-industrial-agricultural": "/img/inventory/40-x-60-steel-building-industrial-agricultural.webp",
+    "30-x-40-workshop-building": "/img/inventory/30-x-40-workshop-building.webp",
+    "30-x-30-two-car-garage": "/img/inventory/30-x-30-two-car-garage.webp",
+    "20-x-30-one-car-garage-workshop": "/img/inventory/20-x-30-one-car-garage-workshop.webp",
+    "20-x-20-small-garage": "/img/inventory/20-x-20-small-garage.webp",
+    "20-x-24-backyard-garage": "/img/inventory/20-x-24-backyard-garage.webp",
+    "s-12-x-11-x-12": "/img/inventory/s-12-x-11-x-12.webp",
+    "a-20-x-13-x-30": "/img/inventory/a-20-x-13-x-30.webp",
+    "x-22-x-17-x-32": "/img/inventory/x-22-x-17-x-32.webp",
+    "x-22-x-17-x-44": "/img/inventory/x-22-x-17-x-44.webp",
+    "x-30-x-19-x-40": "/img/inventory/x-30-x-19-x-40.webp",
+    "x-30-x-19-x-60": "/img/inventory/x-30-x-19-x-60.webp",
+    "r-20-x-7-x-20": "/img/inventory/r-20-x-7-x-20.webp",
+    "r-20-x-7-x-40": "/img/inventory/r-20-x-7-x-40.webp",
+    "r-25-x-9-x-40": "/img/inventory/r-25-x-9-x-40.webp",
+    "t-40-x-16-x-40": "/img/inventory/t-40-x-16-x-40.webp",
+    "t-60-x-16-x-80-quebec": "/img/inventory/t-60-x-16-x-80-quebec.webp",
+    "t-50-x-20-x-100": "/img/inventory/t-50-x-20-x-100.webp",
+    "28-x-40-container-cover": "/img/inventory/28-x-40-container-cover.webp",
+    "40-x-60-industrial-use": "/img/inventory/40-x-60-industrial-use.webp",
+    "30-x-60-ultra-shop": "/img/inventory/30-x-60-ultra-shop.webp",
+    "36-x-26-workshop": "/img/inventory/36-x-26-workshop.webp",
+    "32-x-40-container-cover": "/img/inventory/32-x-40-container-cover.webp",
+    "16-x-20-shed-with-leanto": "/img/inventory/16-x-20-shed-with-leanto.webp",
+    "16-x-18-gambrel-shed": "/img/inventory/16-x-18-gambrel-shed.webp",
+    "a-model-25-x-13-x-34": "/img/inventory/a-model-25-x-13-x-34.webp",
+    "a-model-20-x-12-x-24": "/img/inventory/a-model-20-x-12-x-24.webp",
+    "a-model-17-x-12-x-20": "/img/inventory/a-model-17-x-12-x-20.webp",
+    "a-model-25-x-13-x-24": "/img/inventory/a-model-25-x-13-x-24.webp",
+    "c-model-12-x-8-x-18": "/img/inventory/c-model-12-x-8-x-18.webp",
+    "a-model-30-x-18-x-50": "/img/inventory/a-model-30-x-18-x-50.webp",
+    "r-model-20-x-7-x-20": "/img/inventory/r-model-20-x-7-x-20.webp",
+    "a-model-20-x-12-x-26": "/img/inventory/a-model-20-x-12-x-26.webp",
+    "x-model-35-x-20-x-60-package": "/img/inventory/x-model-35-x-20-x-60-package.webp",
+    "r-model-25-x-9-x-40": "/img/inventory/r-model-25-x-9-x-40.webp",
+    "x-model-41-x-21-x-80-package": "/img/inventory/x-model-41-x-21-x-80-package.webp",
+    "s-model-34-x-18-x-50-package": "/img/inventory/s-model-34-x-18-x-50-package.webp",
+    "b-model-20-x-30": "/img/inventory/b-model-20-x-30.webp",
+    "b-model-30-x-40": "/img/inventory/b-model-30-x-40.webp",
+    "b-model-40-x-60": "/img/inventory/b-model-40-x-60.webp"
   },
-  "details": [
-   "/img/portable/details/1.webp",
-   "/img/portable/details/10.webp",
-   "/img/portable/details/4.webp",
-   "/img/portable/details/7.webp"
-  ],
-  "colors": "/img/portable/colors.webp"
- }
+  "hero": "/img/types/barndominium-1.webp",
+  "options": {
+    "arch-insulation": "/img/options/arch-insulation.webp",
+    "arch-man-doors": "/img/options/arch-man-doors.webp",
+    "arch-overhead-doors": "/img/options/arch-overhead-doors.webp",
+    "arch-skylights": "/img/options/arch-skylights.webp",
+    "arch-sliding-doors": "/img/options/arch-sliding-doors.webp",
+    "arch-turbine-vents": "/img/options/arch-turbine-vents.webp",
+    "straight-wall-color-my-building": "/img/options/straight-wall-color-my-building.webp",
+    "straight-wall-wall-accessories": "/img/options/straight-wall-wall-accessories.webp"
+  },
+  "portable": {
+    "products": {
+      "barn": [
+        "/img/portable/barn-1.webp",
+        "/img/portable/barn-2.webp",
+        "/img/portable/barn-3.webp",
+        "/img/portable/barn-4.webp",
+        "/img/portable/barn-5.webp",
+        "/img/portable/barn-6.webp"
+      ],
+      "barn-cabin": [
+        "/img/portable/barn-cabin-1.webp",
+        "/img/portable/barn-cabin-2.webp",
+        "/img/portable/barn-cabin-3.webp",
+        "/img/portable/barn-cabin-4.webp"
+      ],
+      "barn-garage": [
+        "/img/portable/barn-garage-1.webp",
+        "/img/portable/barn-garage-2.webp",
+        "/img/portable/barn-garage-3.webp",
+        "/img/portable/barn-garage-4.webp",
+        "/img/portable/barn-garage-5.webp"
+      ],
+      "barn-handyman": [
+        "/img/portable/barn-handyman-1.webp",
+        "/img/portable/barn-handyman-2.webp",
+        "/img/portable/barn-handyman-3.webp",
+        "/img/portable/barn-handyman-4.webp"
+      ],
+      "chicken-coop": [
+        "/img/portable/chicken-coop-1.webp",
+        "/img/portable/chicken-coop-2.webp",
+        "/img/portable/chicken-coop-3.webp",
+        "/img/portable/chicken-coop-4.webp",
+        "/img/portable/chicken-coop-5.webp"
+      ],
+      "cottage-shed": [
+        "/img/portable/cottage-shed-1.webp",
+        "/img/portable/cottage-shed-2.webp",
+        "/img/portable/cottage-shed-3.webp"
+      ],
+      "cottage-shed-tall": [
+        "/img/portable/cottage-shed-tall-1.webp",
+        "/img/portable/cottage-shed-tall-2.webp",
+        "/img/portable/cottage-shed-tall-3.webp",
+        "/img/portable/cottage-shed-tall-4.webp",
+        "/img/portable/cottage-shed-tall-5.webp"
+      ],
+      "greenhouse": [
+        "/img/portable/greenhouse-1.webp",
+        "/img/portable/greenhouse-2.webp",
+        "/img/portable/greenhouse-3.webp",
+        "/img/portable/greenhouse-4.webp",
+        "/img/portable/greenhouse-5.webp"
+      ],
+      "k9-condo": [
+        "/img/portable/k9-condo-1.webp",
+        "/img/portable/k9-condo-2.webp",
+        "/img/portable/k9-condo-3.webp",
+        "/img/portable/k9-condo-4.webp"
+      ],
+      "playhouse": [
+        "/img/portable/playhouse-1.webp",
+        "/img/portable/playhouse-2.webp",
+        "/img/portable/playhouse-3.webp",
+        "/img/portable/playhouse-4.webp"
+      ],
+      "slim-shed": [
+        "/img/portable/slim-shed-1.webp",
+        "/img/portable/slim-shed-2.webp",
+        "/img/portable/slim-shed-3.webp",
+        "/img/portable/slim-shed-4.webp",
+        "/img/portable/slim-shed-5.webp"
+      ],
+      "tool-shed": [
+        "/img/portable/tool-shed-1.webp",
+        "/img/portable/tool-shed-2.webp",
+        "/img/portable/tool-shed-3.webp"
+      ],
+      "tool-shed-tall": [
+        "/img/portable/tool-shed-tall-1.webp",
+        "/img/portable/tool-shed-tall-2.webp",
+        "/img/portable/tool-shed-tall-3.webp"
+      ],
+      "utility-cabin": [
+        "/img/portable/utility-cabin-1.webp",
+        "/img/portable/utility-cabin-2.webp",
+        "/img/portable/utility-cabin-3.webp"
+      ],
+      "utility-garage": [
+        "/img/portable/utility-garage-1.webp",
+        "/img/portable/utility-garage-2.webp",
+        "/img/portable/utility-garage-3.webp",
+        "/img/portable/utility-garage-4.webp",
+        "/img/portable/utility-garage-5.webp",
+        "/img/portable/utility-garage-6.webp"
+      ],
+      "utility-handyman": [
+        "/img/portable/utility-handyman-1.webp",
+        "/img/portable/utility-handyman-2.webp",
+        "/img/portable/utility-handyman-3.webp",
+        "/img/portable/utility-handyman-4.webp"
+      ]
+    },
+    "plans": {
+      "140": "/img/portable/plans/140.webp",
+      "800": "/img/portable/plans/800.webp",
+      "801": "/img/portable/plans/801.webp",
+      "804": "/img/portable/plans/804.webp",
+      "805": "/img/portable/plans/805.webp",
+      "806": "/img/portable/plans/806.webp",
+      "807": "/img/portable/plans/807.webp",
+      "809": "/img/portable/plans/809.webp",
+      "810": "/img/portable/plans/810.webp",
+      "811": "/img/portable/plans/811.webp",
+      "812": "/img/portable/plans/812.webp",
+      "813": "/img/portable/plans/813.webp",
+      "814": "/img/portable/plans/814.webp",
+      "815": "/img/portable/plans/815.webp",
+      "816": "/img/portable/plans/816.webp",
+      "817": "/img/portable/plans/817.webp",
+      "818": "/img/portable/plans/818.webp",
+      "819": "/img/portable/plans/819.webp",
+      "820": "/img/portable/plans/820.webp",
+      "850": "/img/portable/plans/850.webp",
+      "001": "/img/portable/plans/001.webp",
+      "002": "/img/portable/plans/002.webp"
+    },
+    "details": [
+      "/img/portable/details/1.webp",
+      "/img/portable/details/10.webp",
+      "/img/portable/details/4.webp",
+      "/img/portable/details/7.webp"
+    ],
+    "colors": "/img/portable/colors.webp"
+  }
 }

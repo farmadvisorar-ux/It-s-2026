@@ -272,8 +272,8 @@ const pbProducts = (pb as any).products;
 <script>
   // Prefill from query string: /quote/?building=garages&model=S&kit=slug
   const params = new URLSearchParams(location.search);
-  const setIf = (id, val) => {
-    const el = document.getElementById(id);
+  const setIf = (id: string, val: string | null) => {
+    const el = document.getElementById(id) as HTMLInputElement | null;
     if (el && val) el.value = val;
   };
   setIf('building', params.get('building'));
@@ -281,16 +281,16 @@ const pbProducts = (pb as any).products;
   setIf('line', params.get('line'));
 
   // portable-building deep links arrive as ?line=portable&model=<slug>
-  const lineSel = document.getElementById('line');
+  const lineSel = document.getElementById('line') as HTMLSelectElement | null;
   const pbField = document.getElementById('pb-field');
   const steelFields = document.getElementById('steel-fields');
-  const pbModel = document.getElementById('pb_model');
+  const pbModel = document.getElementById('pb_model') as HTMLSelectElement | null;
 
   if (params.get('line') === 'portable') {
     const slug = params.get('model');
     if (slug && pbModel && [...pbModel.options].some((o) => o.value === slug)) {
       pbModel.value = slug;
-      const m = document.getElementById('model');
+      const m = document.getElementById('model') as HTMLSelectElement | null;
       if (m) m.value = '';
     }
   }
@@ -305,9 +305,13 @@ const pbProducts = (pb as any).products;
 
   const kit = params.get('kit');
   const opt = params.get('option');
-  const notes = document.getElementById('notes');
-  if (notes && (kit || opt)) {
+  const build = params.get('build');
+  const notes = document.getElementById('notes') as HTMLTextAreaElement | null;
+  if (notes && (kit || opt || build)) {
     const bits = [];
+    // A spec handed over by the 3D designer — carried through verbatim so the
+    // customer does not have to retype what they just configured.
+    if (build) bits.push(build);
     if (kit) bits.push(`Interested in clearance kit: ${kit}`);
     if (opt) bits.push(`Please include pricing for: ${opt.replace(/-/g, ' ')}`);
     notes.value = bits.join('\n');
