@@ -92,9 +92,15 @@ export class BuildingScene {
 
     this.onResize = this.onResize.bind(this);
     addEventListener('resize', this.onResize);
+    if (typeof ResizeObserver !== 'undefined') {
+      this.ro = new ResizeObserver(() => this.onResize());
+      this.ro.observe(this.host);
+    }
     this.onResize();
     this.tick();
   }
+
+  private ro?: ResizeObserver;
 
   private addLighting() {
     this.scene.add(new THREE.HemisphereLight(0xffffff, 0x9a8f80, 2.0));
@@ -477,6 +483,7 @@ export class BuildingScene {
   dispose() {
     cancelAnimationFrame(this.raf);
     removeEventListener('resize', this.onResize);
+    this.ro?.disconnect();
     this.clear();
     this.controls.dispose();
     this.renderer.dispose();

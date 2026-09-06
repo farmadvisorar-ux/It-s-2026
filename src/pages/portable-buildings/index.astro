@@ -416,6 +416,36 @@ const details = detailImages();
     margin: 0.5rem 0 0;
   }
 
+  @media (max-width: 768px) {
+    .search-section {
+      position: sticky;
+      top: 68px;
+      z-index: 20;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      background: color-mix(in srgb, var(--bg-sunken) 92%, transparent);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      padding-block: 0.75rem;
+    }
+    .cat-filter-chips {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding-bottom: 2px;
+      margin-inline: calc(var(--gutter) * -1);
+      padding-inline: var(--gutter);
+    }
+    .cat-filter-chips::-webkit-scrollbar { display: none; }
+    .filter-chip {
+      flex-shrink: 0;
+      white-space: nowrap;
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+    }
+  }
+
   .card__footer {
     display: flex;
     justify-content: space-between;
