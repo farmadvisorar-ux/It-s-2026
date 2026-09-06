@@ -9,7 +9,9 @@
     "preview": "astro preview",
     "check": "astro check",
     "check:meta": "node scripts/check-meta.mjs",
-    "make:icons": "node scripts/make-icons.mjs"
+    "make:icons": "node scripts/make-icons.mjs",
+    "check:lead-finder": "tsc -p lead-finder/tsconfig.json && node lead-finder/check.mjs",
+    "demo:lead-finder": "tsc -p lead-finder/tsconfig.demo.json && printf '{\"type\":\"commonjs\"}' > .lead-finder-build/package.json && node .lead-finder-build/demo.js"
   },
   "dependencies": {
     "astro": "^4.16.18",

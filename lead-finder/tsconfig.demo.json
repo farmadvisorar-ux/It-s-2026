@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "noEmit": false,
+    "isolatedModules": false,
+    "outDir": "../.lead-finder-build"
+  },
+  "include": [
+    "src/**/*.ts",
+    "demo.ts"
+  ]
+}
