@@ -1,0 +1,1 @@
+import"./hoisted.Djk_Vy7_.js";const e=document.getElementById("mobile-quote-bar"),t=document.querySelector(".head");e&&t&&new IntersectionObserver(([s])=>{e.classList.toggle("is-visible",!s.isIntersecting)},{threshold:.1}).observe(t);
