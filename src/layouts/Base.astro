@@ -156,6 +156,22 @@ const localBusiness = {
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    {/* GitHub Pages serves no custom response headers and has no API to add
+        them, so the policy ships in the markup instead. A meta CSP covers the
+        fetch directives below; frame-ancestors, report-uri and sandbox are
+        header-only and are silently ignored here — clickjacking therefore
+        stays uncovered until the site sits behind a CDN that can set real
+        headers. See SECURITY.md.
+
+        'unsafe-inline' is load-bearing in script-src: the HTTPS upgrade above,
+        the JSON-LD blocks and the ad embed are all inline, and Pages cannot
+        mint a per-response nonce. form-action MUST keep formspree.io — both
+        lead forms post there, and dropping it silently breaks every enquiry. */}
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://sikads.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https://sikads.com; frame-src https://sikads.com; form-action 'self' https://formspree.io; base-uri 'self'; object-src 'none'"
+    />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
     {/* Stopgap while "Enforce HTTPS" is unticked in Settings → Pages. Until it
         is, GitHub serves this domain over plain HTTP as well as HTTPS, and
         there is no API to set it. This upgrades the visitor on arrival.

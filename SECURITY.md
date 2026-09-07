@@ -1,142 +1,117 @@
-# Security Vulnerabilities Fixed
+# Security headers
 
-This document outlines the security vulnerabilities that were identified and fixed in this project.
+## What this document covers
 
-## Overview
+A header scan produced six findings. Two are fixed here, two cannot be fixed on
+the current host, and two do not apply to this site at all. The split matters:
+treating all six as "done" would leave real gaps behind a green checkmark.
 
-A security audit identified 6 vulnerabilities across 2 severity levels:
-- **High (2)**: Missing CSP header, XSRF-TOKEN cookie missing HttpOnly flag
-- **Low (1)**: XSRF-TOKEN cookie missing SameSite attribute
-- **Info (3)**: Missing Referrer-Policy, Permissions-Policy, Cross-Origin-Opener-Policy headers
+## The constraint that shapes everything below
 
-## Fixes Applied
+This site is static Astro published to **GitHub Pages** by
+`.github/workflows/deploy.yml`. GitHub Pages serves a fixed set of response
+headers and offers no mechanism to add more — no `_headers` file, no config, no
+API. A `vercel.json`, a `netlify.toml`, or an Astro middleware would all be
+inert files in this repository, because nothing that reads them is in the
+serving path.
 
-### 1. Content-Security-Policy (CSP) Header - HIGH
+What remains available is the `<meta http-equiv>` equivalent of a header, which
+the browser applies when parsing the document. That covers some directives and
+not others.
 
-**Vulnerability**: If an attacker manages to inject a script into your page (through a compromised widget, vulnerable plugin, or comment field), there's nothing stopping it from stealing visitor data.
+## Fixed (2 of 6)
 
-**Fix Applied**: Added comprehensive CSP header via `vercel.json`
+Both are set in `src/layouts/Base.astro`, which every page renders through
+(directly, or via `Article.astro`).
+
+### Content-Security-Policy — was High
+
 ```
-Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' cdn.jsdelivr.net cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' fonts.googleapis.com; font-src 'self' fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:; frame-ancestors 'none'; base-uri 'self'; form-action 'self'
+default-src 'self';
+script-src 'self' 'unsafe-inline' https://sikads.com;
+style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+font-src 'self' https://fonts.gstatic.com;
+img-src 'self' data: https:;
+connect-src 'self' https://sikads.com;
+frame-src https://sikads.com;
+form-action 'self' https://formspree.io;
+base-uri 'self';
+object-src 'none'
 ```
 
-**Impact**: Scripts can only execute from approved sources. Injected scripts are blocked.
+Two parts of this are load-bearing and should not be "tidied":
 
-### 2. Referrer-Policy Header - INFO
+- **`'unsafe-inline'` in `script-src` is required.** The HTTPS-upgrade snippet,
+  both JSON-LD blocks, and the ad embed are all inline `<script is:inline>`.
+  A static build on Pages cannot mint a per-response nonce, so the alternative
+  is per-script SHA-256 hashes that must be regenerated on every content
+  change. This weakens the policy against injected inline script — it is the
+  honest cost of the current host, not an oversight.
+- **`form-action` must keep `https://formspree.io`.** Both the quote and
+  contact forms post there. Narrowing this to `'self'` breaks every enquiry
+  silently — the page still renders, the submit still appears to work, and the
+  lead is dropped. The deploy workflow already guards the related failure mode
+  because it shipped live once.
 
-**Vulnerability**: Page URLs containing sensitive information (password reset tokens, private search terms) could leak to third-party sites through the Referer header.
+`frame-ancestors` is **not** in the policy above. It is one of the directives a
+`<meta>` CSP cannot express — see below.
 
-**Fix Applied**: Set to `strict-origin-when-cross-origin`
-- Sends full URL only for same-origin requests
-- Sends only origin for cross-origin requests
-- No referrer for less secure contexts
+### Referrer-Policy — was Info
 
-### 3. Permissions-Policy Header - INFO
+`<meta name="referrer" content="strict-origin-when-cross-origin">`. Full URL on
+same-origin navigation, origin only cross-origin, nothing when leaving HTTPS.
 
-**Vulnerability**: Third-party scripts (ads, widgets) could request access to camera, microphone, location, or payment methods without user knowledge.
+## Cannot be fixed on GitHub Pages (2 of 6)
 
-**Fix Applied**: Disabled high-risk features via `Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()`
+These are header-only. No markup equivalent exists, so they remain open.
 
-**Impact**: Malicious or compromised third-party code cannot access sensitive device features.
+| Finding | Why it can't ship here |
+| --- | --- |
+| **Permissions-Policy** | No `<meta>` equivalent. Header only. |
+| **Cross-Origin-Opener-Policy** | No `<meta>` equivalent. Header only. |
 
-### 4. Cross-Origin-Opener-Policy Header - INFO
+`frame-ancestors` is in the same category, and is why **clickjacking is not
+covered** despite CSP being present — a meta CSP silently drops it, and
+`X-Frame-Options` is also header-only.
 
-**Vulnerability**: A page opened via link could maintain a hidden handle back to the original tab, enabling "tabnabbing" attacks and cross-window exploits.
+Closing these three requires a host or CDN that can set response headers —
+Cloudflare (free tier, Transform Rules), Netlify (`_headers`), or Vercel
+(`vercel.json`). That is a deployment change, not a code change, and it is the
+single highest-value follow-up in this document. The DNS already points at a
+custom domain, so putting Cloudflare in front is the smallest version of it.
 
-**Fix Applied**: Set to `same-origin`
+Also unticked: **Settings → Pages → Enforce HTTPS**. Until that box is checked,
+the inline upgrade snippet in `Base.astro` is doing a job the platform should
+do, and the first request still leaves in cleartext. HSTS is likewise a header
+and cannot be set from here.
 
-**Impact**: Opened pages cannot communicate with the original tab.
+## Not applicable to this repository (2 of 6)
 
-### 5. XSRF-TOKEN Cookie - HttpOnly Flag - HIGH
+Both `XSRF-TOKEN` findings — the missing `HttpOnly` flag (High) and the missing
+`SameSite` attribute (Low) — describe a cookie **this site never sets**.
+`XSRF-TOKEN` is the Laravel/Angular CSRF convention; this is a static Astro
+build with no server, no session, and no cookie-setting code (`grep -r
+"XSRF-TOKEN" src/` returns nothing).
 
-**Vulnerability**: An injected script could read the XSRF-TOKEN cookie directly and impersonate logged-in users. This is the first target of any XSS attack.
+These findings belong to whichever backend actually issued that cookie during
+the scan. They are fixed where that cookie is set, by adding the flags to the
+framework's cookie config — not in this repository. Adding middleware here to
+rewrite a cookie that never exists would be dead code that reads as coverage.
 
-**Fix Applied**:
-- Added Astro middleware in `src/middleware.ts` to enforce HttpOnly flag
-- Configured Vercel adapter for server-side rendering capability
-- Middleware intercepts all responses and ensures XSRF-TOKEN cookies include HttpOnly flag
+The form endpoint in use is Formspree, which is third-party; its cookie and
+header posture is theirs to set, not ours.
 
-**Impact**: JavaScript cannot access the cookie, even if injected. Server-side validation only.
+## Verifying
 
-### 6. XSRF-TOKEN Cookie - SameSite Attribute - LOW
-
-**Vulnerability**: A malicious page in another browser tab could trick the browser into sending this cookie with a forged request, performing unauthorized actions.
-
-**Fix Applied**: Middleware sets `SameSite=Strict` on XSRF-TOKEN cookies
-
-**Impact**: Cookie only sent with requests initiated from this site, not cross-site requests.
-
-## Configuration Files
-
-### `vercel.json`
-- Defines all security headers for all routes
-- Applied at the CDN/edge level before responses reach clients
-- Zero performance impact
-
-### `src/middleware.ts`
-- Astro middleware that enhances cookie security
-- Runs server-side during request processing
-- Ensures HttpOnly and SameSite flags on XSRF-TOKEN cookies
-
-### `astro.config.mjs`
-- Updated to use `output: 'hybrid'` with Vercel adapter
-- Enables server-side rendering for proper cookie handling
-- Static pages remain static; only necessary pages use SSR
-
-## Additional Security Headers Added
-
-Beyond the 6 vulnerabilities, we also added:
-
-- **X-Content-Type-Options**: Prevents MIME-type sniffing attacks
-- **X-Frame-Options**: Prevents clickjacking by blocking framing
-- **X-XSS-Protection**: Legacy XSS protection for older browsers
-- **Strict-Transport-Security**: Forces HTTPS connections
-
-## Testing Security Headers
-
-To verify headers are properly set:
+Meta-tag policies do not appear in `curl -I`. Check them in the document, and
+check enforcement in the browser:
 
 ```bash
-# For local development
-npm run dev
-# Then in another terminal:
-curl -I http://localhost:3000/
-
-# For production (after deployment)
-curl -I https://yourdomain.com/
+npm run build
+grep -o 'http-equiv="Content-Security-Policy"[^>]*' dist/index.html
 ```
 
-Look for all the security headers in the response.
-
-## External API Endpoints
-
-If your form endpoints (quote, contact) are handled by external services:
-
-1. **Your Backend**: Ensure it also sets HttpOnly and SameSite on any XSRF-TOKEN cookies
-2. **Third-Party Services**: Ask the provider to set proper cookie security flags
-3. **Verification**: Test cookie attributes using browser DevTools (Application → Cookies)
-
-## Deployment
-
-When deploying to Vercel:
-
-1. Both `vercel.json` and `src/middleware.ts` are required
-2. The Vercel adapter will auto-detect Astro and apply configuration
-3. Hybrid rendering means:
-   - Static pages: Pre-built and cached at edge
-   - Dynamic pages: Rendered on-demand with SSR capabilities
-
-## Security Best Practices Going Forward
-
-1. **Keep dependencies updated**: Regularly update Astro and packages
-2. **Input validation**: Always validate and sanitize user input
-3. **HTTPS only**: Ensure site is HTTPS-only (Vercel does this automatically)
-4. **Regular audits**: Run security audits regularly to catch new vulnerabilities
-5. **Monitor cookies**: Review any new cookies added to ensure they have proper flags
-
-## References
-
-- [OWASP Content Security Policy](https://cheatsheetseries.owasp.org/cheatsheets/Content_Security_Policy_Cheat_Sheet.html)
-- [MDN Security Headers](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers)
-- [OWASP CSRF Prevention](https://cheatsheetseries.owasp.org/cheatsheets/Cross-Site_Request_Forgery_Prevention_Cheat_Sheet.html)
-- [Astro Security Best Practices](https://docs.astro.build/en/guides/security/)
+In DevTools, the Console reports CSP violations as they happen, and Network →
+Headers shows what the host actually sent. After any change to the ad config,
+the fonts, or the form endpoint, submit both forms and confirm no CSP violation
+is logged — a broken `form-action` fails silently.

@@ -12,7 +12,6 @@
     "make:icons": "node scripts/make-icons.mjs"
   },
   "dependencies": {
-    "@astrojs/vercel": "^7.8.1",
     "astro": "^4.16.18",
     "three": "^0.185.1"
   },
