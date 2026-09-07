@@ -30,7 +30,7 @@ const pbByCat = (slug: string) => (pb as any).products.filter((x: any) => x.cate
 
     <nav id="primary-nav" class="nav" aria-label="Primary">
       <div class="nav__item has-menu">
-        <button class="nav__link" aria-expanded="false">Steel Buildings</button>
+        <a href="/building-types/" class="nav__link">Steel Buildings</a>
         <div class="mega">
           <div class="mega__inner">
             {groups.map((g) => (
@@ -51,7 +51,7 @@ const pbByCat = (slug: string) => (pb as any).products.filter((x: any) => x.cate
         </div>
       </div>
       <div class="nav__item has-menu">
-        <button class="nav__link" aria-expanded="false">Portable Buildings</button>
+        <a href="/portable-buildings/" class="nav__link">Portable Buildings</a>
         <div class="mega">
           <div class="mega__inner mega__inner--pb">
             {pbCats.map((c: any) => (
@@ -169,16 +169,20 @@ const pbByCat = (slug: string) => (pb as any).products.filter((x: any) => x.cate
       display: none;
     }
     .nav[data-open="true"] { display: flex; }
-    .nav__link { padding: 0.75rem 0; border-bottom: 1px solid var(--border); text-align: left; width: 100%; }
-    .nav__cta { margin: 1rem 0 0; justify-content: center; }
-    .nav__tel { padding: 0.75rem 0; border-bottom: 1px solid var(--border); margin-left: 0; }
-    .mega {
-      position: static; transform: none; opacity: 1; visibility: visible;
-      box-shadow: none; border: none; padding: 0.5rem 0 1rem; width: auto; display: none;
+    .nav__link {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.875rem 0;
+      border-bottom: 1px solid var(--border);
+      text-align: left;
+      width: 100%;
+      font-size: 1rem;
+      font-weight: 600;
     }
-    .has-menu[data-open="true"] .mega { display: block; }
-    .mega__inner, .mega__inner--pb { grid-template-columns: 1fr; gap: 1rem; }
-    .mega__col--all { border-left: none; padding-left: 0; }
+    .nav__cta { margin: 1.25rem 0 0; justify-content: center; }
+    .nav__tel { padding: 0.875rem 0; border-bottom: 1px solid var(--border); margin-left: 0; }
+    .mega { display: none !important; }
   }
 </style>
 
@@ -190,15 +194,12 @@ const pbByCat = (slug: string) => (pb as any).products.filter((x: any) => x.cate
     nav?.setAttribute('data-open', String(!open));
     toggle.setAttribute('aria-expanded', String(!open));
   });
-  // mobile: tap "Building Types" to expand rather than navigate
-  document.querySelectorAll('.has-menu > .nav__link').forEach((btn) => {
-    btn.addEventListener('click', (e) => {
-      if (window.innerWidth > 1080) return;
-      e.preventDefault();
-      const item = btn.parentElement as HTMLElement;
-      const open = item.getAttribute('data-open') === 'true';
-      item.setAttribute('data-open', String(!open));
-      btn.setAttribute('aria-expanded', String(!open));
+
+  // Auto-close mobile nav when navigating
+  nav?.querySelectorAll('a').forEach((link) => {
+    link.addEventListener('click', () => {
+      nav?.removeAttribute('data-open');
+      toggle?.setAttribute('aria-expanded', 'false');
     });
   });
 </script>
