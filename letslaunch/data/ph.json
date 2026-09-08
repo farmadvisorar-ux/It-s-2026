@@ -1,0 +1,99 @@
+{
+  "draftly": {
+    "rating": 4.8, "ratingCount": 126, "pricing": "Freemium",
+    "stack": ["Next.js", "OpenAI", "Vercel", "Supabase"],
+    "award": "🥇 #1 Product of the Day",
+    "reviews": [
+      { "author": "Marco P.", "initials": "MP", "rating": 5, "pros": "Voice-to-spec is scary good", "cons": "Wish it had a mobile app", "body": "Used it for my whole backlog last week. Genuinely saved hours.", "daysAgo": 0 },
+      { "author": "Ivy L.", "initials": "IL", "rating": 4, "pros": "Clean output", "cons": "Struggles with heavy accents", "body": "Great for turning rambles into real docs.", "daysAgo": 1 }
+    ]
+  },
+  "cadence": {
+    "rating": 4.6, "ratingCount": 88, "pricing": "Free trial",
+    "stack": ["TypeScript", "GitHub API", "Node", "Postgres"],
+    "reviews": [
+      { "author": "Priya S.", "initials": "PS", "rating": 5, "pros": "Killed our standup meeting", "cons": "Setup took a bit", "body": "The auto-drafts are accurate enough that nobody edits them.", "daysAgo": 2 }
+    ]
+  },
+  "lumina": {
+    "rating": 4.9, "ratingCount": 214, "pricing": "Paid",
+    "stack": ["Python", "Stable Diffusion", "Modal", "React"],
+    "award": "🏆 Product of the Week",
+    "reviews": [
+      { "author": "Sara K.", "initials": "SK", "rating": 5, "pros": "Consistency across shots", "cons": "Pricey for hobbyists", "body": "Others drift, this doesn't. The killer feature.", "daysAgo": 1 },
+      { "author": "Tom W.", "initials": "TW", "rating": 4, "pros": "Fast batches", "cons": "No Shopify plugin yet", "body": "Would love a Shopify plugin!", "daysAgo": 0 }
+    ]
+  },
+  "warmly": {
+    "rating": 4.3, "ratingCount": 61, "pricing": "Paid",
+    "stack": ["Next.js", "OpenAI", "Clearbit", "Vercel"],
+    "reviews": []
+  },
+  "pocketbase-metrics": {
+    "rating": 4.7, "ratingCount": 173, "pricing": "Free",
+    "stack": ["Go", "SQLite", "Docker", "Preact"],
+    "award": "🥈 #2 Product of the Day",
+    "reviews": [
+      { "author": "Raj D.", "initials": "RD", "rating": 5, "pros": "Self-host in minutes", "cons": "Fewer integrations than big players", "body": "Swapped off the big one last month. Zero regrets.", "daysAgo": 1 }
+    ]
+  },
+  "snippet-vault": {
+    "rating": 4.4, "ratingCount": 54, "pricing": "Freemium",
+    "stack": ["Electron", "SQLite", "TypeScript"],
+    "reviews": []
+  },
+  "habitual": {
+    "rating": 4.8, "ratingCount": 142, "pricing": "Freemium",
+    "stack": ["React Native", "Expo", "Supabase"],
+    "award": "🐱 Golden Kitty — Health & Fitness",
+    "reviews": [
+      { "author": "Nina B.", "initials": "NB", "rating": 5, "pros": "The one-habit constraint", "cons": "No web version", "body": "Exactly why it works for me. Calm and focused.", "daysAgo": 2 }
+    ]
+  },
+  "ledgerly": {
+    "rating": 4.5, "ratingCount": 97, "pricing": "Paid",
+    "stack": ["Ruby on Rails", "Plaid", "Postgres", "Stripe"],
+    "award": "🥉 #3 Product of the Day",
+    "reviews": [
+      { "author": "Grace T.", "initials": "GT", "rating": 4, "pros": "Auto-close is real", "cons": "US banks only for now", "body": "Saved my accountant a weekend.", "daysAgo": 3 }
+    ]
+  },
+  "postcraft": {
+    "rating": 4.2, "ratingCount": 70, "pricing": "Freemium",
+    "stack": ["Next.js", "Anthropic", "Vercel"],
+    "reviews": []
+  },
+  "pulse": {
+    "rating": 4.6, "ratingCount": 83, "pricing": "Free trial",
+    "stack": ["Python", "BigQuery", "dbt", "React"],
+    "reviews": []
+  },
+  "nomad-desk": {
+    "rating": 4.1, "ratingCount": 45, "pricing": "Paid",
+    "stack": ["Flutter", "Firebase", "Stripe"],
+    "reviews": []
+  },
+  "chirp": {
+    "rating": 4.7, "ratingCount": 118, "pricing": "Freemium",
+    "stack": ["Next.js", "OpenAI", "Pinecone", "Vercel"],
+    "award": "🏅 Product of the Month — AI",
+    "reviews": [
+      { "author": "Dana L.", "initials": "DL", "rating": 5, "pros": "71% deflection in month one", "cons": "Needs good docs to shine", "body": "Handover to a human is one click. Team loves it.", "daysAgo": 6 }
+    ]
+  },
+  "trackpad": {
+    "rating": 4.3, "ratingCount": 39, "pricing": "Freemium",
+    "stack": ["Vue", "Node", "Postgres"],
+    "reviews": []
+  },
+  "formly": {
+    "rating": 4.5, "ratingCount": 66, "pricing": "Freemium",
+    "stack": ["SvelteKit", "Node", "Stripe", "Vercel"],
+    "reviews": []
+  },
+  "beacon": {
+    "rating": 4.6, "ratingCount": 74, "pricing": "Free trial",
+    "stack": ["Go", "ClickHouse", "React", "Kubernetes"],
+    "reviews": []
+  }
+}

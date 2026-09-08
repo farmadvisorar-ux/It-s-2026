@@ -1,0 +1,17 @@
+[
+  { "id": "c1", "slug": "ai-writing-toolkit", "title": "The AI writing toolkit", "emoji": "✍️", "gp": 0,
+    "description": "Everything you need to go from a rough thought to published, on-brand copy.",
+    "curator": "Ana Ilescu", "initials": "AI", "products": ["draftly", "postcraft", "lumina"] },
+  { "id": "c2", "slug": "indie-hacker-stack", "title": "The indie hacker stack", "emoji": "🛠️", "gp": 4,
+    "description": "Ship, measure and get paid — the tools solo founders actually run their business on.",
+    "curator": "Devon Okoro", "initials": "DO", "products": ["ledgerly", "pocketbase-metrics", "formly", "beacon"] },
+  { "id": "c3", "slug": "remote-team-essentials", "title": "Remote team essentials", "emoji": "🌍", "gp": 6,
+    "description": "Keep an async team aligned, supported and shipping without the meeting overload.",
+    "curator": "Kayla Brooks", "initials": "KB", "products": ["cadence", "chirp", "trackpad", "nomad-desk"] },
+  { "id": "c4", "slug": "founder-growth-kit", "title": "Founder growth kit", "emoji": "📈", "gp": 9,
+    "description": "Find your first users and understand what's actually working.",
+    "curator": "Sam Whitfield", "initials": "SW", "products": ["warmly", "pulse", "postcraft"] },
+  { "id": "c5", "slug": "calm-productivity", "title": "Calm productivity", "emoji": "🌱", "gp": 3,
+    "description": "Do more of what matters without the burnout — focused, gentle tools.",
+    "curator": "Mira Adeyemi", "initials": "MA", "products": ["habitual", "snippet-vault", "draftly"] }
+]

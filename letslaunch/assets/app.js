@@ -1,17 +1,14 @@
-/* Launchboard SPA.
+/* Launchboard SPA — BetaList + Product Hunt feature set.
  * Same-origin only: HTML/CSS/JS from /assets, data from /data/*.json, writes to
  * /api/* — so the strict CSP (default-src 'self') never has to be loosened.
- * No inline scripts, no inline styles, no inline handlers: all behaviour is here
- * and wired through event delegation, all theming through CSS classes. */
+ * No inline scripts, styles or handlers: behaviour is here, theming is via CSS
+ * classes, everything is wired through event delegation. */
 (function () {
   "use strict";
 
   var app = document.getElementById("app");
-  var STARTUPS = [];
-  var JOBS = [];
-  var csrfToken = null;
-  var lastPath = null;
-  var homeReady = false;
+  var STARTUPS = [], JOBS = [], COLLECTIONS = [], DISCUSSIONS = [], PH = {};
+  var csrfToken = null, lastPath = null;
 
   /* ---------------- utilities ---------------- */
   function esc(s) {
@@ -20,34 +17,36 @@
     });
   }
   function gp(n) { return "gp-" + (((n | 0) % 10) + 10) % 10; }
-
-  function store(key, fallback) {
-    try { var v = localStorage.getItem(key); return v == null ? fallback : JSON.parse(v); }
-    catch (e) { return fallback; }
-  }
+  function store(key, fb) { try { var v = localStorage.getItem(key); return v == null ? fb : JSON.parse(v); } catch (e) { return fb; } }
   function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
+  function makerId(name) { return String(name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
 
   var wants = new Set(store("lb-wants", []));
   var votes = new Set(store("lb-votes", []));
   var bookmarks = new Set(store("lb-bookmarks", []));
   var localComments = store("lb-comments", {});
+  var userReviews = store("lb-reviews", {});
+  var followMakers = new Set(store("lb-follow-makers", []));
+  var followTopics = new Set(store("lb-follow-topics", []));
+  var discVotes = new Set(store("lb-disc-votes", []));
+  var discReplies = store("lb-disc-replies", {});
+  var savedCollections = new Set(store("lb-collections", []));
+  var userDiscussions = store("lb-disc-new", []);
 
-  function toggleSet(set, key, slug) {
-    if (set.has(slug)) set.delete(slug); else set.add(slug);
-    save(key, Array.prototype.slice.call(set));
-  }
-
+  function toggleSet(set, key, id) { if (set.has(id)) set.delete(id); else set.add(id); save(key, Array.prototype.slice.call(set)); }
   function bySlug(slug) { for (var i = 0; i < STARTUPS.length; i++) if (STARTUPS[i].slug === slug) return STARTUPS[i]; return null; }
   function wantCount(s) { return s.subscribers + (wants.has(s.slug) ? 1 : 0); }
   function voteCount(s) { return s.upvotes + (votes.has(s.slug) ? 1 : 0); }
+  function points(s) { return voteCount(s) + wantCount(s); }
   function commentsFor(s) { return (s.comments || []).concat(localComments[s.slug] || []); }
+  function reviewsFor(s) { return (s.reviews || []).concat(userReviews[s.slug] || []); }
+  function ratingCount(s) { return (s.ratingCount || 0) + (userReviews[s.slug] || []).length; }
 
   var DAY = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-  function dateLabel(daysAgo) {
-    if (daysAgo <= 0) return "Today";
-    if (daysAgo === 1) return "Yesterday";
-    if (daysAgo <= 6) { var d = new Date(); d.setDate(d.getDate() - daysAgo); return DAY[d.getDay()]; }
-    return daysAgo + " days ago";
+  function dateLabel(d) {
+    if (d <= 0) return "Today"; if (d === 1) return "Yesterday";
+    if (d <= 6) { var x = new Date(); x.setDate(x.getDate() - d); return DAY[x.getDay()]; }
+    return d + " days ago";
   }
   function emojiFor(cat) {
     var m = { "AI Assistant": "🤖", "AI Tools": "✨", "Developer Tools": "🛠️", "Analytics": "📊",
@@ -55,15 +54,29 @@
       "Habit Tracking": "🌱", "Image Generation": "🎨", "Tracking": "📍", "Productivity": "⚡" };
     return m[cat] || "🚀";
   }
+  function stars(r) {
+    r = Math.round(r || 0);
+    var out = "";
+    for (var i = 1; i <= 5; i++) out += (i <= r ? "★" : "☆");
+    return '<span class="stars" aria-hidden="true">' + out + "</span>";
+  }
+  function medal(rank) { return rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : String(rank); }
 
   /* ---------------- data ---------------- */
+  function fetchJSON(u) { return fetch(u, { cache: "no-cache" }).then(function (r) { return r.json(); }); }
   function fetchData() {
     return Promise.all([
-      fetch("/data/startups.json", { cache: "no-cache" }).then(function (r) { return r.json(); }),
-      fetch("/data/jobs.json", { cache: "no-cache" }).then(function (r) { return r.json(); })
-    ]).then(function (res) { STARTUPS = res[0] || []; JOBS = res[1] || []; });
+      fetchJSON("/data/startups.json"), fetchJSON("/data/jobs.json"),
+      fetchJSON("/data/ph.json"), fetchJSON("/data/collections.json"), fetchJSON("/data/discussions.json")
+    ]).then(function (res) {
+      STARTUPS = res[0] || []; JOBS = res[1] || []; PH = res[2] || {}; COLLECTIONS = res[3] || []; DISCUSSIONS = res[4] || [];
+      STARTUPS.forEach(function (s) {
+        var x = PH[s.slug] || {};
+        s.rating = x.rating || 0; s.ratingCount = x.ratingCount || 0; s.stack = x.stack || [];
+        s.pricing = x.pricing || ""; s.award = x.award || ""; s.reviews = x.reviews || [];
+      });
+    });
   }
-
   function ensureCsrf() {
     if (csrfToken) return Promise.resolve(csrfToken);
     return fetch("/api/csrf", { method: "GET", credentials: "same-origin", cache: "no-store" })
@@ -71,6 +84,19 @@
       .then(function (d) { if (d && d.csrfToken) csrfToken = d.csrfToken; return csrfToken; })
       .catch(function () { return null; });
   }
+
+  /* ---------------- makers ---------------- */
+  function makersList() {
+    var map = {}, order = [];
+    STARTUPS.forEach(function (s) {
+      var id = makerId(s.maker.name);
+      if (!map[id]) { map[id] = { id: id, name: s.maker.name, role: s.maker.role, initials: s.maker.initials, gp: s.gp, products: [] }; order.push(id); }
+      map[id].products.push(s);
+    });
+    return order.map(function (k) { return map[k]; });
+  }
+  function makerById(id) { var l = makersList(); for (var i = 0; i < l.length; i++) if (l[i].id === id) return l[i]; return null; }
+  function makerFollowers(m) { return 40 + m.products.reduce(function (a, s) { return a + Math.round(s.subscribers / 12); }, 0) + (followMakers.has(m.id) ? 1 : 0); }
 
   /* ---------------- shared components ---------------- */
   function logoLink(s, big) {
@@ -83,16 +109,19 @@
       '" type="button" data-action="want" data-slug="' + esc(s.slug) + '" aria-pressed="' + on + '">' +
       '<span class="want-ico" aria-hidden="true">' + (on ? "✓" : "▲") + "</span>" +
       '<span class="want-num">' + wantCount(s) + "</span>" +
-      '<span class="want-label">I want this</span></button></div>';
+      '<span class="want-label">upvote</span></button></div>';
   }
-  function startupRow(s) {
-    return '<article class="startup-row">' + logoLink(s) +
+  function awardTag(s) { return s.award ? '<span class="badge award">' + esc(s.award) + "</span>" : ""; }
+  function startupRow(s, rank) {
+    var rankCell = rank ? '<div class="rank">' + medal(rank) + "</div>" : "";
+    return '<article class="startup-row' + (rank ? " has-rank" : "") + '">' + rankCell + logoLink(s) +
       '<div class="startup-main"><div class="startup-head">' +
       '<a class="startup-name" href="#/startup/' + esc(s.slug) + '" data-link>' + esc(s.name) + "</a>" +
-      (s.boosted ? '<span class="badge boosted">Boosted</span>' : "") + "</div>" +
+      (s.boosted ? '<span class="badge boosted">Boosted</span>' : "") + awardTag(s) + "</div>" +
       '<p class="startup-tagline">' + esc(s.tagline) + "</p>" +
-      '<div class="startup-meta"><span class="tag">' + esc(s.category) + "</span><span>" +
-      esc(dateLabel(s.daysAgo)) + "</span></div></div>" + wantButton(s) + "</article>";
+      '<div class="startup-meta"><span class="tag">' + esc(s.category) + "</span>" +
+      (s.rating ? "<span>" + stars(s.rating) + " " + s.rating.toFixed(1) + "</span>" : "") +
+      "<span>" + esc(dateLabel(s.daysAgo)) + "</span></div></div>" + wantButton(s) + "</article>";
   }
   function miniCard(s) {
     return '<a class="mini-card" href="#/startup/' + esc(s.slug) + '" data-link>' +
@@ -100,19 +129,19 @@
       '<span class="mini-name">' + esc(s.name) + "</span>" +
       (s.boosted ? '<span class="badge boosted">Boosted</span>' : "") + "</div>" +
       "<p>" + esc(s.tagline) + "</p>" +
-      '<span class="count-pill">▲ ' + wantCount(s) + " want this</span></a>";
+      '<span class="count-pill">▲ ' + wantCount(s) + " · " + stars(s.rating) + "</span></a>";
   }
   function dateGroups(list) {
-    var order = [], groups = {};
-    list.forEach(function (s) {
-      var l = dateLabel(s.daysAgo);
-      if (!groups[l]) { groups[l] = []; order.push(l); }
-      groups[l].push(s);
-    });
+    var order = [], g = {};
+    list.forEach(function (s) { var l = dateLabel(s.daysAgo); if (!g[l]) { g[l] = []; order.push(l); } g[l].push(s); });
     return order.map(function (l) {
-      return '<section class="date-group"><h3 class="date-label">' + esc(l) + "</h3>" +
-        '<div class="feed">' + groups[l].map(startupRow).join("") + "</div></section>";
+      return '<section class="date-group"><h3 class="date-label">' + esc(l) + '</h3><div class="feed">' +
+        g[l].map(function (s) { return startupRow(s); }).join("") + "</div></section>";
     }).join("");
+  }
+  function sectionTitle(title, linkHref, linkText) {
+    return '<div class="section-title"><h2>' + title + "</h2>" +
+      (linkHref ? '<a href="' + linkHref + '" data-link>' + esc(linkText) + "</a>" : "") + "</div>";
   }
 
   /* ---------------- views ---------------- */
@@ -120,91 +149,76 @@
 
   function viewHome() {
     var byNew = STARTUPS.slice().sort(function (a, b) { return a.daysAgo - b.daysAgo; });
-    var trending = STARTUPS.slice().sort(function (a, b) { return wantCount(b) - wantCount(a); }).slice(0, 6);
-    var latest = byNew.slice(0, 6);
-    var jobs = JOBS.slice(0, 3);
+    var ranked = STARTUPS.slice().sort(function (a, b) { return points(b) - points(a); });
+    var trending = ranked.slice(0, 6);
     return '<section class="hero"><div class="wrap">' +
       "<h1>Discover tomorrow's <span class=\"grad\">startups</span> today</h1>" +
-      "<p>Launchboard is a free directory of upcoming startups. Browse what's launching, get the daily digest, or submit your own to reach early adopters.</p>" +
-      '<div class="hero-cta"><a class="btn btn-primary btn-lg" href="#/browse" data-link>Browse startups</a>' +
+      "<p>Launchboard is a free directory of upcoming startups. Upvote what you love, read reviews, follow makers, and get the daily digest.</p>" +
+      '<div class="hero-cta"><a class="btn btn-primary btn-lg" href="#/leaderboard" data-link>Today\'s leaderboard</a>' +
       '<a class="btn btn-ghost btn-lg" href="#/submit" data-link>Submit yours</a></div>' +
       '<ul class="trust-row"><li><strong>' + STARTUPS.length + '+</strong> startups</li>' +
-      '<li><strong>32k</strong> daily subscribers</li><li><strong>Free</strong> to list</li></ul>' +
+      '<li><strong>32k</strong> subscribers</li><li><strong>' + makersList().length + '</strong> makers</li></ul>' +
       "</div></section>" +
-      '<div class="wrap page">' +
-        newsletterBand() +
-        '<div class="section-title"><h2>🔥 Trending startups</h2><a href="#/browse?view=trending" data-link>See all →</a></div>' +
+      '<div class="wrap page">' + newsletterBand() +
+        sectionTitle("🏆 Top of the day", "#/leaderboard", "Full leaderboard →") +
+        '<div class="feed">' + ranked.slice(0, 3).map(function (s, i) { return startupRow(s, i + 1); }).join("") + "</div>" +
+        sectionTitle("🔥 Trending", "#/browse?view=trending", "See all →") +
         '<div class="trending-grid">' + trending.map(miniCard).join("") + "</div>" +
-        '<div class="section-title"><h2>Just launched</h2><a href="#/browse" data-link>Browse all →</a></div>' +
-        dateGroups(latest) +
-        '<div class="section-title"><h2>💼 Remote startup jobs</h2><a href="#/jobs" data-link>View all →</a></div>' +
-        '<div class="feed">' + jobs.map(jobRow).join("") + "</div>" +
+        sectionTitle("🗂️ Collections", "#/collections", "Browse all →") +
+        '<div class="trending-grid">' + COLLECTIONS.slice(0, 3).map(collectionCard).join("") + "</div>" +
+        sectionTitle("💬 Discussions", "#/discussions", "Join in →") +
+        '<div class="feed">' + DISCUSSIONS.slice(0, 3).map(discussionRow).join("") + "</div>" +
+        sectionTitle("💼 Remote jobs", "#/jobs", "View all →") +
+        '<div class="feed">' + JOBS.slice(0, 2).map(jobRow).join("") + "</div>" +
       "</div>";
   }
-
   function newsletterBand() {
-    return '<div class="news-hero"><div>' +
-      '<span class="big-emoji" aria-hidden="true">📬</span>' +
+    return '<div class="news-hero"><div><span class="big-emoji" aria-hidden="true">📬</span>' +
       "<h2>Get the daily digest</h2>" +
-      "<p class=\"muted\">Join 32,000+ early adopters who get the newest startups in their inbox every morning.</p>" +
-      '<form class="news-form" id="newsletter-form">' +
-      '<input id="news-email" type="email" name="email" required placeholder="you@example.com" aria-label="Email address" />' +
+      '<p class="muted">Join 32,000+ early adopters who get the newest startups in their inbox every morning.</p>' +
+      '<form class="news-form" id="newsletter-form"><input id="news-email" type="email" name="email" required placeholder="you@example.com" aria-label="Email address" />' +
       '<button class="btn btn-primary" type="submit">Subscribe</button></form>' +
-      '<p class="form-status" id="news-status" role="status" aria-live="polite"></p>' +
-      "</div></div>";
+      '<p class="form-status" id="news-status" role="status" aria-live="polite"></p></div></div>';
+  }
+
+  function viewLeaderboard(params) {
+    var period = params.period || "day";
+    var win = { day: 1, week: 7, month: 31, all: 9999 }[period] || 1;
+    var list = STARTUPS.filter(function (s) { return s.daysAgo <= win; }).sort(function (a, b) { return points(b) - points(a); });
+    var tabs = [["day", "Today"], ["week", "This week"], ["month", "This month"], ["all", "All-time"]].map(function (t) {
+      return '<button class="tab' + (period === t[0] ? " is-active" : "") + '" data-action="tab-lead" data-period="' + t[0] + '">' + t[1] + "</button>";
+    }).join("");
+    var body = list.length ? '<div class="feed">' + list.map(function (s, i) { return startupRow(s, i + 1); }).join("") + "</div>"
+      : '<div class="empty-state"><div class="big-emoji">🏁</div><h3>No launches in this window</h3></div>';
+    return '<div class="wrap page"><div class="page-head"><h1>Leaderboard</h1><p>The most-upvoted startups, ranked. Winners earn a badge.</p></div>' +
+      '<div class="tabs">' + tabs + "</div>" + body + "</div>";
   }
 
   function viewBrowse(params) {
-    var q = (params.q || "").trim().toLowerCase();
-    var cat = params.cat || "";
-    var view = params.view || "all";
+    var q = (params.q || "").trim().toLowerCase(), cat = params.cat || "", view = params.view || "all";
     var page = Math.max(1, parseInt(params.page, 10) || 1);
-
     var list = STARTUPS.filter(function (s) {
       if (cat && s.category !== cat) return false;
       if (view === "boosted" && !s.boosted) return false;
-      if (q) {
-        var hay = (s.name + " " + s.tagline + " " + s.category + " " + (s.tags || []).join(" ")).toLowerCase();
-        if (hay.indexOf(q) === -1) return false;
-      }
+      if (q) { var h = (s.name + " " + s.tagline + " " + s.category + " " + (s.tags || []).join(" ")).toLowerCase(); if (h.indexOf(q) === -1) return false; }
       return true;
     });
-
-    if (view === "trending") list.sort(function (a, b) { return wantCount(b) - wantCount(a); });
+    if (view === "trending") list.sort(function (a, b) { return points(b) - points(a); });
+    else if (view === "top") list.sort(function (a, b) { return b.rating - a.rating; });
     else list.sort(function (a, b) { return a.daysAgo - b.daysAgo; });
-
-    var total = list.length;
-    var shown = list.slice(0, page * PAGE);
-    var cats = categoryList();
-
-    var tabs = [["all", "All"], ["trending", "Trending"], ["boosted", "Boosted"]].map(function (t) {
-      return '<button class="tab' + (view === t[0] ? " is-active" : "") + '" data-action="tab-browse" data-view="' +
-        t[0] + '">' + t[1] + "</button>";
+    var total = list.length, shown = list.slice(0, page * PAGE), cats = categoryList();
+    var tabs = [["all", "Newest"], ["trending", "Trending"], ["top", "Top rated"], ["boosted", "Boosted"]].map(function (t) {
+      return '<button class="tab' + (view === t[0] ? " is-active" : "") + '" data-action="tab-browse" data-view="' + t[0] + '">' + t[1] + "</button>";
     }).join("");
-
     var options = '<option value="">All topics</option>' + cats.map(function (c) {
       return '<option value="' + esc(c.name) + '"' + (cat === c.name ? " selected" : "") + ">" + esc(c.name) + " (" + c.count + ")</option>";
     }).join("");
-
-    var body;
-    if (!shown.length) {
-      body = '<div class="empty-state"><div class="big-emoji">🔍</div><h3>No startups match</h3>' +
-        '<p class="muted">Try a different search or topic.</p></div>';
-    } else if (view === "all" && !q) {
-      body = dateGroups(shown);
-    } else {
-      body = '<div class="feed">' + shown.map(startupRow).join("") + "</div>";
-    }
-
-    var more = shown.length < total ?
-      '<div class="load-more-wrap"><button class="btn btn-ghost" data-action="load-more">Load next page… (' +
-      shown.length + " of " + total + ")</button></div>" : "";
-
-    return '<div class="wrap page">' +
-      '<div class="page-head"><h1>Browse startups</h1><p>' + total + ' startup' + (total === 1 ? "" : "s") +
+    var body = !shown.length ? '<div class="empty-state"><div class="big-emoji">🔍</div><h3>No startups match</h3><p class="muted">Try a different search or topic.</p></div>'
+      : (view === "all" && !q) ? dateGroups(shown) : '<div class="feed">' + shown.map(function (s) { return startupRow(s); }).join("") + "</div>";
+    var more = shown.length < total ? '<div class="load-more-wrap"><button class="btn btn-ghost" data-action="load-more">Load next page… (' + shown.length + " of " + total + ")</button></div>" : "";
+    return '<div class="wrap page"><div class="page-head"><h1>Browse startups</h1><p>' + total + ' startup' + (total === 1 ? "" : "s") +
       (cat ? " in " + esc(cat) : "") + (q ? ' matching “' + esc(params.q) + "”" : "") + ".</p></div>" +
-      '<div class="tabs">' + tabs + "</div>" +
-      '<div class="toolbar">' +
+      '<div class="tabs">' + tabs + '</div><div class="toolbar">' +
       '<form class="search" id="browse-search" role="search"><span class="search-ico" aria-hidden="true">⌕</span>' +
       '<input id="browse-q" type="search" value="' + esc(params.q || "") + '" placeholder="Search startups…" aria-label="Search" /></form>' +
       '<select class="select" id="browse-cat" data-action="browse-control" aria-label="Filter by topic">' + options + "</select>" +
@@ -212,318 +226,382 @@
   }
 
   function viewDetail(slug) {
-    var s = bySlug(slug);
-    if (!s) return notFound();
-    var voted = votes.has(s.slug), saved = bookmarks.has(s.slug);
-    var cmts = commentsFor(s);
-    return '<div class="wrap page">' +
-      '<a class="back-link" href="#/browse" data-link>← Back to browse</a>' +
+    var s = bySlug(slug); if (!s) return notFound();
+    var voted = votes.has(s.slug), saved = bookmarks.has(s.slug), mid = makerId(s.maker.name);
+    var revs = reviewsFor(s), alts = STARTUPS.filter(function (o) { return o.category === s.category && o.slug !== s.slug; }).slice(0, 3);
+    return '<div class="wrap page"><a class="back-link" href="#/browse" data-link>← Back to browse</a>' +
       '<div class="detail-head">' + logoLink(s, true) +
       '<div><div class="detail-title"><h1>' + esc(s.name) + "</h1>" +
-      (s.boosted ? '<span class="badge boosted">Boosted</span>' : "") + "</div>" +
+      (s.boosted ? '<span class="badge boosted">Boosted</span>' : "") + awardTag(s) + "</div>" +
       '<p class="tagline">' + esc(s.tagline) + "</p>" +
+      '<div class="rating-inline">' + stars(s.rating) + " <strong>" + (s.rating ? s.rating.toFixed(1) : "—") + "</strong> <span class=\"muted\">(" + ratingCount(s) + " reviews)</span>" +
+      (s.pricing ? ' · <span class="tag">' + esc(s.pricing) + "</span>" : "") + "</div>" +
       '<div class="detail-actions">' +
-      '<button class="btn btn-primary" data-action="want" data-slug="' + esc(s.slug) + '">' +
-      (wants.has(s.slug) ? "✓ Wanted" : "▲ I want this") + " · " + wantCount(s) + "</button>" +
+      '<button class="btn btn-primary" data-action="want" data-slug="' + esc(s.slug) + '">' + (wants.has(s.slug) ? "✓ Upvoted" : "▲ Upvote") + " · " + wantCount(s) + "</button>" +
       '<button class="btn btn-ghost' + (voted ? " is-on" : "") + '" data-action="vote" data-slug="' + esc(s.slug) + '">👍 ' + voteCount(s) + "</button>" +
       '<button class="btn btn-ghost' + (saved ? " is-on" : "") + '" data-action="bookmark" data-slug="' + esc(s.slug) + '">' + (saved ? "♥ Saved" : "♡ Save") + "</button>" +
       '<a class="btn btn-ghost" href="' + esc(s.website) + '" target="_blank" rel="noopener nofollow">Visit ↗</a>' +
-      '<button class="btn btn-ghost" data-action="share" data-slug="' + esc(s.slug) + '">Share</button>' +
-      "</div></div></div>" +
-      '<div class="gallery">' + (s.screenshots || []).map(function (sh) {
-        return '<div class="shot ' + gp(sh.gp) + '"><span>' + esc(sh.label) + "</span></div>";
-      }).join("") + "</div>" +
+      '<button class="btn btn-ghost" data-action="share" data-slug="' + esc(s.slug) + '">Share</button></div></div></div>' +
+      '<div class="gallery">' + (s.screenshots || []).map(function (sh) { return '<div class="shot ' + gp(sh.gp) + '"><span>' + esc(sh.label) + "</span></div>"; }).join("") + "</div>" +
       '<div class="detail-body"><div class="prose">' +
       "<h3>About " + esc(s.name) + "</h3><p>" + esc(s.description) + "</p>" +
       '<div class="chips">' + (s.tags || []).map(function (t) { return '<span class="tag">' + esc(t) + "</span>"; }).join("") + "</div>" +
-      commentsBlock(s, cmts) +
-      "</div>" +
-      '<aside><div class="card side-card"><h4>Maker</h4><div class="maker-row">' +
+      (s.stack.length ? '<h3>🧱 Built with</h3><div class="chips">' + s.stack.map(function (t) { return '<span class="tag alt">' + esc(t) + "</span>"; }).join("") + "</div>" : "") +
+      reviewsBlock(s, revs) + commentsBlock(s, commentsFor(s)) +
+      (alts.length ? '<h3>🔀 Alternatives</h3><div class="feed">' + alts.map(function (a) { return startupRow(a); }).join("") + "</div>" : "") +
+      "</div><aside>" +
+      '<div class="card side-card"><h4>Maker</h4><a class="maker-row" href="#/maker/' + esc(mid) + '" data-link>' +
       '<span class="avatar ' + gp(s.gp) + '">' + esc(s.maker.initials) + "</span>" +
-      '<div><div class="maker-name">' + esc(s.maker.name) + '</div><div class="muted small">' + esc(s.maker.role) + "</div></div></div></div>" +
+      '<div><div class="maker-name">' + esc(s.maker.name) + '</div><div class="muted small">' + esc(s.maker.role) + "</div></div></a>" +
+      '<button class="btn btn-ghost btn-sm btn-block' + (followMakers.has(mid) ? " is-on" : "") + '" data-action="follow-maker" data-id="' + esc(mid) + '">' + (followMakers.has(mid) ? "✓ Following" : "+ Follow maker") + "</button></div>" +
       '<div class="card side-card"><ul class="meta-list">' +
+      '<li><span class="k">Rating</span><span class="v">' + (s.rating ? s.rating.toFixed(1) + " ★" : "—") + "</span></li>" +
+      '<li><span class="k">Pricing</span><span class="v">' + esc(s.pricing || "—") + "</span></li>" +
+      '<li><span class="k">Upvotes</span><span class="v">' + wantCount(s) + "</span></li>" +
       '<li><span class="k">Topic</span><span class="v">' + esc(s.category) + "</span></li>" +
-      '<li><span class="k">Wants</span><span class="v">' + wantCount(s) + "</span></li>" +
-      '<li><span class="k">Upvotes</span><span class="v">' + voteCount(s) + "</span></li>" +
-      '<li><span class="k">Launched</span><span class="v">' + esc(dateLabel(s.daysAgo)) + "</span></li>" +
-      "</ul></div></aside></div></div>";
+      '<li><span class="k">Launched</span><span class="v">' + esc(dateLabel(s.daysAgo)) + "</span></li></ul>" +
+      '<button class="btn btn-ghost btn-sm btn-block' + (followTopics.has(s.category) ? " is-on" : "") + '" data-action="follow-topic" data-cat="' + esc(s.category) + '">' + (followTopics.has(s.category) ? "✓ Following topic" : "+ Follow " + esc(s.category)) + "</button></div>" +
+      "</aside></div></div>";
   }
 
+  function reviewsBlock(s, revs) {
+    var items = revs.length ? revs.map(function (r) {
+      return '<div class="review"><div class="review-head"><span class="avatar avatar-sm ' + gp(2) + '">' + esc(r.initials || "?") + "</span>" +
+        '<div><div class="comment-author">' + esc(r.author) + "</div><div class=\"review-stars\">" + stars(r.rating) + '<span class="muted small"> · ' + esc(dateLabel(r.daysAgo || 0)) + "</span></div></div></div>" +
+        (r.pros ? '<p class="pro">👍 ' + esc(r.pros) + "</p>" : "") + (r.cons ? '<p class="con">👎 ' + esc(r.cons) + "</p>" : "") +
+        (r.body ? "<p>" + esc(r.body) + "</p>" : "") + "</div>";
+    }).join("") : '<p class="muted small">No reviews yet — be the first.</p>';
+    return '<h3>⭐ Reviews (' + revs.length + ")</h3>" + items +
+      '<form class="review-form" id="review-form" data-slug="' + esc(s.slug) + '">' +
+      '<div class="field"><label for="rv-rating">Your rating</label><select id="rv-rating" class="select"><option value="5">★★★★★ Love it</option><option value="4">★★★★ Great</option><option value="3">★★★ Good</option><option value="2">★★ Meh</option><option value="1">★ Nope</option></select></div>' +
+      '<div class="field"><label for="rv-name">Your name</label><input id="rv-name" type="text" required maxlength="40" placeholder="Your name" /></div>' +
+      '<div class="two-col"><div class="field"><label for="rv-pros">Pros</label><input id="rv-pros" type="text" maxlength="80" placeholder="What you love" /></div>' +
+      '<div class="field"><label for="rv-cons">Cons</label><input id="rv-cons" type="text" maxlength="80" placeholder="What could be better" /></div></div>' +
+      '<div class="field"><label for="rv-body">Review</label><textarea id="rv-body" maxlength="400" placeholder="Share your experience…"></textarea></div>' +
+      '<div><button class="btn btn-primary btn-sm" type="submit">Post review</button></div>' +
+      '<p class="form-status" id="review-status" role="status" aria-live="polite"></p></form>';
+  }
   function commentsBlock(s, cmts) {
     var items = cmts.length ? cmts.map(function (c) {
       return '<div class="comment"><span class="avatar avatar-sm ' + gp(0) + '">' + esc(c.initials || "?") + "</span>" +
-        '<div class="comment-body"><span class="comment-meta"><span class="comment-author">' + esc(c.author) +
-        "</span> · " + esc(dateLabel(c.daysAgo || 0)) + "</span><p>" + esc(c.text) + "</p></div></div>";
-    }).join("") : '<p class="muted small">No comments yet — be the first.</p>';
-    return '<div class="comments"><h3>Comments (' + cmts.length + ")</h3>" + items +
+        '<div class="comment-body"><span class="comment-meta"><span class="comment-author">' + esc(c.author) + "</span> · " + esc(dateLabel(c.daysAgo || 0)) + "</span><p>" + esc(c.text) + "</p></div></div>";
+    }).join("") : '<p class="muted small">No comments yet.</p>';
+    return '<h3>💬 Discussion (' + cmts.length + ")</h3>" + items +
       '<form class="comment-form" id="comment-form" data-slug="' + esc(s.slug) + '">' +
       '<input id="comment-name" type="text" required maxlength="40" placeholder="Your name" aria-label="Your name" />' +
-      '<textarea id="comment-text" required maxlength="400" placeholder="Share your thoughts…" aria-label="Comment"></textarea>' +
+      '<textarea id="comment-text" required maxlength="400" placeholder="Join the discussion…" aria-label="Comment"></textarea>' +
       '<div><button class="btn btn-primary btn-sm" type="submit">Post comment</button></div>' +
-      '<p class="form-status" id="comment-status" role="status" aria-live="polite"></p></form></div>';
+      '<p class="form-status" id="comment-status" role="status" aria-live="polite"></p></form>';
   }
 
   function categoryList() {
-    var counts = {};
-    STARTUPS.forEach(function (s) { counts[s.category] = (counts[s.category] || 0) + 1; });
-    return Object.keys(counts).sort().map(function (name) { return { name: name, count: counts[name] }; });
+    var counts = {}; STARTUPS.forEach(function (s) { counts[s.category] = (counts[s.category] || 0) + 1; });
+    return Object.keys(counts).sort().map(function (n) { return { name: n, count: counts[n] }; });
   }
-
   function viewTopics() {
     var cats = categoryList();
-    return '<div class="wrap page"><div class="page-head"><h1>Browse by topic</h1>' +
-      '<p>Explore ' + cats.length + " categories of upcoming startups.</p></div>" +
+    return '<div class="wrap page"><div class="page-head"><h1>Browse by topic</h1><p>Explore ' + cats.length + " categories. Follow the ones you care about.</p></div>" +
       '<div class="cat-grid">' + cats.map(function (c) {
-        return '<a class="cat" href="#/browse?cat=' + encodeURIComponent(c.name) + '" data-link>' +
-          '<span class="cat-emoji" aria-hidden="true">' + emojiFor(c.name) + "</span>" +
-          '<span class="cat-name">' + esc(c.name) + "</span>" +
-          '<span class="cat-count">' + c.count + "</span></a>";
+        return '<div class="cat"><a class="cat-link" href="#/browse?cat=' + encodeURIComponent(c.name) + '" data-link><span class="cat-emoji" aria-hidden="true">' + emojiFor(c.name) + "</span>" +
+          '<span class="cat-name">' + esc(c.name) + "</span></a><span class=\"cat-count\">" + c.count + "</span>" +
+          '<button class="follow-dot' + (followTopics.has(c.name) ? " is-on" : "") + '" data-action="follow-topic" data-cat="' + esc(c.name) + '" title="Follow" aria-label="Follow ' + esc(c.name) + '">' + (followTopics.has(c.name) ? "✓" : "+") + "</button></div>";
       }).join("") + "</div></div>";
   }
 
+  function collectionCard(c) {
+    return '<a class="mini-card" href="#/collection/' + esc(c.slug) + '" data-link>' +
+      '<div class="mini-top"><span class="logo ' + gp(c.gp) + '" aria-hidden="true">' + esc(c.emoji) + "</span>" +
+      '<span class="mini-name">' + esc(c.title) + "</span></div><p>" + esc(c.description) + "</p>" +
+      '<span class="count-pill">' + c.products.length + " products · by " + esc(c.curator) + "</span></a>";
+  }
+  function viewCollections() {
+    return '<div class="wrap page"><div class="page-head"><h1>Collections</h1><p>Hand-picked sets of products, curated by the community.</p></div>' +
+      '<div class="trending-grid">' + COLLECTIONS.map(collectionCard).join("") + "</div></div>";
+  }
+  function viewCollectionDetail(slug) {
+    var c = null; for (var i = 0; i < COLLECTIONS.length; i++) if (COLLECTIONS[i].slug === slug) c = COLLECTIONS[i];
+    if (!c) return notFound();
+    var prods = c.products.map(bySlug).filter(Boolean), on = savedCollections.has(c.slug);
+    return '<div class="wrap page"><a class="back-link" href="#/collections" data-link>← All collections</a>' +
+      '<div class="detail-head"><span class="logo logo-lg ' + gp(c.gp) + '" aria-hidden="true">' + esc(c.emoji) + "</span>" +
+      '<div><h1>' + esc(c.title) + "</h1><p class=\"tagline\">" + esc(c.description) + "</p>" +
+      '<div class="detail-actions"><span class="muted small">' + prods.length + " products · curated by " + esc(c.curator) + "</span>" +
+      '<button class="btn btn-ghost btn-sm' + (on ? " is-on" : "") + '" data-action="save-collection" data-slug="' + esc(c.slug) + '">' + (on ? "✓ Saved" : "♡ Save collection") + "</button></div></div></div>" +
+      '<div class="feed">' + prods.map(function (s) { return startupRow(s); }).join("") + "</div></div>";
+  }
+
+  function makerCard(m) {
+    var on = followMakers.has(m.id);
+    return '<div class="maker-card"><a class="maker-row" href="#/maker/' + esc(m.id) + '" data-link>' +
+      '<span class="avatar ' + gp(m.gp) + '">' + esc(m.initials) + "</span>" +
+      '<div><div class="maker-name">' + esc(m.name) + '</div><div class="muted small">' + esc(m.role) + " · " + m.products.length + " product" + (m.products.length === 1 ? "" : "s") + "</div></div></a>" +
+      '<button class="btn btn-ghost btn-sm' + (on ? " is-on" : "") + '" data-action="follow-maker" data-id="' + esc(m.id) + '">' + (on ? "✓ Following" : "+ Follow") + "</button></div>";
+  }
+  function viewMakers() {
+    var ms = makersList().sort(function (a, b) { return makerFollowers(b) - makerFollowers(a); });
+    return '<div class="wrap page"><div class="page-head"><h1>Makers</h1><p>The founders and builders behind the launches. Follow the ones you admire.</p></div>' +
+      '<div class="makers-grid">' + ms.map(makerCard).join("") + "</div></div>";
+  }
+  function viewMakerProfile(id) {
+    var m = makerById(id); if (!m) return notFound();
+    var on = followMakers.has(m.id);
+    return '<div class="wrap page"><a class="back-link" href="#/makers" data-link>← All makers</a>' +
+      '<div class="detail-head"><span class="avatar avatar-xl ' + gp(m.gp) + '">' + esc(m.initials) + "</span>" +
+      '<div><h1>' + esc(m.name) + '</h1><p class="tagline">' + esc(m.role) + "</p>" +
+      '<div class="detail-actions"><span class="count-pill">' + makerFollowers(m) + " followers</span>" +
+      '<button class="btn btn-primary btn-sm" data-action="follow-maker" data-id="' + esc(m.id) + '">' + (on ? "✓ Following" : "+ Follow") + "</button></div></div></div>" +
+      "<h3>Launches by " + esc(m.name) + '</h3><div class="feed">' + m.products.map(function (s) { return startupRow(s); }).join("") + "</div></div>";
+  }
+
+  function allDiscussions() { return userDiscussions.concat(DISCUSSIONS); }
+  function discById(id) { var all = allDiscussions(); for (var i = 0; i < all.length; i++) if (all[i].id === id) return all[i]; return null; }
+  function discUpvotes(d) { return (d.upvotes || 0) + (discVotes.has(d.id) ? 1 : 0); }
+  function discReplyList(d) { return (d.replies || []).concat(discReplies[d.id] || []); }
+  function discussionRow(d) {
+    var on = discVotes.has(d.id);
+    return '<article class="disc-row"><button class="want-btn' + (on ? " is-on" : "") + '" type="button" data-action="disc-vote" data-id="' + esc(d.id) + '">' +
+      '<span class="want-ico" aria-hidden="true">▲</span><span class="want-num">' + discUpvotes(d) + "</span></button>" +
+      '<div class="disc-main"><a class="startup-name" href="#/discussion/' + esc(d.id) + '" data-link>' + esc(d.title) + "</a>" +
+      '<div class="startup-meta"><span class="tag">' + esc(d.category) + "</span><span>by " + esc(d.author) + "</span><span>" + esc(dateLabel(d.daysAgo)) + "</span><span>💬 " + discReplyList(d).length + "</span></div></div></article>";
+  }
+  function viewDiscussions() {
+    return '<div class="wrap page"><div class="page-head"><h1>Discussions</h1><p>Ask questions, share wins, and talk shop with other makers.</p></div>' +
+      '<form class="form-card" id="discussion-form"><div class="field"><label for="dc-title">Start a discussion</label><input id="dc-title" type="text" required maxlength="90" placeholder="Ask the community something…" /></div>' +
+      '<div class="field"><label for="dc-body">Details</label><textarea id="dc-body" required maxlength="500" placeholder="Add context…"></textarea></div>' +
+      '<div class="two-col"><div class="field"><label for="dc-name">Your name</label><input id="dc-name" type="text" required maxlength="40" placeholder="Your name" /></div>' +
+      '<div class="field"><label for="dc-cat">Topic</label><input id="dc-cat" type="text" maxlength="30" placeholder="e.g. Growth" /></div></div>' +
+      '<div><button class="btn btn-primary btn-sm" type="submit">Post discussion</button></div>' +
+      '<p class="form-status" id="discussion-status" role="status" aria-live="polite"></p></form>' +
+      '<div class="feed">' + allDiscussions().map(discussionRow).join("") + "</div></div>";
+  }
+  function viewDiscussionDetail(id) {
+    var d = discById(id); if (!d) return notFound();
+    var reps = discReplyList(d), on = discVotes.has(d.id);
+    return '<div class="wrap page narrow"><a class="back-link" href="#/discussions" data-link>← All discussions</a>' +
+      '<div class="disc-detail-head"><button class="want-btn' + (on ? " is-on" : "") + '" type="button" data-action="disc-vote" data-id="' + esc(d.id) + '"><span class="want-ico" aria-hidden="true">▲</span><span class="want-num">' + discUpvotes(d) + "</span></button>" +
+      '<div><h1>' + esc(d.title) + '</h1><div class="startup-meta"><span class="tag">' + esc(d.category) + "</span><span>by " + esc(d.author) + "</span><span>" + esc(dateLabel(d.daysAgo)) + "</span></div></div></div>" +
+      '<p class="prose">' + esc(d.body) + "</p>" +
+      '<h3>' + reps.length + " repl" + (reps.length === 1 ? "y" : "ies") + "</h3>" +
+      reps.map(function (r) {
+        return '<div class="comment"><span class="avatar avatar-sm ' + gp(r.gp || 3) + '">' + esc(r.initials || "?") + "</span>" +
+          '<div class="comment-body"><span class="comment-meta"><span class="comment-author">' + esc(r.author) + "</span> · " + esc(dateLabel(r.daysAgo || 0)) + "</span><p>" + esc(r.body) + "</p></div></div>";
+      }).join("") +
+      '<form class="comment-form" id="reply-form" data-id="' + esc(d.id) + '"><input id="reply-name" type="text" required maxlength="40" placeholder="Your name" />' +
+      '<textarea id="reply-body" required maxlength="400" placeholder="Add a reply…"></textarea>' +
+      '<div><button class="btn btn-primary btn-sm" type="submit">Reply</button></div>' +
+      '<p class="form-status" id="reply-status" role="status" aria-live="polite"></p></form></div>';
+  }
+
+  function viewFollowing() {
+    var makers = makersList().filter(function (m) { return followMakers.has(m.id); });
+    var prods = STARTUPS.filter(function (s) { return followTopics.has(s.category); }).sort(function (a, b) { return a.daysAgo - b.daysAgo; });
+    if (!makers.length && !followTopics.size) {
+      return '<div class="wrap page"><div class="page-head"><h1>Following</h1></div><div class="empty-state"><div class="big-emoji">🧲</div><h3>You\'re not following anything yet</h3><p class="muted">Follow makers and topics to build your feed.</p><p><a class="btn btn-primary" href="#/makers" data-link>Find makers</a> <a class="btn btn-ghost" href="#/topics" data-link>Browse topics</a></p></div></div>';
+    }
+    var out = '<div class="wrap page"><div class="page-head"><h1>Following</h1><p>Fresh launches from the makers and topics you follow.</p></div>';
+    if (makers.length) out += sectionTitle("Makers you follow", "#/makers", "Manage →") + '<div class="makers-grid">' + makers.map(makerCard).join("") + "</div>";
+    if (prods.length) out += sectionTitle("From your topics", "#/topics", "Manage →") + '<div class="feed">' + prods.slice(0, 8).map(function (s) { return startupRow(s); }).join("") + "</div>";
+    return out + "</div>";
+  }
+
+  function viewProfile() {
+    var bm = STARTUPS.filter(function (s) { return bookmarks.has(s.slug); });
+    var myRevCount = Object.keys(userReviews).reduce(function (a, k) { return a + userReviews[k].length; }, 0);
+    var stat = function (n, l) { return '<div class="stat"><div class="stat-n">' + n + '</div><div class="stat-l">' + l + "</div></div>"; };
+    return '<div class="wrap page"><div class="page-head"><h1>Your activity</h1><p>Everything you\'ve done on Launchboard, saved in this browser.</p></div>' +
+      '<div class="stat-row">' + stat(wants.size, "Upvotes") + stat(bookmarks.size, "Saved") + stat(myRevCount, "Reviews") +
+      stat(followMakers.size, "Makers") + stat(followTopics.size, "Topics") + "</div>" +
+      (bm.length ? sectionTitle("♥ Saved startups", "#/bookmarks", "View all →") + '<div class="feed">' + bm.slice(0, 5).map(function (s) { return startupRow(s); }).join("") + "</div>" :
+        '<div class="empty-state"><div class="big-emoji">👋</div><h3>Start exploring</h3><p class="muted">Upvote, review and save startups — it all shows up here.</p><p><a class="btn btn-primary" href="#/leaderboard" data-link>See the leaderboard</a></p></div>') +
+      "</div>";
+  }
+
   function jobRow(j) {
-    return '<a class="job-row" href="' + esc(j.url) + '" target="_blank" rel="noopener nofollow">' +
-      '<span class="logo ' + gp(j.gp) + '" aria-hidden="true">' + esc(j.glyph) + "</span>" +
-      '<div><div class="job-title">' + esc(j.title) + '</div><div class="job-meta"><span>' + esc(j.company) +
-      "</span><span>" + esc(j.location) + "</span><span>" + esc(j.type) + "</span><span>" + esc(j.salary) + "</span></div>" +
-      '<div class="job-tags">' + (j.tags || []).map(function (t) { return '<span class="tag">' + esc(t) + "</span>"; }).join("") + "</div></div>" +
-      '<span class="btn btn-ghost btn-sm">Apply ↗</span></a>';
+    return '<a class="job-row" href="' + esc(j.url) + '" target="_blank" rel="noopener nofollow"><span class="logo ' + gp(j.gp) + '" aria-hidden="true">' + esc(j.glyph) + "</span>" +
+      '<div><div class="job-title">' + esc(j.title) + '</div><div class="job-meta"><span>' + esc(j.company) + "</span><span>" + esc(j.location) + "</span><span>" + esc(j.type) + "</span><span>" + esc(j.salary) + "</span></div>" +
+      '<div class="job-tags">' + (j.tags || []).map(function (t) { return '<span class="tag">' + esc(t) + "</span>"; }).join("") + "</div></div><span class=\"btn btn-ghost btn-sm\">Apply ↗</span></a>";
   }
   function viewJobs() {
-    return '<div class="wrap page"><div class="page-head"><h1>Remote startup jobs</h1>' +
-      "<p>Work at the startups launching on Launchboard. " + JOBS.length + " open roles.</p></div>" +
-      '<div class="feed">' + JOBS.map(jobRow).join("") + "</div></div>";
+    return '<div class="wrap page"><div class="page-head"><h1>Remote startup jobs</h1><p>Work at the startups launching on Launchboard. ' + JOBS.length + " open roles.</p></div><div class=\"feed\">" + JOBS.map(jobRow).join("") + "</div></div>";
   }
-
   function viewNewsletter() {
-    return '<div class="wrap page narrow"><div class="news-hero">' +
-      '<span class="big-emoji" aria-hidden="true">📬</span>' +
-      "<h1>The Launchboard daily digest</h1>" +
+    return '<div class="wrap page narrow"><div class="news-hero"><span class="big-emoji" aria-hidden="true">📬</span><h1>The Launchboard daily digest</h1>' +
       '<p class="muted">One short email each morning with the newest startups worth a look. No spam, unsubscribe anytime.</p>' +
-      '<form class="news-form" id="newsletter-form">' +
-      '<input id="news-email" type="email" name="email" required placeholder="you@example.com" aria-label="Email address" />' +
-      '<button class="btn btn-primary" type="submit">Subscribe free</button></form>' +
+      '<form class="news-form" id="newsletter-form"><input id="news-email" type="email" name="email" required placeholder="you@example.com" aria-label="Email address" /><button class="btn btn-primary" type="submit">Subscribe free</button></form>' +
       '<p class="form-status" id="news-status" role="status" aria-live="polite"></p>' +
-      '<div class="news-stats"><span><strong>32,418</strong> subscribers</span><span><strong>4.9★</strong> reader rating</span><span><strong>Daily</strong> at 8am</span></div>' +
-      "</div></div>";
+      '<div class="news-stats"><span><strong>32,418</strong> subscribers</span><span><strong>4.9★</strong> rating</span><span><strong>Daily</strong> at 8am</span></div></div></div>';
   }
-
   function viewSubmit() {
-    var cats = ["AI Assistant", "AI Tools", "Developer Tools", "SaaS", "Analytics", "Marketing Analytics",
-      "Lead Generation", "Content Marketing", "Habit Tracking", "Image Generation", "Tracking", "Productivity"];
-    return '<div class="wrap page narrow"><div class="page-head"><h1>Submit your startup</h1>' +
-      "<p>Free and permanent. Your startup joins the directory and the daily digest once approved.</p></div>" +
+    var cats = ["AI Assistant", "AI Tools", "Developer Tools", "SaaS", "Analytics", "Marketing Analytics", "Lead Generation", "Content Marketing", "Habit Tracking", "Image Generation", "Tracking", "Productivity"];
+    return '<div class="wrap page narrow"><div class="page-head"><h1>Submit your startup</h1><p>Free and permanent. Your startup joins the directory and the daily digest once approved.</p></div>' +
       '<form class="form-card" id="submit-form" novalidate>' +
       '<div class="field"><label for="f-name">Startup name</label><input id="f-name" name="name" type="text" required maxlength="60" placeholder="e.g. Draftly" /></div>' +
       '<div class="field"><label for="f-url">Website URL</label><input id="f-url" name="url" type="url" required placeholder="https://yourstartup.com" /></div>' +
       '<div class="field"><label for="f-tagline">One-line pitch</label><input id="f-tagline" name="tagline" type="text" required maxlength="90" placeholder="What does it do, in one sentence?" /></div>' +
-      '<div class="field"><label for="f-category">Topic</label><select id="f-category" name="category" required><option value="">Choose a topic…</option>' +
-      cats.map(function (c) { return "<option>" + esc(c) + "</option>"; }).join("") + "</select></div>" +
+      '<div class="field"><label for="f-category">Topic</label><select id="f-category" name="category" required><option value="">Choose a topic…</option>' + cats.map(function (c) { return "<option>" + esc(c) + "</option>"; }).join("") + "</select></div>" +
       '<div class="field"><label for="f-email">Your email <span class="muted">(for launch updates)</span></label><input id="f-email" name="email" type="email" required placeholder="you@example.com" /></div>' +
       '<button class="btn btn-primary btn-lg btn-block" id="submit-btn" type="submit">Submit for review</button>' +
       '<p class="form-status" id="form-status" role="status" aria-live="polite"></p>' +
-      '<p class="muted small">Protected by a CSRF token issued by our API. No third-party trackers.</p>' +
-      "</form></div>";
+      '<p class="muted small">Protected by a CSRF token issued by our API. No third-party trackers.</p></form></div>';
   }
-
   function viewAdvertise() {
-    return '<div class="wrap page"><div class="page-head center"><h1>Advertise on Launchboard</h1>' +
-      "<p>Reach 32,000+ founders and early adopters. Free to list — pay only to stand out.</p></div>" +
-      '<div class="tiers">' +
+    return '<div class="wrap page"><div class="page-head center"><h1>Advertise on Launchboard</h1><p>Reach 32,000+ founders and early adopters. Free to list — pay only to stand out.</p></div><div class="tiers">' +
       tier("Free", "$0", "forever", ["Permanent directory listing", "Appears in the daily digest", "Topic placement", "Maker profile"], false, "Submit free", "#/submit") +
       tier("Boosted", "$29", "one-time", ["Everything in Free", "Pinned to the top for 7 days", "“Boosted” badge", "DR 73 dofollow backlink", "Priority review"], true, "Get boosted", "#/submit") +
-      tier("Newsletter feature", "$99", "per send", ["Everything in Boosted", "Dedicated slot in the digest", "Sent to 32k+ subscribers", "Performance report"], false, "Book a feature", "#/support") +
-      "</div></div>";
+      tier("Newsletter feature", "$99", "per send", ["Everything in Boosted", "Dedicated slot in the digest", "Sent to 32k+ subscribers", "Performance report"], false, "Book a feature", "#/support") + "</div></div>";
   }
   function tier(name, amount, per, items, featured, cta, href) {
-    return '<article class="tier' + (featured ? " tier-featured" : "") + '">' +
-      (featured ? '<div class="tier-badge">Most popular</div>' : "") +
-      '<h3 class="tier-name">' + name + '</h3><p class="tier-price"><span class="amount">' + amount +
-      '</span><span class="per">' + per + '</span></p><ul class="tier-list">' +
+    return '<article class="tier' + (featured ? " tier-featured" : "") + '">' + (featured ? '<div class="tier-badge">Most popular</div>' : "") +
+      '<h3 class="tier-name">' + name + '</h3><p class="tier-price"><span class="amount">' + amount + '</span><span class="per">' + per + '</span></p><ul class="tier-list">' +
       items.map(function (i) { return "<li>" + esc(i) + "</li>"; }).join("") + "</ul>" +
       '<a class="btn ' + (featured ? "btn-primary" : "btn-ghost") + ' tier-cta" href="' + href + '" data-link>' + esc(cta) + "</a></article>";
   }
-
   function viewFaq() {
     var qa = [
       ["Is Launchboard free?", "Yes. Listing your startup and appearing in the daily digest is free and permanent. Paid options only add visibility."],
       ["What can I submit?", "Any upcoming or newly launched startup — SaaS, micro-SaaS, AI tools, mobile apps, developer tools and more."],
-      ["When will my startup go live?", "Free submissions are reviewed within a few days. Boosted submissions get priority review and go live sooner."],
-      ["What is “I want this”?", "It's a lightweight signal from visitors that they'd use your product. It helps rank trending startups and shows makers real demand."],
+      ["How does the leaderboard work?", "Products are ranked by upvotes over each period (day, week, month). The daily winners earn a badge on their profile."],
+      ["What are reviews and ratings?", "Anyone can leave a star rating with pros and cons. Ratings power the “Top rated” sort and show real signal to other founders."],
       ["Do you sell my email?", "Never. We use it only for digest delivery and your own submission updates. See SECURITY.md in the repo for how data is handled."]
     ];
-    return '<div class="wrap page narrow"><div class="page-head"><h1>Frequently asked questions</h1></div>' +
-      '<div class="faq">' + qa.map(function (x) {
-        return "<details><summary>" + esc(x[0]) + "</summary><p>" + esc(x[1]) + "</p></details>";
-      }).join("") + "</div></div>";
+    return '<div class="wrap page narrow"><div class="page-head"><h1>Frequently asked questions</h1></div><div class="faq">' +
+      qa.map(function (x) { return "<details><summary>" + esc(x[0]) + "</summary><p>" + esc(x[1]) + "</p></details>"; }).join("") + "</div></div>";
   }
-
   function viewSupport() {
-    return '<div class="wrap page narrow"><div class="page-head"><h1>Support</h1><p>We usually reply within a day.</p></div>' +
-      '<div class="support-grid">' +
-      '<div class="card"><h4>📧 Email</h4><p class="muted small">Reach the team at support@launchboard.example — general questions, listing help, billing.</p></div>' +
+    return '<div class="wrap page narrow"><div class="page-head"><h1>Support</h1><p>We usually reply within a day.</p></div><div class="support-grid">' +
+      '<div class="card"><h4>📧 Email</h4><p class="muted small">support@launchboard.example — general questions, listing help, billing.</p></div>' +
       '<div class="card"><h4>📚 FAQ</h4><p class="muted small">Most answers live in the <a href="#/faq" data-link>FAQ</a>.</p></div>' +
-      '<div class="card"><h4>🐛 Report an issue</h4><p class="muted small">Found a bug or a bad listing? Let us know and we\'ll fix it fast.</p></div>' +
-      "</div></div>";
+      '<div class="card"><h4>🐛 Report an issue</h4><p class="muted small">Found a bug or a bad listing? Let us know and we\'ll fix it fast.</p></div></div></div>';
   }
-
   function viewBookmarks() {
     var saved = STARTUPS.filter(function (s) { return bookmarks.has(s.slug); });
-    if (!saved.length) {
-      return '<div class="wrap page"><div class="page-head"><h1>Saved startups</h1></div>' +
-        '<div class="empty-state"><div class="big-emoji">♡</div><h3>Nothing saved yet</h3>' +
-        '<p class="muted">Tap “Save” on any startup to keep it here.</p>' +
-        '<p><a class="btn btn-primary" href="#/browse" data-link>Browse startups</a></p></div></div>';
-    }
-    return '<div class="wrap page"><div class="page-head"><h1>Saved startups</h1><p>' + saved.length + " saved.</p></div>" +
-      '<div class="feed">' + saved.map(startupRow).join("") + "</div></div>";
+    if (!saved.length) return '<div class="wrap page"><div class="page-head"><h1>Saved startups</h1></div><div class="empty-state"><div class="big-emoji">♡</div><h3>Nothing saved yet</h3><p class="muted">Tap “Save” on any startup to keep it here.</p><p><a class="btn btn-primary" href="#/browse" data-link>Browse startups</a></p></div></div>';
+    return '<div class="wrap page"><div class="page-head"><h1>Saved startups</h1><p>' + saved.length + " saved.</p></div><div class=\"feed\">" + saved.map(function (s) { return startupRow(s); }).join("") + "</div></div>";
   }
-
-  function notFound() {
-    return '<div class="wrap page"><div class="empty-state"><div class="big-emoji">🧭</div><h3>Page not found</h3>' +
-      '<p><a class="btn btn-primary" href="#/" data-link>Go home</a></p></div></div>';
-  }
+  function notFound() { return '<div class="wrap page"><div class="empty-state"><div class="big-emoji">🧭</div><h3>Page not found</h3><p><a class="btn btn-primary" href="#/" data-link>Go home</a></p></div></div>'; }
 
   /* ---------------- router ---------------- */
   function parseHash() {
-    var h = location.hash.replace(/^#/, "") || "/";
-    var qi = h.indexOf("?");
-    var path = qi >= 0 ? h.slice(0, qi) : h;
-    var query = qi >= 0 ? h.slice(qi + 1) : "";
-    var params = {};
-    query.split("&").forEach(function (p) {
-      if (!p) return; var kv = p.split("=");
-      params[decodeURIComponent(kv[0])] = decodeURIComponent((kv[1] || "").replace(/\+/g, " "));
-    });
+    var h = location.hash.replace(/^#/, "") || "/", qi = h.indexOf("?");
+    var path = qi >= 0 ? h.slice(0, qi) : h, query = qi >= 0 ? h.slice(qi + 1) : "", params = {};
+    query.split("&").forEach(function (p) { if (!p) return; var kv = p.split("="); params[decodeURIComponent(kv[0])] = decodeURIComponent((kv[1] || "").replace(/\+/g, " ")); });
     return { path: path, params: params };
   }
-
+  function seg(path, pre) { return decodeURIComponent(path.slice(pre.length)); }
   function render() {
     if (!STARTUPS.length) { app.innerHTML = '<div class="wrap loading-wrap"><p class="muted">Loading…</p></div>'; return; }
-    var r = parseHash();
-    var html;
-    if (r.path === "/" || r.path === "") html = viewHome();
-    else if (r.path === "/browse") html = viewBrowse(r.params);
-    else if (r.path.indexOf("/startup/") === 0) html = viewDetail(decodeURIComponent(r.path.slice("/startup/".length)));
-    else if (r.path === "/topics") html = viewTopics();
-    else if (r.path === "/jobs") html = viewJobs();
-    else if (r.path === "/newsletter") html = viewNewsletter();
-    else if (r.path === "/submit") html = viewSubmit();
-    else if (r.path === "/advertise") html = viewAdvertise();
-    else if (r.path === "/faq") html = viewFaq();
-    else if (r.path === "/support") html = viewSupport();
-    else if (r.path === "/bookmarks") html = viewBookmarks();
+    var r = parseHash(), p = r.path, html;
+    if (p === "/" || p === "") html = viewHome();
+    else if (p === "/browse") html = viewBrowse(r.params);
+    else if (p === "/leaderboard") html = viewLeaderboard(r.params);
+    else if (p.indexOf("/startup/") === 0) html = viewDetail(seg(p, "/startup/"));
+    else if (p === "/topics") html = viewTopics();
+    else if (p === "/collections") html = viewCollections();
+    else if (p.indexOf("/collection/") === 0) html = viewCollectionDetail(seg(p, "/collection/"));
+    else if (p === "/makers") html = viewMakers();
+    else if (p.indexOf("/maker/") === 0) html = viewMakerProfile(seg(p, "/maker/"));
+    else if (p === "/discussions") html = viewDiscussions();
+    else if (p.indexOf("/discussion/") === 0) html = viewDiscussionDetail(seg(p, "/discussion/"));
+    else if (p === "/following") html = viewFollowing();
+    else if (p === "/profile") html = viewProfile();
+    else if (p === "/jobs") html = viewJobs();
+    else if (p === "/newsletter") html = viewNewsletter();
+    else if (p === "/submit") html = viewSubmit();
+    else if (p === "/advertise") html = viewAdvertise();
+    else if (p === "/faq") html = viewFaq();
+    else if (p === "/support") html = viewSupport();
+    else if (p === "/bookmarks") html = viewBookmarks();
     else html = notFound();
-
     app.innerHTML = html;
-    setActiveNav(r.path);
+    setActiveNav(p);
     closeMobileNav();
-    if (r.path !== lastPath) { window.scrollTo(0, 0); app.focus({ preventScroll: true }); }
-    lastPath = r.path;
+    if (p !== lastPath) { window.scrollTo(0, 0); app.focus({ preventScroll: true }); }
+    lastPath = p;
   }
   function rerender() { var y = window.scrollY; lastPath = parseHash().path; render(); window.scrollTo(0, y); }
-
   function setActiveNav(path) {
-    var base = "#" + (path === "/" ? "/" : "/" + (path.split("/")[1] || ""));
-    Array.prototype.forEach.call(document.querySelectorAll("#nav a"), function (a) {
-      var href = a.getAttribute("href");
-      a.classList.toggle("is-active", href === base || (base === "#/startup" && href === "#/browse"));
-    });
+    var first = path === "/" ? "/" : "/" + (path.split("/")[1] || "");
+    var alias = { "/startup": "/browse", "/collection": "/collections", "/maker": "/makers", "/discussion": "/discussions" };
+    var base = "#" + (alias[first] || first);
+    Array.prototype.forEach.call(document.querySelectorAll("#nav a"), function (a) { a.classList.toggle("is-active", a.getAttribute("href") === base); });
   }
 
   /* ---------------- interactions ---------------- */
-  function shareStartup(el) {
-    var slug = el.dataset.slug;
-    var url = location.origin + location.pathname + "#/startup/" + slug;
+  function shareThing(el, url) {
     var done = function () { var t = el.textContent; el.textContent = "Copied ✓"; setTimeout(function () { el.textContent = t; }, 1500); };
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, done);
-    else done();
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(url).then(done, done); else done();
   }
-  function loadMore() {
-    var r = parseHash();
-    var page = (parseInt(r.params.page, 10) || 1) + 1;
-    r.params.page = page;
-    setHash(r);
-  }
-  function setBrowseTab(view) {
-    var r = parseHash();
-    r.params.view = view; delete r.params.page;
-    setHash(r);
-  }
+  function setHash(r) { var qs = Object.keys(r.params).map(function (k) { return encodeURIComponent(k) + "=" + encodeURIComponent(r.params[k]); }).join("&"); location.hash = r.path + (qs ? "?" + qs : ""); }
+  function setParam(key, val) { var r = parseHash(); if (val) r.params[key] = val; else delete r.params[key]; delete r.params.page; setHash(r); }
+  function loadMore() { var r = parseHash(); r.params.page = (parseInt(r.params.page, 10) || 1) + 1; setHash(r); }
   function applyBrowseControls() {
-    var r = parseHash();
-    var q = (document.getElementById("browse-q") || {}).value;
-    var cat = (document.getElementById("browse-cat") || {}).value;
+    var r = parseHash(), q = (document.getElementById("browse-q") || {}).value, cat = (document.getElementById("browse-cat") || {}).value;
     if (q != null) { if (q.trim()) r.params.q = q.trim(); else delete r.params.q; }
     if (cat != null) { if (cat) r.params.cat = cat; else delete r.params.cat; }
-    delete r.params.page;
-    setHash(r);
+    delete r.params.page; setHash(r);
   }
-  function setHash(r) {
-    var qs = Object.keys(r.params).map(function (k) { return encodeURIComponent(k) + "=" + encodeURIComponent(r.params[k]); }).join("&");
-    location.hash = r.path + (qs ? "?" + qs : "");
-  }
-
-  function setStatus(id, msg, kind) {
-    var el = document.getElementById(id); if (!el) return;
-    el.textContent = msg; el.className = "form-status" + (kind ? " " + kind : "");
-  }
-
+  function setStatus(id, msg, kind) { var el = document.getElementById(id); if (!el) return; el.textContent = msg; el.className = "form-status" + (kind ? " " + kind : ""); }
   function postJSON(url, payload, statusId, okMsg, btn) {
-    if (btn) btn.disabled = true;
-    setStatus(statusId, "Sending…", "");
+    if (btn) btn.disabled = true; setStatus(statusId, "Sending…", "");
     return ensureCsrf().then(function () {
-      return fetch(url, {
-        method: "POST", credentials: "same-origin",
-        headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken || "" },
-        body: JSON.stringify(payload)
-      });
+      return fetch(url, { method: "POST", credentials: "same-origin", headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken || "" }, body: JSON.stringify(payload) });
     }).then(function (r) { return r.json().then(function (b) { return { ok: r.ok, body: b }; }); })
-      .then(function (res) {
-        if (res.ok) setStatus(statusId, res.body.message || okMsg, "ok");
-        else setStatus(statusId, (res.body && res.body.error) || "Something went wrong.", "err");
-        return res.ok;
-      }).catch(function () { setStatus(statusId, "Network error. Please try again.", "err"); return false; })
+      .then(function (res) { setStatus(statusId, res.ok ? (res.body.message || okMsg) : ((res.body && res.body.error) || "Something went wrong."), res.ok ? "ok" : "err"); return res.ok; })
+      .catch(function () { setStatus(statusId, "Network error. Please try again.", "err"); return false; })
       .then(function (ok) { if (btn) btn.disabled = false; return ok; });
   }
-
   function handleSubmitStartup(f) {
     if (!f.checkValidity()) { setStatus("form-status", "Please complete every field.", "err"); f.reportValidity(); return; }
-    var payload = { name: f.name.value.trim(), url: f.url.value.trim(), tagline: f.tagline.value.trim(), category: f.category.value, email: f.email.value.trim() };
-    postJSON("/api/submit", payload, "form-status", "Submitted for review 🚀", document.getElementById("submit-btn")).then(function (ok) { if (ok) f.reset(); });
+    postJSON("/api/submit", { name: f.name.value.trim(), url: f.url.value.trim(), tagline: f.tagline.value.trim(), category: f.category.value, email: f.email.value.trim() }, "form-status", "Submitted for review 🚀", document.getElementById("submit-btn")).then(function (ok) { if (ok) f.reset(); });
   }
   function handleNewsletter(f) {
-    var emailEl = f.querySelector('input[type="email"]');
-    var statusId = f.id === "footer-news-form" ? "footer-news-status" : "news-status";
+    var emailEl = f.querySelector('input[type="email"]'), statusId = f.id === "footer-news-form" ? "footer-news-status" : "news-status";
     if (!emailEl || !emailEl.value.trim() || !f.checkValidity()) { setStatus(statusId, "Enter a valid email.", "err"); if (f.reportValidity) f.reportValidity(); return; }
-    postJSON("/api/newsletter", { email: emailEl.value.trim() }, statusId, "You're subscribed 🎉", f.querySelector("button")).then(function (ok) {
-      if (ok) { save("lb-news", true); f.reset(); }
-    });
+    postJSON("/api/newsletter", { email: emailEl.value.trim() }, statusId, "You're subscribed 🎉", f.querySelector("button")).then(function (ok) { if (ok) { save("lb-news", true); f.reset(); } });
   }
   function handleComment(f) {
-    var slug = f.dataset.slug;
-    var name = document.getElementById("comment-name").value.trim();
-    var text = document.getElementById("comment-text").value.trim();
+    var slug = f.dataset.slug, name = document.getElementById("comment-name").value.trim(), text = document.getElementById("comment-text").value.trim();
     if (!name || !text) { setStatus("comment-status", "Add your name and a comment.", "err"); return; }
-    var list = localComments[slug] || (localComments[slug] = []);
-    list.push({ author: name, initials: name.slice(0, 2).toUpperCase(), text: text, daysAgo: 0 });
-    save("lb-comments", localComments);
-    rerender();
+    (localComments[slug] || (localComments[slug] = [])).push({ author: name, initials: name.slice(0, 2).toUpperCase(), text: text, daysAgo: 0 });
+    save("lb-comments", localComments); rerender();
+  }
+  function handleReview(f) {
+    var slug = f.dataset.slug, name = document.getElementById("rv-name").value.trim();
+    var rating = parseInt(document.getElementById("rv-rating").value, 10) || 5;
+    var pros = document.getElementById("rv-pros").value.trim(), cons = document.getElementById("rv-cons").value.trim(), body = document.getElementById("rv-body").value.trim();
+    if (!name) { setStatus("review-status", "Add your name.", "err"); return; }
+    (userReviews[slug] || (userReviews[slug] = [])).push({ author: name, initials: name.slice(0, 2).toUpperCase(), rating: rating, pros: pros, cons: cons, body: body, daysAgo: 0 });
+    save("lb-reviews", userReviews); rerender();
+  }
+  function handleReply(f) {
+    var id = f.dataset.id, name = document.getElementById("reply-name").value.trim(), body = document.getElementById("reply-body").value.trim();
+    if (!name || !body) { setStatus("reply-status", "Add your name and a reply.", "err"); return; }
+    (discReplies[id] || (discReplies[id] = [])).push({ author: name, initials: name.slice(0, 2).toUpperCase(), body: body, daysAgo: 0, gp: 3 });
+    save("lb-disc-replies", discReplies); rerender();
+  }
+  function handleNewDiscussion(f) {
+    var title = document.getElementById("dc-title").value.trim(), body = document.getElementById("dc-body").value.trim();
+    var name = document.getElementById("dc-name").value.trim(), cat = document.getElementById("dc-cat").value.trim() || "General";
+    if (!title || !body || !name) { setStatus("discussion-status", "Title, details and name are required.", "err"); return; }
+    userDiscussions.unshift({ id: "u" + Date.now(), title: title, author: name, initials: name.slice(0, 2).toUpperCase(), gp: 5, category: cat, daysAgo: 0, body: body, upvotes: 1, replies: [] });
+    save("lb-disc-new", userDiscussions); location.hash = "/discussions";
   }
 
-  /* ---------------- global wiring (event delegation) ---------------- */
   document.addEventListener("click", function (e) {
-    var actionEl = e.target.closest("[data-action]");
-    if (!actionEl) return;
-    var a = actionEl.dataset.action;
-    if (a === "want") { e.preventDefault(); toggleSet(wants, "lb-wants", actionEl.dataset.slug); rerender(); }
-    else if (a === "vote") { e.preventDefault(); toggleSet(votes, "lb-votes", actionEl.dataset.slug); rerender(); }
-    else if (a === "bookmark") { e.preventDefault(); toggleSet(bookmarks, "lb-bookmarks", actionEl.dataset.slug); rerender(); }
-    else if (a === "share") { e.preventDefault(); shareStartup(actionEl); }
+    var el = e.target.closest("[data-action]"); if (!el) return;
+    var a = el.dataset.action;
+    if (a === "want") { e.preventDefault(); toggleSet(wants, "lb-wants", el.dataset.slug); rerender(); }
+    else if (a === "vote") { e.preventDefault(); toggleSet(votes, "lb-votes", el.dataset.slug); rerender(); }
+    else if (a === "bookmark") { e.preventDefault(); toggleSet(bookmarks, "lb-bookmarks", el.dataset.slug); rerender(); }
+    else if (a === "share") { e.preventDefault(); shareThing(el, location.origin + location.pathname + "#/startup/" + el.dataset.slug); }
     else if (a === "load-more") { e.preventDefault(); loadMore(); }
-    else if (a === "tab-browse") { e.preventDefault(); setBrowseTab(actionEl.dataset.view); }
+    else if (a === "tab-browse") { e.preventDefault(); setParam("view", el.dataset.view); }
+    else if (a === "tab-lead") { e.preventDefault(); setParam("period", el.dataset.period); }
+    else if (a === "disc-vote") { e.preventDefault(); toggleSet(discVotes, "lb-disc-votes", el.dataset.id); rerender(); }
+    else if (a === "follow-maker") { e.preventDefault(); toggleSet(followMakers, "lb-follow-makers", el.dataset.id); rerender(); }
+    else if (a === "follow-topic") { e.preventDefault(); toggleSet(followTopics, "lb-follow-topics", el.dataset.cat); rerender(); }
+    else if (a === "save-collection") { e.preventDefault(); toggleSet(savedCollections, "lb-collections", el.dataset.slug); rerender(); }
   });
-
   document.addEventListener("submit", function (e) {
     var f = e.target;
     if (f.id === "search-form") { e.preventDefault(); var q = document.getElementById("search-input").value.trim(); location.hash = "/browse" + (q ? "?q=" + encodeURIComponent(q) : ""); }
@@ -531,44 +609,29 @@
     else if (f.id === "submit-form") { e.preventDefault(); handleSubmitStartup(f); }
     else if (f.id === "newsletter-form" || f.id === "footer-news-form") { e.preventDefault(); handleNewsletter(f); }
     else if (f.id === "comment-form") { e.preventDefault(); handleComment(f); }
+    else if (f.id === "review-form") { e.preventDefault(); handleReview(f); }
+    else if (f.id === "reply-form") { e.preventDefault(); handleReply(f); }
+    else if (f.id === "discussion-form") { e.preventDefault(); handleNewDiscussion(f); }
   });
+  document.addEventListener("change", function (e) { if (e.target && e.target.dataset && e.target.dataset.action === "browse-control") applyBrowseControls(); });
 
-  document.addEventListener("change", function (e) {
-    if (e.target && e.target.dataset && e.target.dataset.action === "browse-control") applyBrowseControls();
-  });
-
-  /* theme toggle */
+  /* theme + chrome */
   var root = document.documentElement;
-  (function () {
-    var t = store("lb-theme", null);
-    root.setAttribute("data-theme", t === "dark" || t === "light" ? t : "auto");
-  })();
+  (function () { var t = store("lb-theme", null); root.setAttribute("data-theme", t === "dark" || t === "light" ? t : "auto"); })();
   var themeBtn = document.getElementById("theme-toggle");
   if (themeBtn) themeBtn.addEventListener("click", function () {
     var prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    var cur = root.getAttribute("data-theme");
-    var isDark = cur === "dark" || (cur === "auto" && prefersDark);
-    var next = isDark ? "light" : "dark";
+    var cur = root.getAttribute("data-theme"), isDark = cur === "dark" || (cur === "auto" && prefersDark), next = isDark ? "light" : "dark";
     root.setAttribute("data-theme", next); save("lb-theme", next);
   });
-
-  /* mobile nav */
-  var navToggle = document.getElementById("nav-toggle");
-  var nav = document.getElementById("nav");
+  var navToggle = document.getElementById("nav-toggle"), nav = document.getElementById("nav");
   function closeMobileNav() { if (nav) { nav.classList.remove("open"); if (navToggle) navToggle.setAttribute("aria-expanded", "false"); } }
-  if (navToggle && nav) navToggle.addEventListener("click", function () {
-    var open = nav.classList.toggle("open"); navToggle.setAttribute("aria-expanded", open ? "true" : "false");
-  });
+  if (navToggle && nav) navToggle.addEventListener("click", function () { var o = nav.classList.toggle("open"); navToggle.setAttribute("aria-expanded", o ? "true" : "false"); });
+  var yearEl = document.getElementById("year"); if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
-  var yearEl = document.getElementById("year");
-  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
-
-  /* boot */
   window.addEventListener("hashchange", render);
   ensureCsrf();
-  fetchData().then(function () {
-    homeReady = true; render();
-  }).catch(function () {
-    app.innerHTML = '<div class="wrap page"><div class="empty-state"><div class="big-emoji">⚠️</div><h3>Could not load startups</h3><p class="muted">Please refresh.</p></div></div>';
+  fetchData().then(render).catch(function () {
+    app.innerHTML = '<div class="wrap page"><div class="empty-state"><div class="big-emoji">⚠️</div><h3>Could not load data</h3><p class="muted">Please refresh.</p></div></div>';
   });
 })();
