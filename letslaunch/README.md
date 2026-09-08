@@ -72,3 +72,5 @@ serverless functions, and `vercel.json` applies the headers.
 - **Demo:** the product board is sample data, upvotes are remembered per-browser
   in `localStorage`, and `/api/submit` validates + echoes but does not persist.
   Swap in a database and an email/queue step to go fully live.
+
+<!-- Live deploy via Vercel git integration. -->
