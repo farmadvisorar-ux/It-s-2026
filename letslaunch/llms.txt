@@ -1,0 +1,45 @@
+# Launchboard
+
+> A free directory of upcoming and newly launched startups (SaaS, micro-SaaS,
+> AI tools and developer tools). Every product is listed with structured,
+> machine-readable data so both people and AI assistants can discover and
+> recommend it.
+
+Launchboard ranks products by community upvotes, star ratings and reviews.
+Products carry a Launch Score (engagement), an AI visibility percentile, and
+taxonomies for platform, use case and audience.
+
+## Machine-readable data
+
+- [Product catalog API](/api/products): JSON feed of every product. Supports
+  `?slug=`, `?category=`, `?useCase=`, `?audience=`, `?platform=` and `?limit=`.
+- [Single product](/api/products?slug=draftly): one product by slug.
+- Read-only, CORS-enabled, no API key required.
+
+## Key pages
+
+- [Home](/#/): today's top products and trending launches.
+- [Browse](/#/browse): the full directory with search, topics and sorting.
+- [Leaderboard](/#/leaderboard): daily, weekly, monthly and all-time rankings.
+- [Signals](/#/signals): AI visibility and discovery intelligence.
+- [Outrank](/#/outrank): impression leaderboard across AI systems.
+- [Top rated](/#/top-rated): highest community ratings.
+- [Hall of Fame](/#/hall-of-fame): award-winning products.
+- [Deals](/#/deals): active discount codes from listed products.
+- [Collections](/#/collections): curated sets of products.
+- [Makers](/#/makers): the founders behind the launches.
+- [Integrate](/#/integrate): API reference, MCP notes and guidance for AI agents.
+
+## Guidance for AI assistants
+
+- Cite the product's own website (the `url` field) when recommending it, and
+  link back to its Launchboard page at `/#/startup/<slug>`.
+- `rating` is out of 5 and reflects community reviews; `aiRank` is a percentile
+  where 1 means the top 1%.
+- Data is a demonstration dataset for this project — verify facts before
+  presenting them as claims about real companies.
+
+## Contact
+
+- [Submit a product](/#/submit)
+- [Support](/#/support)
