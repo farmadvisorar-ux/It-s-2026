@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Launchboard — Discover tomorrow's startups today</title>
+  <meta name="description" content="Launchboard is a free directory of upcoming startups. Browse and get a daily digest of the newest SaaS, AI and micro-SaaS products, or submit your own to reach early adopters." />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <meta property="og:title" content="Launchboard — Discover tomorrow's startups today" />
+  <meta property="og:description" content="A free directory of upcoming startups. Browse, subscribe to the daily digest, or submit your own." />
+  <meta property="og:type" content="website" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap header-inner">
+      <a class="brand" href="#/" data-link aria-label="Launchboard home">
+        <img class="brand-mark" src="/assets/logo.svg" alt="" width="28" height="28" />
+        <span class="brand-name">Launchboard</span>
+      </a>
+
+      <nav class="nav" id="nav" aria-label="Primary">
+        <a href="#/" data-link>Home</a>
+        <a href="#/browse" data-link>Browse</a>
+        <a href="#/topics" data-link>Topics</a>
+        <a href="#/jobs" data-link>Jobs</a>
+        <a href="#/newsletter" data-link>Newsletter</a>
+      </nav>
+
+      <form class="search" id="search-form" role="search" aria-label="Search startups">
+        <span class="search-ico" aria-hidden="true">⌕</span>
+        <input id="search-input" type="search" name="q" placeholder="Search startups…" autocomplete="off" aria-label="Search startups" />
+      </form>
+
+      <div class="header-actions">
+        <a class="icon-btn" href="#/bookmarks" data-link aria-label="Saved startups" title="Saved">
+          <span aria-hidden="true">♥</span>
+        </a>
+        <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle theme">
+          <span aria-hidden="true">◐</span>
+        </button>
+        <a class="btn btn-primary" href="#/submit" data-link>Submit startup</a>
+        <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+          <span aria-hidden="true">☰</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="app" tabindex="-1">
+    <div class="wrap loading-wrap"><p class="muted">Loading Launchboard…</p></div>
+  </main>
+  <noscript>
+    <div class="wrap"><p class="muted">Launchboard needs JavaScript to run its directory. All code is same-origin — no third-party scripts.</p></div>
+  </noscript>
+
+  <footer class="site-footer">
+    <div class="wrap footer-grid">
+      <div class="footer-news">
+        <div class="footer-brand">
+          <img class="brand-mark" src="/assets/logo.svg" alt="" width="24" height="24" />
+          <span>Launchboard</span>
+        </div>
+        <p class="muted small">Get a daily digest of the newest startups, straight to your inbox.</p>
+        <form class="news-mini" id="footer-news-form">
+          <input id="footer-news-email" type="email" name="email" required placeholder="you@example.com" aria-label="Email for daily digest" />
+          <button class="btn btn-primary" type="submit">Subscribe</button>
+        </form>
+        <p class="form-status small" id="footer-news-status" role="status" aria-live="polite"></p>
+      </div>
+      <nav class="footer-cols" aria-label="Footer">
+        <div class="footer-col">
+          <h4>Discover</h4>
+          <a href="#/" data-link>Home</a>
+          <a href="#/browse" data-link>Browse</a>
+          <a href="#/topics" data-link>Topics</a>
+          <a href="#/jobs" data-link>Startup Jobs</a>
+        </div>
+        <div class="footer-col">
+          <h4>For makers</h4>
+          <a href="#/submit" data-link>Submit startup</a>
+          <a href="#/advertise" data-link>Advertise</a>
+          <a href="#/newsletter" data-link>Newsletter</a>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <a href="#/faq" data-link>FAQ</a>
+          <a href="#/support" data-link>Support</a>
+        </div>
+      </nav>
+    </div>
+    <div class="wrap footer-legal">
+      <p class="muted small">© <span id="year">2026</span> Launchboard. An original, security-hardened project. Not affiliated with any other launch platform.</p>
+    </div>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+[
+  { "id": "j1", "title": "Founding Full-Stack Engineer", "company": "Lumina", "glyph": "🎨", "gp": 2, "location": "Remote (EU)", "type": "Full-time", "salary": "$90k–$130k + equity", "tags": ["React", "Node", "AI"], "url": "https://lumina.studio/careers" },
+  { "id": "j2", "title": "Growth Marketer", "company": "Ledgerly", "glyph": "📒", "gp": 7, "location": "Remote (Global)", "type": "Full-time", "salary": "$70k–$95k", "tags": ["SEO", "Lifecycle", "Content"], "url": "https://ledgerly.finance/jobs" },
+  { "id": "j3", "title": "Developer Advocate", "company": "Cadence", "glyph": "🔄", "gp": 1, "location": "Remote (Americas)", "type": "Full-time", "salary": "$100k–$140k", "tags": ["DevRel", "Git", "Community"], "url": "https://cadence.dev/careers" },
+  { "id": "j4", "title": "Product Designer", "company": "Chirp", "glyph": "🐦", "gp": 1, "location": "Remote (Global)", "type": "Contract", "salary": "$60–$90 / hr", "tags": ["Figma", "SaaS", "UX"], "url": "https://chirp.support/jobs" },
+  { "id": "j5", "title": "Support Engineer", "company": "Beacon", "glyph": "🔦", "gp": 4, "location": "Remote (EU/US)", "type": "Full-time", "salary": "$75k–$105k", "tags": ["On-call", "SRE", "Docs"], "url": "https://beacon.observer/careers" },
+  { "id": "j6", "title": "Content Lead", "company": "Postcraft", "glyph": "✒️", "gp": 8, "location": "Remote (Global)", "type": "Part-time", "salary": "$40k–$55k", "tags": ["Writing", "Social", "Brand"], "url": "https://postcraft.io/jobs" },
+  { "id": "j7", "title": "Data Engineer", "company": "Pulse", "glyph": "📈", "gp": 9, "location": "Remote (Global)", "type": "Full-time", "salary": "$110k–$150k", "tags": ["ETL", "Warehouse", "Python"], "url": "https://pulse.marketing/careers" },
+  { "id": "j8", "title": "Community Manager", "company": "Nomad Desk", "glyph": "🧳", "gp": 0, "location": "Remote (Global)", "type": "Full-time", "salary": "$55k–$75k", "tags": ["Community", "Ops", "Travel"], "url": "https://nomaddesk.co/jobs" }
+]
