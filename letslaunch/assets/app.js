@@ -7,7 +7,7 @@
   "use strict";
 
   var app = document.getElementById("app");
-  var STARTUPS = [], JOBS = [], COLLECTIONS = [], DISCUSSIONS = [], PH = {};
+  var STARTUPS = [], JOBS = [], COLLECTIONS = [], DISCUSSIONS = [], PH = {}, PP = {};
   var csrfToken = null, lastPath = null;
 
   /* ---------------- utilities ---------------- */
@@ -61,19 +61,50 @@
     return '<span class="stars" aria-hidden="true">' + out + "</span>";
   }
   function medal(rank) { return rank === 1 ? "🥇" : rank === 2 ? "🥈" : rank === 3 ? "🥉" : String(rank); }
+  function fmt(n) { return String(n || 0).replace(/\B(?=(\d{3})+(?!\d))/g, ","); }
+
+  /* Launch Score — composite community-engagement metric (upvotes, comments,
+     reviews, rating and boost), the Launchboard equivalent of a peer score. */
+  function launchScore(s) {
+    return Math.round(points(s) + commentsFor(s).length * 12 + reviewsFor(s).length * 18 +
+      (s.boosted ? 40 : 0) + (s.rating || 0) * 20);
+  }
+  function aiTier(s) {
+    var r = s.aiRank || 0;
+    if (!r) return "";
+    if (r <= 1) return "AI Top 1%";
+    if (r <= 5) return "AI Top 5%";
+    if (r <= 10) return "AI Top 10%";
+    if (r <= 25) return "AI Top 25%";
+    return "";
+  }
+  function aiBadge(s) { var t = aiTier(s); return t ? '<span class="badge ai">' + t + "</span>" : ""; }
+  function taxCounts(field) {
+    var counts = {};
+    STARTUPS.forEach(function (s) { (s[field] || []).forEach(function (v) { counts[v] = (counts[v] || 0) + 1; }); });
+    return Object.keys(counts).sort().map(function (n) { return { name: n, count: counts[n] }; });
+  }
+  function dealProducts() { return STARTUPS.filter(function (s) { return s.deal && s.deal.code; }); }
+  function awardProducts() { return STARTUPS.filter(function (s) { return !!s.award; }); }
+  function totalImpressions() { return STARTUPS.reduce(function (a, s) { return a + (s.impressions || 0); }, 0); }
 
   /* ---------------- data ---------------- */
   function fetchJSON(u) { return fetch(u, { cache: "no-cache" }).then(function (r) { return r.json(); }); }
   function fetchData() {
     return Promise.all([
       fetchJSON("/data/startups.json"), fetchJSON("/data/jobs.json"),
-      fetchJSON("/data/ph.json"), fetchJSON("/data/collections.json"), fetchJSON("/data/discussions.json")
+      fetchJSON("/data/ph.json"), fetchJSON("/data/collections.json"), fetchJSON("/data/discussions.json"),
+      fetchJSON("/data/pp.json")
     ]).then(function (res) {
       STARTUPS = res[0] || []; JOBS = res[1] || []; PH = res[2] || {}; COLLECTIONS = res[3] || []; DISCUSSIONS = res[4] || [];
+      PP = res[5] || {};
       STARTUPS.forEach(function (s) {
-        var x = PH[s.slug] || {};
+        var x = PH[s.slug] || {}, p = PP[s.slug] || {};
         s.rating = x.rating || 0; s.ratingCount = x.ratingCount || 0; s.stack = x.stack || [];
         s.pricing = x.pricing || ""; s.award = x.award || ""; s.reviews = x.reviews || [];
+        s.platforms = p.platforms || []; s.useCases = p.useCases || []; s.audiences = p.audiences || [];
+        s.aiRank = p.aiRank || 0; s.impressions = p.impressions || 0; s.mrr = p.mrr || 0;
+        s.deal = p.deal || null; s.updates = p.updates || [];
       });
     });
   }
@@ -117,10 +148,11 @@
     return '<article class="startup-row' + (rank ? " has-rank" : "") + '">' + rankCell + logoLink(s) +
       '<div class="startup-main"><div class="startup-head">' +
       '<a class="startup-name" href="#/startup/' + esc(s.slug) + '" data-link>' + esc(s.name) + "</a>" +
-      (s.boosted ? '<span class="badge boosted">Boosted</span>' : "") + awardTag(s) + "</div>" +
+      (s.boosted ? '<span class="badge boosted">Boosted</span>' : "") + awardTag(s) + aiBadge(s) + "</div>" +
       '<p class="startup-tagline">' + esc(s.tagline) + "</p>" +
       '<div class="startup-meta"><span class="tag">' + esc(s.category) + "</span>" +
       (s.rating ? "<span>" + stars(s.rating) + " " + s.rating.toFixed(1) + "</span>" : "") +
+      '<span class="score-pill" title="Launch Score">⚡ ' + fmt(launchScore(s)) + "</span>" +
       "<span>" + esc(dateLabel(s.daysAgo)) + "</span></div></div>" + wantButton(s) + "</article>";
   }
   function miniCard(s) {
@@ -196,13 +228,23 @@
 
   function viewBrowse(params) {
     var q = (params.q || "").trim().toLowerCase(), cat = params.cat || "", view = params.view || "all";
+    var platform = params.platform || "", useCase = params.useCase || "", audience = params.audience || "";
     var page = Math.max(1, parseInt(params.page, 10) || 1);
+    var inList = function (arr, v) { return (arr || []).some(function (x) { return String(x).toLowerCase() === String(v).toLowerCase(); }); };
     var list = STARTUPS.filter(function (s) {
       if (cat && s.category !== cat) return false;
+      if (platform && !inList(s.platforms, platform)) return false;
+      if (useCase && !inList(s.useCases, useCase)) return false;
+      if (audience && !inList(s.audiences, audience)) return false;
       if (view === "boosted" && !s.boosted) return false;
-      if (q) { var h = (s.name + " " + s.tagline + " " + s.category + " " + (s.tags || []).join(" ")).toLowerCase(); if (h.indexOf(q) === -1) return false; }
+      if (q) {
+        var h = (s.name + " " + s.tagline + " " + s.category + " " + (s.tags || []).join(" ") + " " +
+          (s.useCases || []).join(" ") + " " + (s.audiences || []).join(" ") + " " + (s.platforms || []).join(" ")).toLowerCase();
+        if (h.indexOf(q) === -1) return false;
+      }
       return true;
     });
+    var facet = platform || useCase || audience;
     if (view === "trending") list.sort(function (a, b) { return points(b) - points(a); });
     else if (view === "top") list.sort(function (a, b) { return b.rating - a.rating; });
     else list.sort(function (a, b) { return a.daysAgo - b.daysAgo; });
@@ -217,7 +259,8 @@
       : (view === "all" && !q) ? dateGroups(shown) : '<div class="feed">' + shown.map(function (s) { return startupRow(s); }).join("") + "</div>";
     var more = shown.length < total ? '<div class="load-more-wrap"><button class="btn btn-ghost" data-action="load-more">Load next page… (' + shown.length + " of " + total + ")</button></div>" : "";
     return '<div class="wrap page"><div class="page-head"><h1>Browse startups</h1><p>' + total + ' startup' + (total === 1 ? "" : "s") +
-      (cat ? " in " + esc(cat) : "") + (q ? ' matching “' + esc(params.q) + "”" : "") + ".</p></div>" +
+      (cat ? " in " + esc(cat) : "") + (facet ? " for " + esc(facet) : "") +
+      (q ? ' matching “' + esc(params.q) + "”" : "") + ".</p></div>" +
       '<div class="tabs">' + tabs + '</div><div class="toolbar">' +
       '<form class="search" id="browse-search" role="search"><span class="search-ico" aria-hidden="true">⌕</span>' +
       '<input id="browse-q" type="search" value="' + esc(params.q || "") + '" placeholder="Search startups…" aria-label="Search" /></form>' +
@@ -246,9 +289,15 @@
       '<div class="detail-body"><div class="prose">' +
       "<h3>About " + esc(s.name) + "</h3><p>" + esc(s.description) + "</p>" +
       '<div class="chips">' + (s.tags || []).map(function (t) { return '<span class="tag">' + esc(t) + "</span>"; }).join("") + "</div>" +
+      (s.deal ? '<div class="deal-banner"><div><strong>🏷️ ' + esc(s.deal.text) + "</strong>" +
+        '<div class="muted small">Exclusive to Launchboard readers</div></div>' +
+        '<button class="deal-code" data-action="copy-code" data-code="' + esc(s.deal.code) + '">' + esc(s.deal.code) + " · copy</button></div>" : "") +
       (s.stack.length ? '<h3>🧱 Built with</h3><div class="chips">' + s.stack.map(function (t) { return '<span class="tag alt">' + esc(t) + "</span>"; }).join("") + "</div>" : "") +
+      taxoBlock(s) + updatesBlock(s) +
       reviewsBlock(s, revs) + commentsBlock(s, commentsFor(s)) +
-      (alts.length ? '<h3>🔀 Alternatives</h3><div class="feed">' + alts.map(function (a) { return startupRow(a); }).join("") + "</div>" : "") +
+      (alts.length ? "<h3>🔀 Alternatives to " + esc(s.name) + '</h3><div class="feed">' + alts.map(function (a) { return startupRow(a); }).join("") +
+        '</div><p><a class="btn btn-ghost btn-sm" href="#/alternatives/' + esc(s.slug) + '" data-link>Full comparison table →</a></p>' : "") +
+      embedBlock(s) +
       "</div><aside>" +
       '<div class="card side-card"><h4>Maker</h4><a class="maker-row" href="#/maker/' + esc(mid) + '" data-link>' +
       '<span class="avatar ' + gp(s.gp) + '">' + esc(s.maker.initials) + "</span>" +
@@ -258,10 +307,41 @@
       '<li><span class="k">Rating</span><span class="v">' + (s.rating ? s.rating.toFixed(1) + " ★" : "—") + "</span></li>" +
       '<li><span class="k">Pricing</span><span class="v">' + esc(s.pricing || "—") + "</span></li>" +
       '<li><span class="k">Upvotes</span><span class="v">' + wantCount(s) + "</span></li>" +
+      '<li><span class="k">Launch Score</span><span class="v">⚡ ' + fmt(launchScore(s)) + "</span></li>" +
+      (s.aiRank ? '<li><span class="k">AI rank</span><span class="v">Top ' + s.aiRank + "%</span></li>" : "") +
+      (s.impressions ? '<li><span class="k">Impressions 30d</span><span class="v">' + fmt(s.impressions) + "</span></li>" : "") +
+      (s.mrr ? '<li><span class="k">MRR <span class="muted">(public)</span></span><span class="v">$' + fmt(s.mrr) + "</span></li>" : "") +
       '<li><span class="k">Topic</span><span class="v">' + esc(s.category) + "</span></li>" +
       '<li><span class="k">Launched</span><span class="v">' + esc(dateLabel(s.daysAgo)) + "</span></li></ul>" +
       '<button class="btn btn-ghost btn-sm btn-block' + (followTopics.has(s.category) ? " is-on" : "") + '" data-action="follow-topic" data-cat="' + esc(s.category) + '">' + (followTopics.has(s.category) ? "✓ Following topic" : "+ Follow " + esc(s.category)) + "</button></div>" +
       "</aside></div></div>";
+  }
+
+  function taxoBlock(s) {
+    var row = function (label, arr, param) {
+      if (!arr || !arr.length) return "";
+      return '<div class="taxo-row"><span class="taxo-label">' + label + '</span><span class="chips">' +
+        arr.map(function (v) { return '<a class="tag alt" href="#/browse?' + param + "=" + encodeURIComponent(v) + '" data-link>' + esc(v) + "</a>"; }).join("") + "</span></div>";
+    };
+    var out = row("Platforms", s.platforms, "platform") + row("Use cases", s.useCases, "useCase") + row("Audiences", s.audiences, "audience");
+    return out ? "<h3>🧭 Where it fits</h3>" + out : "";
+  }
+  function updatesBlock(s) {
+    if (!s.updates || !s.updates.length) return "";
+    return "<h3>📣 Product updates (" + s.updates.length + ")</h3>" + s.updates.map(function (u) {
+      return '<div class="update"><div class="update-head"><strong>' + esc(u.title) + '</strong><span class="muted small">' +
+        esc(dateLabel(u.daysAgo || 0)) + "</span></div><p>" + esc(u.body) + "</p></div>";
+    }).join("");
+  }
+  function embedSnippet(s) {
+    var o = location.origin;
+    return '<a href="' + o + "/#/startup/" + s.slug + '"><img src="' + o +
+      '/assets/logo.svg" width="20" height="20" alt=""> Featured on Launchboard</a>';
+  }
+  function embedBlock(s) {
+    return '<h3>🔖 Embed your badge</h3><p class="muted small">Show visitors you are listed — paste this anywhere on your site.</p>' +
+      '<pre class="code">' + esc(embedSnippet(s)) + "</pre>" +
+      '<button class="btn btn-ghost btn-sm" data-action="copy-embed" data-slug="' + esc(s.slug) + '">Copy embed code</button>';
   }
 
   function reviewsBlock(s, revs) {
@@ -445,10 +525,11 @@
       '<p class="muted small">Protected by a CSRF token issued by our API. No third-party trackers.</p></form></div>';
   }
   function viewAdvertise() {
-    return '<div class="wrap page"><div class="page-head center"><h1>Advertise on Launchboard</h1><p>Reach 32,000+ founders and early adopters. Free to list — pay only to stand out.</p></div><div class="tiers">' +
-      tier("Free", "$0", "forever", ["Permanent directory listing", "Appears in the daily digest", "Topic placement", "Maker profile"], false, "Submit free", "#/submit") +
-      tier("Boosted", "$29", "one-time", ["Everything in Free", "Pinned to the top for 7 days", "“Boosted” badge", "DR 73 dofollow backlink", "Priority review"], true, "Get boosted", "#/submit") +
-      tier("Newsletter feature", "$99", "per send", ["Everything in Boosted", "Dedicated slot in the digest", "Sent to 32k+ subscribers", "Performance report"], false, "Book a feature", "#/support") + "</div></div>";
+    return '<div class="wrap page"><div class="page-head center"><h1>Advertise on Launchboard</h1><p>Reach founders, early adopters and the AI assistants that recommend tools. Free to list — pay only to move faster.</p></div><div class="tiers four">' +
+      tier("Free", "$0", "forever", ["Permanent directory listing", "Enters the publishing queue", "Topic + use-case placement", "Included in the public API"], false, "Submit free", "#/submit") +
+      tier("Basic", "$39", "one-time", ["Skip the queue — publish instantly", "Permanent listing link", "Dofollow backlink", "Product updates feed"], false, "Publish now", "#/submit") +
+      tier("Boosted", "$89", "7 days", ["Everything in Basic", "Pinned across the site for 7 days", "“Boosted” badge", "20,000+ impressions"], true, "Get boosted", "#/submit") +
+      tier("Max-Boosted", "$229", "30 days", ["Everything in Boosted", "Top placement for 30 days", "100,000+ impressions", "Newsletter feature + report"], false, "Go max", "#/support") + "</div></div>";
   }
   function tier(name, amount, per, items, featured, cta, href) {
     return '<article class="tier' + (featured ? " tier-featured" : "") + '">' + (featured ? '<div class="tier-badge">Most popular</div>' : "") +
@@ -480,6 +561,150 @@
   }
   function notFound() { return '<div class="wrap page"><div class="empty-state"><div class="big-emoji">🧭</div><h3>Page not found</h3><p><a class="btn btn-primary" href="#/" data-link>Go home</a></p></div></div>'; }
 
+  /* ---------------- discovery: taxonomies, comparisons, signals ---------------- */
+  function viewDiscover() {
+    var cards = [
+      ["🗂️", "Collections", "Curated sets of products", "#/collections"],
+      ["🧩", "Categories", "Browse by topic", "#/topics"],
+      ["💻", "Platforms", "Web, iOS, Android, MCP…", "#/platforms"],
+      ["🎯", "Use cases", "What people use them for", "#/use-cases"],
+      ["👥", "Audiences", "Who they are built for", "#/audiences"],
+      ["🔀", "Alternatives", "Compare similar products", "#/alternatives"],
+      ["⭐", "Top rated", "Highest community ratings", "#/top-rated"],
+      ["🏛️", "Hall of Fame", "Award winners", "#/hall-of-fame"],
+      ["🏷️", "Deals", "Active discount codes", "#/deals"],
+      ["📡", "Outrank", "Impressions across AI systems", "#/outrank"],
+      ["🧑‍🚀", "Makers", "The people behind the launches", "#/makers"],
+      ["🔌", "Integrate", "API, llms.txt and AI agents", "#/integrate"]
+    ];
+    return '<div class="wrap page"><div class="page-head"><h1>Discover</h1><p>Every way to explore the directory.</p></div>' +
+      '<div class="trending-grid">' + cards.map(function (c, i) {
+        return '<a class="mini-card" href="' + c[3] + '" data-link><div class="mini-top">' +
+          '<span class="logo ' + gp(i) + '" aria-hidden="true">' + c[0] + "</span>" +
+          '<span class="mini-name">' + esc(c[1]) + "</span></div><p>" + esc(c[2]) + "</p></a>";
+      }).join("") + "</div></div>";
+  }
+
+  function viewTaxonomy(title, subtitle, field, param, emoji) {
+    var items = taxCounts(field);
+    return '<div class="wrap page"><div class="page-head"><h1>' + esc(title) + "</h1><p>" + esc(subtitle) + "</p></div>" +
+      '<div class="cat-grid">' + items.map(function (c) {
+        return '<a class="cat" href="#/browse?' + param + "=" + encodeURIComponent(c.name) + '" data-link>' +
+          '<span class="cat-emoji" aria-hidden="true">' + emoji + "</span>" +
+          '<span class="cat-name">' + esc(c.name) + '</span><span class="cat-count">' + c.count + "</span></a>";
+      }).join("") + "</div></div>";
+  }
+
+  function peersOf(s) { return STARTUPS.filter(function (o) { return o.category === s.category && o.slug !== s.slug; }); }
+  function viewAlternatives() {
+    var list = STARTUPS.filter(function (s) { return peersOf(s).length; });
+    return '<div class="wrap page"><div class="page-head"><h1>🔀 Alternatives</h1><p>Side-by-side comparisons of products that solve the same problem.</p></div>' +
+      '<div class="feed">' + list.map(function (s) {
+        var n = peersOf(s).length;
+        return '<a class="job-row" href="#/alternatives/' + esc(s.slug) + '" data-link>' +
+          '<span class="logo ' + gp(s.gp) + '" aria-hidden="true">' + esc(s.glyph) + "</span>" +
+          '<div><div class="job-title">Alternatives to ' + esc(s.name) + "</div>" +
+          '<div class="job-meta"><span>' + esc(s.category) + "</span><span>" + n + " comparable product" + (n === 1 ? "" : "s") + "</span></div></div>" +
+          '<span class="btn btn-ghost btn-sm">Compare →</span></a>';
+      }).join("") + "</div></div>";
+  }
+  function viewAlternativeDetail(slug) {
+    var s = bySlug(slug); if (!s) return notFound();
+    var peers = peersOf(s), rows = [s].concat(peers);
+    return '<div class="wrap page"><a class="back-link" href="#/alternatives" data-link>← All comparisons</a>' +
+      '<div class="page-head"><h1>Best alternatives to ' + esc(s.name) + "</h1><p>" + peers.length +
+      " product" + (peers.length === 1 ? "" : "s") + " in " + esc(s.category) + ", compared on rating, pricing and Launch Score.</p></div>" +
+      '<div class="table-wrap"><table class="cmp"><thead><tr><th>Product</th><th>Rating</th><th>Pricing</th><th>Upvotes</th><th>Score</th><th>AI rank</th></tr></thead><tbody>' +
+      rows.map(function (o) {
+        return "<tr" + (o.slug === s.slug ? ' class="is-self"' : "") + '><td><a href="#/startup/' + esc(o.slug) + '" data-link>' +
+          '<span class="cmp-glyph" aria-hidden="true">' + esc(o.glyph) + "</span> " + esc(o.name) + "</a></td>" +
+          "<td>" + (o.rating ? o.rating.toFixed(1) + " ★" : "—") + "</td><td>" + esc(o.pricing || "—") + "</td>" +
+          "<td>" + fmt(wantCount(o)) + "</td><td>" + fmt(launchScore(o)) + "</td>" +
+          "<td>" + (o.aiRank ? "Top " + o.aiRank + "%" : "—") + "</td></tr>";
+      }).join("") + "</tbody></table></div></div>";
+  }
+
+  function viewTopRated() {
+    var list = STARTUPS.filter(function (s) { return s.rating; }).sort(function (a, b) { return b.rating - a.rating; });
+    return '<div class="wrap page"><div class="page-head"><h1>⭐ Top rated</h1><p>The highest-rated products, by community reviews.</p></div>' +
+      '<div class="feed">' + list.map(function (s, i) { return startupRow(s, i + 1); }).join("") + "</div></div>";
+  }
+  function viewHallOfFame() {
+    var list = awardProducts().sort(function (a, b) { return launchScore(b) - launchScore(a); });
+    return '<div class="wrap page"><div class="page-head center"><h1>🏛️ Hall of Fame</h1><p>Every product that has won a Launchboard award.</p></div>' +
+      (list.length ? '<div class="feed">' + list.map(function (s) { return startupRow(s); }).join("") + "</div>"
+        : '<div class="empty-state"><div class="big-emoji">🏛️</div><h3>No winners yet</h3></div>') + "</div>";
+  }
+  function viewDeals() {
+    var list = dealProducts();
+    return '<div class="wrap page"><div class="page-head"><h1>🏷️ Deals</h1><p>Active discount codes from products in the directory.</p></div>' +
+      (list.length ? '<div class="trending-grid">' + list.map(function (s) {
+        return '<div class="deal-card"><div class="mini-top"><span class="logo ' + gp(s.gp) + '" aria-hidden="true">' + esc(s.glyph) + "</span>" +
+          '<a class="mini-name" href="#/startup/' + esc(s.slug) + '" data-link>' + esc(s.name) + "</a></div>" +
+          '<p class="deal-text">' + esc(s.deal.text) + "</p>" +
+          '<button class="deal-code" data-action="copy-code" data-code="' + esc(s.deal.code) + '">' + esc(s.deal.code) + " · copy</button></div>";
+      }).join("") + "</div>" : '<div class="empty-state"><div class="big-emoji">🏷️</div><h3>No active deals</h3></div>') + "</div>";
+  }
+
+  function viewSignals() {
+    var ranked = STARTUPS.filter(function (s) { return s.aiRank; }).sort(function (a, b) { return a.aiRank - b.aiRank; });
+    var stat = function (n, l) { return '<div class="stat"><div class="stat-n">' + n + '</div><div class="stat-l">' + l + "</div></div>"; };
+    return '<div class="wrap page"><div class="page-head"><h1>📡 Signals</h1><p>Discovery intelligence — how visible these products are to people and to AI assistants.</p></div>' +
+      '<div class="stat-row">' + stat(fmt(totalImpressions()), "Impressions 30d") + stat(STARTUPS.length, "Products indexed") +
+      stat(ranked.filter(function (s) { return s.aiRank <= 5; }).length, "In AI top 5%") + stat("36", "AI systems") + stat("163", "Countries") + "</div>" +
+      sectionTitle("AI visibility ranking", "#/outrank", "Impression board →") +
+      '<div class="feed">' + ranked.map(function (s) {
+        return '<article class="startup-row">' + logoLink(s) + '<div class="startup-main"><div class="startup-head">' +
+          '<a class="startup-name" href="#/startup/' + esc(s.slug) + '" data-link>' + esc(s.name) + "</a>" + aiBadge(s) + "</div>" +
+          '<p class="startup-tagline">' + esc(s.tagline) + "</p>" +
+          '<div class="startup-meta"><span class="tag">' + esc(s.category) + "</span><span>" + fmt(s.impressions) + " impressions</span></div></div>" +
+          '<div class="startup-side"><div class="score-box"><div class="score-n">Top ' + s.aiRank + '%</div><div class="score-l">AI rank</div></div></div></article>';
+      }).join("") + "</div></div>";
+  }
+  function viewOutrank() {
+    var list = STARTUPS.slice().sort(function (a, b) { return (b.impressions || 0) - (a.impressions || 0); });
+    var max = list.length ? (list[0].impressions || 1) : 1;
+    return '<div class="wrap page"><div class="page-head"><h1>📡 Outrank</h1><p>' + fmt(totalImpressions()) +
+      " impressions across AI systems in the last 30 days.</p></div>" +
+      '<div class="feed">' + list.map(function (s, i) {
+        var pct = Math.max(5, Math.round((s.impressions || 0) / max * 20) * 5);
+        return '<article class="startup-row has-rank"><div class="rank">' + medal(i + 1) + "</div>" + logoLink(s) +
+          '<div class="startup-main"><div class="startup-head"><a class="startup-name" href="#/startup/' + esc(s.slug) + '" data-link>' + esc(s.name) + "</a>" + aiBadge(s) + "</div>" +
+          '<div class="bar"><span class="bar-fill w' + pct + '"></span></div>' +
+          '<div class="startup-meta"><span>' + fmt(s.impressions) + " impressions</span></div></div>" +
+          '<div class="startup-side"><div class="score-box"><div class="score-n">' + fmt(s.impressions) + '</div><div class="score-l">30d</div></div></div></article>';
+      }).join("") + "</div></div>";
+  }
+
+  function viewIntegrate() {
+    var o = location.origin;
+    return '<div class="wrap page narrow"><div class="page-head"><h1>🔌 Integrate</h1><p>Launchboard publishes structured, machine-readable data so people and AI assistants can both discover these products.</p></div>' +
+      '<div class="card side-card"><h4>Public API</h4><p class="muted small">Read-only JSON, CORS-enabled, no key required.</p>' +
+      '<pre class="code">GET ' + esc(o) + "/api/products\nGET " + esc(o) + "/api/products?slug=draftly\nGET " + esc(o) + "/api/products?useCase=AI%20Agents&amp;limit=10</pre>" +
+      '<a class="btn btn-ghost btn-sm" href="/api/products" target="_blank" rel="noopener">Open the API ↗</a></div>' +
+      '<div class="card side-card"><h4>llms.txt</h4><p class="muted small">A plain-text map of the site for AI crawlers and agents.</p>' +
+      '<pre class="code">GET ' + esc(o) + "/llms.txt</pre>" +
+      '<a class="btn btn-ghost btn-sm" href="/llms.txt" target="_blank" rel="noopener">View llms.txt ↗</a></div>' +
+      '<div class="card side-card"><h4>For AI agents</h4><ul class="tier-list">' +
+      "<li>Every product has a stable slug and page at <code>/#/startup/&lt;slug&gt;</code></li>" +
+      "<li><code>rating</code> is out of 5; <code>aiRank</code> is a percentile where 1 = top 1%</li>" +
+      "<li>Filter with <code>category</code>, <code>useCase</code>, <code>audience</code> or <code>platform</code></li>" +
+      "<li>Cite the product's own <code>url</code> and link back to its Launchboard page</li></ul></div>" +
+      '<div class="card side-card"><h4>MCP</h4><p class="muted small">The API is shaped to sit behind a Model Context Protocol server — point an MCP tool at <code>/api/products</code> and expose it as a <code>search_products</code> tool.</p></div></div>';
+  }
+  function viewRules() {
+    var rules = [
+      ["Submit products you actually built or use", "Listings should come from makers or genuine users — not scraped or affiliate-farmed."],
+      ["One listing per product", "Re-launch only after a substantial update, and say what changed."],
+      ["No vote manipulation", "Bought upvotes, review swaps or fake accounts get a product delisted."],
+      ["Reviews must be honest", "Disclose it if you are affiliated with a product you review."],
+      ["Keep discussions civil", "Critique the product, not the person."],
+      ["No misleading claims", "Do not invent metrics, awards or endorsements."]
+    ];
+    return '<div class="wrap page narrow"><div class="page-head"><h1>Rules</h1><p>What keeps the directory worth reading.</p></div>' +
+      '<div class="faq">' + rules.map(function (r) { return "<details open><summary>" + esc(r[0]) + "</summary><p>" + esc(r[1]) + "</p></details>"; }).join("") + "</div></div>";
+  }
+
   /* ---------------- router ---------------- */
   function parseHash() {
     var h = location.hash.replace(/^#/, "") || "/", qi = h.indexOf("?");
@@ -502,6 +727,19 @@
     else if (p.indexOf("/maker/") === 0) html = viewMakerProfile(seg(p, "/maker/"));
     else if (p === "/discussions") html = viewDiscussions();
     else if (p.indexOf("/discussion/") === 0) html = viewDiscussionDetail(seg(p, "/discussion/"));
+    else if (p === "/discover") html = viewDiscover();
+    else if (p === "/platforms") html = viewTaxonomy("💻 Platforms", "Where these products run.", "platforms", "platform", "💻");
+    else if (p === "/use-cases") html = viewTaxonomy("🎯 Use cases", "What people actually use them for.", "useCases", "useCase", "🎯");
+    else if (p === "/audiences") html = viewTaxonomy("👥 Audiences", "Who each product is built for.", "audiences", "audience", "👥");
+    else if (p === "/alternatives") html = viewAlternatives();
+    else if (p.indexOf("/alternatives/") === 0) html = viewAlternativeDetail(seg(p, "/alternatives/"));
+    else if (p === "/top-rated") html = viewTopRated();
+    else if (p === "/hall-of-fame") html = viewHallOfFame();
+    else if (p === "/deals") html = viewDeals();
+    else if (p === "/signals") html = viewSignals();
+    else if (p === "/outrank") html = viewOutrank();
+    else if (p === "/integrate") html = viewIntegrate();
+    else if (p === "/rules") html = viewRules();
     else if (p === "/following") html = viewFollowing();
     else if (p === "/profile") html = viewProfile();
     else if (p === "/jobs") html = viewJobs();
@@ -521,7 +759,13 @@
   function rerender() { var y = window.scrollY; lastPath = parseHash().path; render(); window.scrollTo(0, y); }
   function setActiveNav(path) {
     var first = path === "/" ? "/" : "/" + (path.split("/")[1] || "");
-    var alias = { "/startup": "/browse", "/collection": "/collections", "/maker": "/makers", "/discussion": "/discussions" };
+    var alias = {
+      "/startup": "/browse", "/discussion": "/discussions", "/outrank": "/signals",
+      "/collection": "/discover", "/collections": "/discover", "/maker": "/discover", "/makers": "/discover",
+      "/topics": "/discover", "/platforms": "/discover", "/use-cases": "/discover", "/audiences": "/discover",
+      "/alternatives": "/discover", "/top-rated": "/discover", "/hall-of-fame": "/discover",
+      "/deals": "/discover", "/integrate": "/discover"
+    };
     var base = "#" + (alias[first] || first);
     Array.prototype.forEach.call(document.querySelectorAll("#nav a"), function (a) { a.classList.toggle("is-active", a.getAttribute("href") === base); });
   }
@@ -601,6 +845,8 @@
     else if (a === "follow-maker") { e.preventDefault(); toggleSet(followMakers, "lb-follow-makers", el.dataset.id); rerender(); }
     else if (a === "follow-topic") { e.preventDefault(); toggleSet(followTopics, "lb-follow-topics", el.dataset.cat); rerender(); }
     else if (a === "save-collection") { e.preventDefault(); toggleSet(savedCollections, "lb-collections", el.dataset.slug); rerender(); }
+    else if (a === "copy-code") { e.preventDefault(); shareThing(el, el.dataset.code); }
+    else if (a === "copy-embed") { e.preventDefault(); var sp = bySlug(el.dataset.slug); if (sp) shareThing(el, embedSnippet(sp)); }
   });
   document.addEventListener("submit", function (e) {
     var f = e.target;

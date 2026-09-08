@@ -1,0 +1,122 @@
+{
+  "draftly": {
+    "platforms": ["Web", "MCP", "API"],
+    "useCases": ["Content Writing", "AI Agents", "Automation"],
+    "audiences": ["Founders", "Content Creators", "Startups"],
+    "aiRank": 2, "impressions": 96200, "mrr": 4200,
+    "deal": { "code": "DRAFT25", "text": "25% off your first 3 months" },
+    "updates": [
+      { "title": "Voice cloning for team specs", "body": "Draftly now recognises up to 8 distinct voices in one recording and attributes each requirement to the right speaker.", "daysAgo": 0 },
+      { "title": "Notion + Linear export", "body": "One-click export of a finished spec straight into a Notion page or a Linear project.", "daysAgo": 6 }
+    ]
+  },
+  "cadence": {
+    "platforms": ["Web", "API"],
+    "useCases": ["Automation", "Team Alignment"],
+    "audiences": ["Developers", "Startups", "Remote Workers"],
+    "aiRank": 8, "impressions": 44100, "mrr": 2800,
+    "updates": [{ "title": "GitLab support", "body": "Cadence now reads GitLab activity alongside GitHub, with per-repo filters.", "daysAgo": 3 }]
+  },
+  "lumina": {
+    "platforms": ["Web", "API", "Desktop"],
+    "useCases": ["Image Generation", "AI Agents"],
+    "audiences": ["Designers", "Marketers", "Content Creators"],
+    "aiRank": 1, "impressions": 128400, "mrr": 18500,
+    "deal": { "code": "LUMINA30", "text": "30% off the annual plan" },
+    "updates": [
+      { "title": "Brand kits", "body": "Lock a palette, lighting profile and crop ratio once — every future render inherits it automatically.", "daysAgo": 1 },
+      { "title": "Batch export 4x faster", "body": "Rewrote the render queue; 100-image batches now finish in about a quarter of the time.", "daysAgo": 9 }
+    ]
+  },
+  "warmly": {
+    "platforms": ["Web", "Chrome Extension"],
+    "useCases": ["Lead Generation", "AI Agents"],
+    "audiences": ["Sales Teams", "Marketers", "Agencies"],
+    "aiRank": 15, "impressions": 27800, "mrr": 3100,
+    "updates": []
+  },
+  "pocketbase-metrics": {
+    "platforms": ["Web", "Self-hosted", "API"],
+    "useCases": ["Analytics", "SEO Optimization"],
+    "audiences": ["Developers", "Founders", "Startups"],
+    "aiRank": 5, "impressions": 61300, "mrr": 2100,
+    "deal": { "code": "SELFHOST", "text": "Free forever when self-hosted" },
+    "updates": [{ "title": "Funnels without cookies", "body": "Multi-step funnel reports that work entirely on anonymous, cookie-free session data.", "daysAgo": 2 }]
+  },
+  "snippet-vault": {
+    "platforms": ["Desktop", "Chrome Extension"],
+    "useCases": ["Automation", "Content Writing"],
+    "audiences": ["Developers", "Students"],
+    "aiRank": 30, "impressions": 12300, "mrr": 640,
+    "updates": []
+  },
+  "habitual": {
+    "platforms": ["iOS", "Android"],
+    "useCases": ["Habit Building"],
+    "audiences": ["Students", "Content Creators", "Founders"],
+    "aiRank": 9, "impressions": 39600, "mrr": 3600,
+    "deal": { "code": "ONEHABIT", "text": "3 months of Pro free" },
+    "updates": [{ "title": "Streak insurance", "body": "Miss one day without losing the streak — once a month, no guilt.", "daysAgo": 4 }]
+  },
+  "ledgerly": {
+    "platforms": ["Web", "API"],
+    "useCases": ["Bookkeeping", "Automation", "Analytics"],
+    "audiences": ["Founders", "Startups", "Agencies"],
+    "aiRank": 6, "impressions": 52900, "mrr": 9800,
+    "updates": [{ "title": "EU bank coverage", "body": "Added 42 European banks via open banking, with automatic VAT categories.", "daysAgo": 5 }]
+  },
+  "postcraft": {
+    "platforms": ["Web", "API"],
+    "useCases": ["Content Writing", "SEO Optimization"],
+    "audiences": ["Content Creators", "Marketers", "Agencies"],
+    "aiRank": 18, "impressions": 22400, "mrr": 1900,
+    "updates": []
+  },
+  "pulse": {
+    "platforms": ["Web", "API"],
+    "useCases": ["Analytics", "SEO Optimization", "Lead Generation"],
+    "audiences": ["Marketers", "Founders", "Agencies"],
+    "aiRank": 12, "impressions": 31200, "mrr": 5400,
+    "deal": { "code": "PULSE20", "text": "20% off for 6 months" },
+    "updates": []
+  },
+  "nomad-desk": {
+    "platforms": ["iOS", "Android", "Web"],
+    "useCases": ["Coworking"],
+    "audiences": ["Remote Workers", "Founders"],
+    "aiRank": 45, "impressions": 7400, "mrr": 1200,
+    "updates": []
+  },
+  "chirp": {
+    "platforms": ["Web", "MCP", "API"],
+    "useCases": ["Customer Support", "AI Agents", "Automation"],
+    "audiences": ["Startups", "Sales Teams", "Agencies"],
+    "aiRank": 3, "impressions": 74800, "mrr": 12400,
+    "updates": [
+      { "title": "MCP server released", "body": "Chirp now exposes an MCP server so AI assistants can answer from your knowledge base directly.", "daysAgo": 1 },
+      { "title": "Sentiment routing", "body": "Frustrated tickets skip the bot and go straight to a human.", "daysAgo": 8 }
+    ]
+  },
+  "trackpad": {
+    "platforms": ["Web"],
+    "useCases": ["Team Alignment", "Analytics"],
+    "audiences": ["Startups", "Remote Workers", "Founders"],
+    "aiRank": 38, "impressions": 9800, "mrr": 880,
+    "updates": []
+  },
+  "formly": {
+    "platforms": ["Web", "API"],
+    "useCases": ["Forms", "Lead Generation"],
+    "audiences": ["Marketers", "Agencies", "Startups"],
+    "aiRank": 25, "impressions": 15600, "mrr": 2300,
+    "updates": []
+  },
+  "beacon": {
+    "platforms": ["Web", "Self-hosted", "API"],
+    "useCases": ["Monitoring", "Automation"],
+    "audiences": ["Developers", "Startups"],
+    "aiRank": 20, "impressions": 19100, "mrr": 4100,
+    "deal": { "code": "ONCALL15", "text": "15% off any annual plan" },
+    "updates": [{ "title": "Escalation policies", "body": "Chain on-call rotations with per-step delays and fallbacks.", "daysAgo": 7 }]
+  }
+}
