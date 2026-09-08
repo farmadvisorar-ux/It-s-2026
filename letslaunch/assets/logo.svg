@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="Launchboard logo">
+  <defs>
+    <linearGradient id="lb" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#6d28d9"/>
+      <stop offset="1" stop-color="#db2777"/>
+    </linearGradient>
+  </defs>
+  <rect width="32" height="32" rx="8" fill="url(#lb)"/>
+  <path d="M16 6l3.2 6.8L26 15l-6.8 2.2L16 24l-3.2-6.8L6 15l6.8-2.2z" fill="#fff"/>
+</svg>

@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="en" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Launchboard — The free launch directory for SaaS &amp; micro-SaaS</title>
+  <meta name="description" content="Launchboard is a free directory where founders launch their SaaS and micro-SaaS products, compete for the daily top spot, and get discovered by people looking for new tools." />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/assets/styles.css" />
+  <meta property="og:title" content="Launchboard — The free launch directory for SaaS & micro-SaaS" />
+  <meta property="og:description" content="Launch your product, get upvotes, get seen. Distribution is the hard part after shipping — Launchboard helps." />
+  <meta property="og:type" content="website" />
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header" id="top">
+    <div class="wrap header-inner">
+      <a class="brand" href="#top" aria-label="Launchboard home">
+        <img class="brand-mark" src="/assets/logo.svg" alt="" width="28" height="28" />
+        <span class="brand-name">Launchboard</span>
+      </a>
+      <nav class="nav" aria-label="Primary">
+        <a href="#launching">Launching today</a>
+        <a href="#directory">Directory</a>
+        <a href="#how">How it works</a>
+        <a href="#pricing">Pricing</a>
+      </nav>
+      <div class="header-actions">
+        <button class="icon-btn" id="theme-toggle" type="button" aria-label="Toggle color theme" title="Toggle theme">
+          <span class="theme-icon" aria-hidden="true">◐</span>
+        </button>
+        <a class="btn btn-primary" href="#submit">Submit product</a>
+        <button class="icon-btn nav-toggle" id="nav-toggle" type="button" aria-label="Open menu" aria-expanded="false">
+          <span aria-hidden="true">☰</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="wrap hero-inner">
+        <p class="eyebrow">Free forever · No account needed to browse</p>
+        <h1 class="hero-title">Ship it. Then get <span class="grad">seen.</span></h1>
+        <p class="hero-sub">
+          Distribution is the hardest problem after shipping. Launchboard is a free directory
+          where founders launch SaaS &amp; micro-SaaS products, compete for the daily top spot,
+          and reach people who are actually looking for new tools.
+        </p>
+        <div class="hero-cta">
+          <a class="btn btn-primary btn-lg" href="#submit">Launch your product →</a>
+          <a class="btn btn-ghost btn-lg" href="#launching">Browse today's launches</a>
+        </div>
+        <ul class="trust-row" aria-label="At a glance">
+          <li><strong>2,400+</strong> products launched</li>
+          <li><strong>DR&nbsp;73</strong> backlinks on featured</li>
+          <li><strong>18k</strong> monthly builders</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- LAUNCHING TODAY -->
+    <section class="section" id="launching">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Launching today</h2>
+          <p class="muted">Upvote what you love. The most-loved product at midnight tops the board.</p>
+        </div>
+        <ol class="board" id="board" aria-label="Products launching today">
+          <!-- Product cards are enhanced with vote buttons by app.js; they work without JS too. -->
+          <li class="product" data-id="p1">
+            <div class="rank">1</div>
+            <div class="product-body">
+              <h3 class="product-name">Draftly</h3>
+              <p class="product-tag">AI that turns a rough voice note into a polished spec.</p>
+              <div class="tags"><span class="tag">AI</span><span class="tag">Productivity</span></div>
+            </div>
+            <button class="vote" type="button" data-votes="312" aria-label="Upvote Draftly">
+              <span class="vote-caret" aria-hidden="true">▲</span>
+              <span class="vote-count">312</span>
+            </button>
+          </li>
+          <li class="product" data-id="p2">
+            <div class="rank">2</div>
+            <div class="product-body">
+              <h3 class="product-name">Cadence</h3>
+              <p class="product-tag">Async standups that write themselves from your commits.</p>
+              <div class="tags"><span class="tag">Dev Tools</span><span class="tag">Teams</span></div>
+            </div>
+            <button class="vote" type="button" data-votes="287" aria-label="Upvote Cadence">
+              <span class="vote-caret" aria-hidden="true">▲</span>
+              <span class="vote-count">287</span>
+            </button>
+          </li>
+          <li class="product" data-id="p3">
+            <div class="rank">3</div>
+            <div class="product-body">
+              <h3 class="product-name">Pocketbase Metrics</h3>
+              <p class="product-tag">Privacy-first analytics you can self-host in five minutes.</p>
+              <div class="tags"><span class="tag">Analytics</span><span class="tag">Open Source</span></div>
+            </div>
+            <button class="vote" type="button" data-votes="241" aria-label="Upvote Pocketbase Metrics">
+              <span class="vote-caret" aria-hidden="true">▲</span>
+              <span class="vote-count">241</span>
+            </button>
+          </li>
+          <li class="product" data-id="p4">
+            <div class="rank">4</div>
+            <div class="product-body">
+              <h3 class="product-name">Warmly</h3>
+              <p class="product-tag">Cold email that reads your prospect's public footprint first.</p>
+              <div class="tags"><span class="tag">Marketing</span><span class="tag">Sales</span></div>
+            </div>
+            <button class="vote" type="button" data-votes="198" aria-label="Upvote Warmly">
+              <span class="vote-caret" aria-hidden="true">▲</span>
+              <span class="vote-count">198</span>
+            </button>
+          </li>
+          <li class="product" data-id="p5">
+            <div class="rank">5</div>
+            <div class="product-body">
+              <h3 class="product-name">Snippet Vault</h3>
+              <p class="product-tag">A searchable home for the code you keep re-writing.</p>
+              <div class="tags"><span class="tag">Dev Tools</span><span class="tag">Productivity</span></div>
+            </div>
+            <button class="vote" type="button" data-votes="156" aria-label="Upvote Snippet Vault">
+              <span class="vote-caret" aria-hidden="true">▲</span>
+              <span class="vote-count">156</span>
+            </button>
+          </li>
+        </ol>
+        <p class="muted small note">Sample launches shown for the demo. Your submission appears here once approved.</p>
+      </div>
+    </section>
+
+    <!-- HOW IT WORKS -->
+    <section class="section alt" id="how">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>How it works</h2>
+          <p class="muted">Three steps, no gatekeeping.</p>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <div class="step-num">1</div>
+            <h3>Submit in 2 minutes</h3>
+            <p>Drop your product name, URL, and one-line pitch. Free listings are permanent — no trial, no card.</p>
+          </article>
+          <article class="step">
+            <div class="step-num">2</div>
+            <h3>Launch &amp; gather votes</h3>
+            <p>Your product joins the daily board. Share your link, rally your community, climb the ranking.</p>
+          </article>
+          <article class="step">
+            <div class="step-num">3</div>
+            <h3>Get discovered</h3>
+            <p>Top products get featured, indexed, and a real backlink — distribution that keeps working after launch day.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- DIRECTORY -->
+    <section class="section" id="directory">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Browse the directory</h2>
+          <p class="muted">Every launch is permanently browsable by category.</p>
+        </div>
+        <div class="cat-grid">
+          <a class="cat" href="#directory"><span class="cat-emoji" aria-hidden="true">🤖</span><span class="cat-name">AI &amp; Automation</span><span class="cat-count">412</span></a>
+          <a class="cat" href="#directory"><span class="cat-emoji" aria-hidden="true">🛠️</span><span class="cat-name">Dev Tools</span><span class="cat-count">338</span></a>
+          <a class="cat" href="#directory"><span class="cat-emoji" aria-hidden="true">📈</span><span class="cat-name">Marketing &amp; SEO</span><span class="cat-count">276</span></a>
+          <a class="cat" href="#directory"><span class="cat-emoji" aria-hidden="true">📊</span><span class="cat-name">Analytics</span><span class="cat-count">154</span></a>
+          <a class="cat" href="#directory"><span class="cat-emoji" aria-hidden="true">🧩</span><span class="cat-name">No-Code</span><span class="cat-count">131</span></a>
+          <a class="cat" href="#directory"><span class="cat-emoji" aria-hidden="true">💬</span><span class="cat-name">Productivity</span><span class="cat-count">209</span></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section class="section alt" id="pricing">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Simple, honest pricing</h2>
+          <p class="muted">The listing is free. Pay only if you want a boost.</p>
+        </div>
+        <div class="tiers">
+          <article class="tier">
+            <h3 class="tier-name">Free</h3>
+            <p class="tier-price"><span class="amount">$0</span><span class="per">forever</span></p>
+            <ul class="tier-list">
+              <li>Permanent directory listing</li>
+              <li>Launch on the daily board</li>
+              <li>Category placement</li>
+              <li>Social share card</li>
+            </ul>
+            <a class="btn btn-ghost tier-cta" href="#submit">Submit free</a>
+          </article>
+          <article class="tier tier-featured">
+            <div class="tier-badge">Most popular</div>
+            <h3 class="tier-name">Outrank</h3>
+            <p class="tier-price"><span class="amount">$15</span><span class="per">one-time</span></p>
+            <ul class="tier-list">
+              <li>Everything in Free</li>
+              <li>Permanent featured slot</li>
+              <li><strong>DR 73</strong> dofollow backlink</li>
+              <li>Priority review</li>
+            </ul>
+            <a class="btn btn-primary tier-cta" href="#submit">Get featured</a>
+          </article>
+          <article class="tier">
+            <h3 class="tier-name">Pay what you want</h3>
+            <p class="tier-price"><span class="amount">$1+</span><span class="per">board boost</span></p>
+            <ul class="tier-list">
+              <li>Everything in Free</li>
+              <li>Pinned to the featured board</li>
+              <li>Name your own price</li>
+              <li>Supports the platform</li>
+            </ul>
+            <a class="btn btn-ghost tier-cta" href="#submit">Choose amount</a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUBMIT -->
+    <section class="section" id="submit">
+      <div class="wrap narrow">
+        <div class="section-head">
+          <h2>Launch your product</h2>
+          <p class="muted">Free, permanent, and live on the board once approved.</p>
+        </div>
+        <form class="submit-form" id="submit-form" novalidate>
+          <div class="field">
+            <label for="f-name">Product name</label>
+            <input id="f-name" name="name" type="text" required autocomplete="off" maxlength="60" placeholder="e.g. Draftly" />
+          </div>
+          <div class="field">
+            <label for="f-url">Website URL</label>
+            <input id="f-url" name="url" type="url" required placeholder="https://yourproduct.com" />
+          </div>
+          <div class="field">
+            <label for="f-tagline">One-line pitch</label>
+            <input id="f-tagline" name="tagline" type="text" required maxlength="90" placeholder="What does it do, in one sentence?" />
+          </div>
+          <div class="field">
+            <label for="f-category">Category</label>
+            <select id="f-category" name="category" required>
+              <option value="">Choose a category…</option>
+              <option>AI &amp; Automation</option>
+              <option>Dev Tools</option>
+              <option>Marketing &amp; SEO</option>
+              <option>Analytics</option>
+              <option>No-Code</option>
+              <option>Productivity</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-email">Your email <span class="muted">(for launch updates)</span></label>
+            <input id="f-email" name="email" type="email" required placeholder="you@example.com" />
+          </div>
+          <button class="btn btn-primary btn-lg btn-block" id="submit-btn" type="submit">Submit for review</button>
+          <p class="form-status" id="form-status" role="status" aria-live="polite"></p>
+          <p class="muted small">Protected by a CSRF token issued by our API. No third-party trackers on this page.</p>
+        </form>
+      </div>
+    </section>
+
+    <!-- FAQ -->
+    <section class="section alt" id="faq">
+      <div class="wrap narrow">
+        <div class="section-head">
+          <h2>Questions</h2>
+        </div>
+        <div class="faq">
+          <details>
+            <summary>Is it really free?</summary>
+            <p>Yes. A permanent listing and a spot on the daily board cost nothing. Paid tiers only add a featured slot and a backlink.</p>
+          </details>
+          <details>
+            <summary>What counts as a micro-SaaS?</summary>
+            <p>Any small, focused software product — a single-purpose tool, a niche API, a Chrome extension, a solo-founder app. If it solves one problem well, it belongs here.</p>
+          </details>
+          <details>
+            <summary>How do you rank products?</summary>
+            <p>Purely by community upvotes over the launch day. At midnight the board resets and the winners get archived into the permanent directory.</p>
+          </details>
+          <details>
+            <summary>Do you sell my email?</summary>
+            <p>Never. We use it only to send you launch-day updates for your own submission. See the security notes in the repo for how data is handled.</p>
+          </details>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <div class="footer-brand">
+        <img class="brand-mark" src="/assets/logo.svg" alt="" width="24" height="24" />
+        <span>Launchboard</span>
+      </div>
+      <p class="muted small">
+        A free launch directory for SaaS &amp; micro-SaaS. Built as an original, security-hardened project.
+      </p>
+      <p class="muted small">© <span id="year">2026</span> Launchboard. Not affiliated with any other launch platform.</p>
+    </div>
+  </footer>
+
+  <script src="/assets/app.js" defer></script>
+</body>
+</html>
