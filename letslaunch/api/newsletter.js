@@ -1,11 +1,9 @@
 // POST /api/newsletter
-// Subscribes an email to the daily digest. Validates the CSRF token first:
-// the X-CSRF-Token header must match the HttpOnly XSRF-TOKEN cookie set by
-// /api/csrf (constant-time compare). Demo endpoint — validates and confirms,
-// it does not persist. Wire it to your ESP (e.g. a double opt-in flow) for
-// production.
+// Subscribes an email to the daily digest. CSRF-validated: the X-CSRF-Token
+// header must match the HttpOnly XSRF-TOKEN cookie from /api/csrf (constant-time
+// compare). ESM module (repo is "type": "module"). Demo — does not persist.
 
-const crypto = require("crypto");
+import crypto from "crypto";
 
 function parseCookies(header) {
   const out = {};
@@ -38,7 +36,7 @@ function readBody(req) {
   });
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
 
@@ -60,6 +58,5 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: "Please enter a valid email address." });
   }
 
-  // In production: add to your mailing list / trigger double opt-in here.
   return res.status(200).json({ ok: true, message: "You're subscribed 🎉 Check your inbox tomorrow at 8am." });
-};
+}

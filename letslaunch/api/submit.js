@@ -1,12 +1,10 @@
 // POST /api/submit
-// Accepts a product submission and validates the CSRF token before doing
-// anything. The token in the X-CSRF-Token header must match the HttpOnly
-// XSRF-TOKEN cookie set by /api/csrf. Comparison is constant-time.
-//
-// This is a demo endpoint: it validates and echoes back, it does not persist.
-// Wire it to a database or an email service when you take it to production.
+// Accepts a startup submission and validates the CSRF token first: the
+// X-CSRF-Token header must match the HttpOnly XSRF-TOKEN cookie set by
+// /api/csrf (constant-time compare). ESM module (repo is "type": "module").
+// Demo endpoint — validates and echoes, does not persist.
 
-const crypto = require("crypto");
+import crypto from "crypto";
 
 function parseCookies(header) {
   const out = {};
@@ -30,26 +28,21 @@ function safeEqual(a, b) {
 }
 
 function readBody(req) {
-  // Vercel's Node runtime usually parses JSON into req.body already.
   if (req.body && typeof req.body === "object") return Promise.resolve(req.body);
   return new Promise(function (resolve) {
     let data = "";
     req.on("data", function (c) { data += c; if (data.length > 1e6) req.destroy(); });
-    req.on("end", function () {
-      try { resolve(JSON.parse(data || "{}")); } catch (e) { resolve({}); }
-    });
+    req.on("end", function () { try { resolve(JSON.parse(data || "{}")); } catch (e) { resolve({}); } });
     req.on("error", function () { resolve({}); });
   });
 }
 
 function isValidUrl(u) {
-  try {
-    const parsed = new URL(u);
-    return parsed.protocol === "http:" || parsed.protocol === "https:";
-  } catch (e) { return false; }
+  try { const p = new URL(u); return p.protocol === "http:" || p.protocol === "https:"; }
+  catch (e) { return false; }
 }
 
-module.exports = async function handler(req, res) {
+export default async function handler(req, res) {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
 
@@ -61,7 +54,6 @@ module.exports = async function handler(req, res) {
   const cookies = parseCookies(req.headers.cookie);
   const cookieToken = cookies["XSRF-TOKEN"];
   const headerToken = req.headers["x-csrf-token"];
-
   if (!cookieToken || !headerToken || !safeEqual(cookieToken, String(headerToken))) {
     return res.status(403).json({ error: "Invalid or missing CSRF token. Refresh and try again." });
   }
@@ -73,20 +65,13 @@ module.exports = async function handler(req, res) {
   const category = String(body.category || "").trim();
   const email = String(body.email || "").trim();
 
-  if (!name || !tagline || !category) {
-    return res.status(400).json({ error: "Name, pitch and category are required." });
-  }
-  if (!isValidUrl(url)) {
-    return res.status(400).json({ error: "Please provide a valid http(s) URL." });
-  }
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-    return res.status(400).json({ error: "Please provide a valid email address." });
-  }
+  if (!name || !tagline || !category) return res.status(400).json({ error: "Name, pitch and category are required." });
+  if (!isValidUrl(url)) return res.status(400).json({ error: "Please provide a valid http(s) URL." });
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return res.status(400).json({ error: "Please provide a valid email address." });
 
-  // In production: persist + queue for review here.
   return res.status(200).json({
     ok: true,
-    message: "Product submitted for review 🚀 We'll email you when it goes live.",
+    message: "Startup submitted for review 🚀 We'll email you when it goes live.",
     received: { name: name.slice(0, 60), category: category },
   });
-};
+}
