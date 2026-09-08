@@ -1,19 +1,20 @@
 // GET /api/csrf
-// Issues a CSRF token and sets it in a hardened cookie (ESM — the repo root
-// package.json declares "type": "module", so functions must be ES modules).
+// Issues a CSRF token and sets it in a hardened cookie.
+//
+// CommonJS on purpose: this api/ folder ships its own package.json with
+// "type": "commonjs" so these functions load as CommonJS even though the repo
+// root package.json declares "type": "module".
 //
 // Fixes the two cookie findings from the scan:
 //   - "XSRF-TOKEN is missing the HttpOnly flag" (High)
 //   - "XSRF-TOKEN is missing the SameSite attribute" (Low)
-//
-// The cookie is set HttpOnly + Secure + SameSite=Strict. The token is also
-// returned in the JSON body and validated server-side against the cookie
-// (synchronizer-token pattern), so the cookie can stay HttpOnly without
-// breaking the form — both findings closed, no functionality lost.
+// The token is also returned in the JSON body and validated server-side against
+// the cookie (synchronizer-token pattern), so the cookie stays HttpOnly without
+// breaking the form.
 
-import crypto from "crypto";
+const crypto = require("crypto");
 
-export default function handler(req, res) {
+module.exports = function handler(req, res) {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
     return res.status(405).json({ error: "Method Not Allowed" });
@@ -30,4 +31,4 @@ export default function handler(req, res) {
   res.setHeader("Cache-Control", "no-store");
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   return res.status(200).json({ csrfToken: token });
-}
+};

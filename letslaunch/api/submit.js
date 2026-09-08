@@ -1,10 +1,9 @@
-// POST /api/submit
-// Accepts a startup submission and validates the CSRF token first: the
-// X-CSRF-Token header must match the HttpOnly XSRF-TOKEN cookie set by
-// /api/csrf (constant-time compare). ESM module (repo is "type": "module").
-// Demo endpoint — validates and echoes, does not persist.
+// POST /api/submit — CommonJS (see api/package.json).
+// Accepts a startup submission; validates the CSRF token first (X-CSRF-Token
+// header must match the HttpOnly XSRF-TOKEN cookie, constant-time). Demo: it
+// validates and echoes, it does not persist.
 
-import crypto from "crypto";
+const crypto = require("crypto");
 
 function parseCookies(header) {
   const out = {};
@@ -42,7 +41,7 @@ function isValidUrl(u) {
   catch (e) { return false; }
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
 
@@ -74,4 +73,4 @@ export default async function handler(req, res) {
     message: "Startup submitted for review 🚀 We'll email you when it goes live.",
     received: { name: name.slice(0, 60), category: category },
   });
-}
+};

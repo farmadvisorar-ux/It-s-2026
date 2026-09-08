@@ -1,9 +1,8 @@
-// POST /api/newsletter
-// Subscribes an email to the daily digest. CSRF-validated: the X-CSRF-Token
-// header must match the HttpOnly XSRF-TOKEN cookie from /api/csrf (constant-time
-// compare). ESM module (repo is "type": "module"). Demo — does not persist.
+// POST /api/newsletter — CommonJS (see api/package.json).
+// Subscribes an email to the daily digest; CSRF-validated (X-CSRF-Token header
+// must match the HttpOnly XSRF-TOKEN cookie, constant-time). Demo — no persist.
 
-import crypto from "crypto";
+const crypto = require("crypto");
 
 function parseCookies(header) {
   const out = {};
@@ -36,7 +35,7 @@ function readBody(req) {
   });
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
 
@@ -59,4 +58,4 @@ export default async function handler(req, res) {
   }
 
   return res.status(200).json({ ok: true, message: "You're subscribed 🎉 Check your inbox tomorrow at 8am." });
-}
+};
