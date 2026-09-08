@@ -301,3 +301,68 @@ h1, h2, h3, h4 { letter-spacing: -0.02em; }
   .detail-head { grid-template-columns: 1fr; }
   .news-form, .news-mini { flex-direction: column; }
 }
+
+/* ==================== Product Hunt feature set ==================== */
+
+/* Leaderboard ranks */
+.startup-row.has-rank { grid-template-columns: 34px 52px 1fr auto; }
+.rank { font-size: 1.35rem; font-weight: 800; text-align: center; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* Awards + stars */
+.badge.award { color: #7c5b00; background: linear-gradient(135deg, #fde68a, #fbbf24); }
+:root:not([data-theme="light"]) .badge.award { color: #2a2100; }
+:root[data-theme="dark"] .badge.award { color: #2a2100; }
+.stars { color: #f59e0b; letter-spacing: 1px; }
+.rating-inline { margin: 0 0 14px; font-size: 0.98rem; display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+.rating-inline .stars { font-size: 1.05rem; }
+.tag.alt { color: var(--text); background: var(--surface-2); border: 1px solid var(--border); }
+
+/* Reviews */
+.review { border-top: 1px solid var(--border); padding: 14px 0; }
+.review-head { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.review-stars { font-size: 0.9rem; }
+.review .pro, .review .con { margin: 4px 0; font-size: 0.9rem; }
+.review .pro { color: var(--ok); }
+.review .con { color: var(--err); }
+.review-form, .comment-form { display: grid; gap: 10px; margin-top: 14px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); }
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+/* Discussions */
+.disc-row { display: grid; grid-template-columns: auto 1fr; gap: 14px; align-items: center; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); transition: border-color .15s ease; }
+.disc-row:hover { border-color: var(--brand); }
+.disc-row .want-btn { grid-template-columns: 1fr; min-width: 56px; }
+.disc-main { min-width: 0; }
+.disc-detail-head { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; margin-bottom: 14px; }
+.disc-detail-head h1 { font-size: clamp(1.4rem, 3.5vw, 2rem); margin: 0 0 6px; }
+.disc-detail-head .want-btn { grid-template-columns: 1fr; min-width: 60px; }
+
+/* Makers */
+.makers-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+.maker-card { display: flex; align-items: center; gap: 12px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
+.maker-card .maker-row { flex: 1; min-width: 0; }
+a.maker-row { color: inherit; }
+a.maker-row:hover .maker-name { color: var(--brand); }
+.avatar-xl { width: 74px; height: 74px; min-width: 74px; border-radius: 20px; font-size: 1.7rem; }
+
+/* Topics with follow dot */
+.cat-link { display: flex; align-items: center; gap: 12px; flex: 1; min-width: 0; color: inherit; }
+.cat-link:hover .cat-name { color: var(--brand); }
+.follow-dot { display: inline-grid; place-items: center; width: 30px; height: 30px; min-width: 30px; border-radius: 50%; border: 1px solid var(--border); background: var(--surface-2); color: var(--muted); cursor: pointer; font-weight: 800; font-family: inherit; }
+.follow-dot:hover { border-color: var(--brand); color: var(--brand); }
+.follow-dot.is-on { background: color-mix(in srgb, var(--brand) 16%, transparent); border-color: var(--brand); color: var(--brand); }
+
+/* Profile stats */
+.stat-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin-bottom: 8px; }
+.stat { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 12px; text-align: center; box-shadow: var(--shadow); }
+.stat-n { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
+.stat-l { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+
+@media (max-width: 900px) {
+  .makers-grid { grid-template-columns: 1fr; }
+  .stat-row { grid-template-columns: repeat(3, 1fr); }
+}
+@media (max-width: 560px) {
+  .startup-row.has-rank { grid-template-columns: 24px 44px 1fr; }
+  .two-col { grid-template-columns: 1fr; }
+  .stat-row { grid-template-columns: repeat(2, 1fr); }
+}

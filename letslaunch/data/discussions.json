@@ -1,0 +1,44 @@
+[
+  { "id": "d1", "title": "What's the one tool that 10x'd your launch?", "author": "Jonah Reyes", "initials": "JR", "gp": 3, "category": "Growth", "daysAgo": 0,
+    "body": "We're launching next week and finalising our stack. Curious what single tool made the biggest difference to your launch day — distribution, analytics, anything.",
+    "upvotes": 42,
+    "replies": [
+      { "author": "Priya Nair", "initials": "PN", "gp": 2, "body": "Honestly, a warm email list beat everything. Build it months before.", "daysAgo": 0 },
+      { "author": "Sam Whitfield", "initials": "SW", "gp": 9, "body": "Attribution from day one. You can't fix what you can't see.", "daysAgo": 0 }
+    ]
+  },
+  { "id": "d2", "title": "Self-hosted analytics — worth the hassle in 2026?", "author": "Lena Fischer", "initials": "LF", "gp": 4, "category": "Dev Tools", "daysAgo": 1,
+    "body": "Privacy is great but I keep wondering if I'm spending founder-hours babysitting a server. Where's the line for you?",
+    "upvotes": 31,
+    "replies": [
+      { "author": "Raj D.", "initials": "RD", "gp": 1, "body": "One binary + a cheap VPS = basically zero maintenance now. Do it.", "daysAgo": 1 }
+    ]
+  },
+  { "id": "d3", "title": "How do you price a micro-SaaS at launch?", "author": "Ben Carter", "initials": "BC", "gp": 3, "category": "Pricing", "daysAgo": 2,
+    "body": "Freemium, free trial, or straight paid? I keep flip-flopping. What worked for your first 100 customers?",
+    "upvotes": 58,
+    "replies": [
+      { "author": "Omar Haddad", "initials": "OH", "gp": 7, "body": "Charge from day one. Free users give feedback you can't bank.", "daysAgo": 1 },
+      { "author": "Grace Lin", "initials": "GL", "gp": 2, "body": "Free trial converted 3x better than freemium for us.", "daysAgo": 1 }
+    ]
+  },
+  { "id": "d4", "title": "Best 'built with' stack for a solo founder right now?", "author": "Chris Vaughn", "initials": "CV", "gp": 5, "category": "Dev Tools", "daysAgo": 3,
+    "body": "Starting fresh. Optimising for speed-to-ship and low ops. What's your default 2026 stack?",
+    "upvotes": 47,
+    "replies": [
+      { "author": "Tariq Nasser", "initials": "TN", "gp": 4, "body": "Next.js on Vercel + Supabase. Boring and unbeatable for solo.", "daysAgo": 2 }
+    ]
+  },
+  { "id": "d5", "title": "Show us your maker origin story", "author": "Mira Adeyemi", "initials": "MA", "gp": 6, "category": "Community", "daysAgo": 4,
+    "body": "What made you build your product? Drop the one-line version. I'll start: I couldn't stick to a single habit, so I built a tracker that only lets you track one.",
+    "upvotes": 66,
+    "replies": []
+  },
+  { "id": "d6", "title": "Cold email in 2026 — dead or just harder?", "author": "Jonah Reyes", "initials": "JR", "gp": 3, "category": "Sales", "daysAgo": 5,
+    "body": "Reply rates are down but the deals we do close from it are our best. Anyone else seeing this?",
+    "upvotes": 23,
+    "replies": [
+      { "author": "Dana L.", "initials": "DL", "gp": 1, "body": "Personalisation is the whole game now. Generic = spam folder.", "daysAgo": 4 }
+    ]
+  }
+]
