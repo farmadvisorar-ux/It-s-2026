@@ -8,6 +8,10 @@
 //   lb_votes                        : SELECT only; toggling goes through the
 //                                     lb_toggle_vote() function so one visitor
 //                                     can never delete another's vote
+//   lb_public_listings              : SELECT only; a view over the approved
+//                                     submissions that omits the email column
+//   lb_admin                        : no access at all — the moderation
+//                                     functions read it as SECURITY DEFINER
 // Every other table in the project has RLS on with no policies, so this key
 // grants no access to them at all.
 //
@@ -51,4 +55,19 @@ async function rpc(fn, args) {
   return res.json();
 }
 
-module.exports = { select, insert, rpc, BASE };
+// Call a Postgres function without throwing, so the caller can tell an
+// "unauthorized" answer (a raised exception inside the function) apart from a
+// transport failure.
+async function rpcTry(fn, args) {
+  const res = await fetch(BASE + "/rest/v1/rpc/" + fn, {
+    method: "POST",
+    headers: headers(),
+    body: JSON.stringify(args),
+  });
+  const text = await res.text();
+  let data = null;
+  try { data = JSON.parse(text); } catch (e) { /* not JSON */ }
+  return { ok: res.ok, status: res.status, data: data, text: text };
+}
+
+module.exports = { select, insert, rpc, rpcTry, BASE };

@@ -70,10 +70,31 @@ async function fetchHtml(url) {
 }
 
 /* ---- extraction ---- */
+const NAMED = { amp: "&", lt: "<", gt: ">", quot: '"', apos: "'", nbsp: " ",
+  rsquo: "\u2019", lsquo: "\u2018", ldquo: "\u201c", rdquo: "\u201d",
+  mdash: "\u2014", ndash: "\u2013", hellip: "\u2026", trade: "\u2122",
+  reg: "\u00ae", copy: "\u00a9" };
 const decode = (s) => String(s || "")
-  .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">")
-  .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, " ")
+  // Numeric entities first (&#39; and &#x27; are both a straight apostrophe),
+  // then the named ones, so a page's own punctuation survives intact.
+  .replace(/&#(x[0-9a-f]+|\d+);/gi, function (_, code) {
+    const n = code[0].toLowerCase() === "x" ? parseInt(code.slice(1), 16) : parseInt(code, 10);
+    return n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : "";
+  })
+  .replace(/&([a-z]+);/gi, function (m, name) {
+    const v = NAMED[name.toLowerCase()];
+    return v === undefined ? m : v;
+  })
   .replace(/\s+/g, " ").trim();
+
+// Cut to a length without slicing a word in half.
+function clip(text, max) {
+  const t = String(text || "").trim();
+  if (t.length <= max) return t;
+  const cut = t.slice(0, max);
+  const sp = cut.lastIndexOf(" ");
+  return (sp > max * 0.6 ? cut.slice(0, sp) : cut).replace(/[\s,;:.-]+$/, "") + "\u2026";
+}
 
 function meta(html, names) {
   for (const n of names) {
@@ -180,7 +201,7 @@ module.exports = async function handler(req, res) {
   name = name.split(/\s[|\-–—:·]\s/)[0].trim().slice(0, 60) || host.split(".")[0];
   name = name.charAt(0).toUpperCase() + name.slice(1);
 
-  const tagline = (description || ogTitle || rawTitle || "").slice(0, 90);
+  const tagline = clip(description || ogTitle || rawTitle || "", 90);
   const text = ((rawTitle || "") + " " + (ogTitle || "") + " " + (description || "")).toLowerCase();
 
   const cats = match(CATEGORIES, text, 1);
@@ -190,7 +211,7 @@ module.exports = async function handler(req, res) {
     source: target.toString(),
     name: name,
     tagline: tagline,
-    description: (description || "").slice(0, 400),
+    description: clip(description || "", 400),
     category: cats[0] || "SaaS",
     tags: keywords(text, 4),
     platforms: match(PLATFORMS, text, 3).concat(["Web"]).filter(function (v, i, a) { return a.indexOf(v) === i; }).slice(0, 3),
