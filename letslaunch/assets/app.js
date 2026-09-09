@@ -24,23 +24,51 @@
   var wants = new Set(store("lb-wants", []));
   var votes = new Set(store("lb-votes", []));
   var bookmarks = new Set(store("lb-bookmarks", []));
-  var localComments = store("lb-comments", {});
-  var userReviews = store("lb-reviews", {});
   var followMakers = new Set(store("lb-follow-makers", []));
   var followTopics = new Set(store("lb-follow-topics", []));
   var discVotes = new Set(store("lb-disc-votes", []));
   var discReplies = store("lb-disc-replies", {});
   var savedCollections = new Set(store("lb-collections", []));
   var userDiscussions = store("lb-disc-new", []);
+  var myReviews = store("lb-my-reviews", 0); // how many reviews this browser has posted
+
+  /* Shared, server-persisted community data (votes, reviews, comments).
+     COMMUNITY holds per-product aggregates for the whole directory; DETAIL holds
+     the full rows for the product currently open. Both come from /api/community.
+     Only this browser's *own* preferences stay in localStorage. */
+  var COMMUNITY = { votes: {}, reviews: {}, comments: {} };
+  var DETAIL = { slug: null, reviews: [], comments: [], loaded: false };
+  var voterKey = (function () {
+    var k = store("lb-voter", null);
+    if (!k || String(k).length < 8) {
+      k = "v" + Math.random().toString(36).slice(2) + Date.now().toString(36);
+      save("lb-voter", k);
+    }
+    return String(k);
+  })();
+  function daysSince(iso) { var t = Date.parse(iso); return t ? Math.max(0, Math.floor((Date.now() - t) / 86400000)) : 0; }
+  function initialsOf(n) { return String(n || "?").slice(0, 2).toUpperCase(); }
 
   function toggleSet(set, key, id) { if (set.has(id)) set.delete(id); else set.add(id); save(key, Array.prototype.slice.call(set)); }
   function bySlug(slug) { for (var i = 0; i < STARTUPS.length; i++) if (STARTUPS[i].slug === slug) return STARTUPS[i]; return null; }
-  function wantCount(s) { return s.subscribers + (wants.has(s.slug) ? 1 : 0); }
+  function wantCount(s) { return s.subscribers + (COMMUNITY.votes[s.slug] || 0); }
   function voteCount(s) { return s.upvotes + (votes.has(s.slug) ? 1 : 0); }
   function points(s) { return voteCount(s) + wantCount(s); }
-  function commentsFor(s) { return (s.comments || []).concat(localComments[s.slug] || []); }
-  function reviewsFor(s) { return (s.reviews || []).concat(userReviews[s.slug] || []); }
-  function ratingCount(s) { return (s.ratingCount || 0) + (userReviews[s.slug] || []).length; }
+  function reviewCount(s) { var a = COMMUNITY.reviews[s.slug]; return (s.reviews || []).length + ((a && a.count) || 0); }
+  function commentCount(s) { return (s.comments || []).length + (COMMUNITY.comments[s.slug] || 0); }
+  function ratingCount(s) { var a = COMMUNITY.reviews[s.slug]; return (s.ratingCount || 0) + ((a && a.count) || 0); }
+  function commentsFor(s) {
+    var live = (DETAIL.slug === s.slug ? DETAIL.comments : []).map(function (c) {
+      return { author: c.author, initials: initialsOf(c.author), text: c.body, daysAgo: daysSince(c.created_at) };
+    });
+    return (s.comments || []).concat(live);
+  }
+  function reviewsFor(s) {
+    var live = (DETAIL.slug === s.slug ? DETAIL.reviews : []).map(function (r) {
+      return { author: r.author, initials: initialsOf(r.author), rating: r.rating, pros: r.pros, cons: r.cons, body: r.body, daysAgo: daysSince(r.created_at) };
+    });
+    return (s.reviews || []).concat(live);
+  }
 
   var DAY = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
   function dateLabel(d) {
@@ -66,7 +94,7 @@
   /* Launch Score — composite community-engagement metric (upvotes, comments,
      reviews, rating and boost), the Launchboard equivalent of a peer score. */
   function launchScore(s) {
-    return Math.round(points(s) + commentsFor(s).length * 12 + reviewsFor(s).length * 18 +
+    return Math.round(points(s) + commentCount(s) * 12 + reviewCount(s) * 18 +
       (s.boosted ? 40 : 0) + (s.rating || 0) * 20);
   }
   function aiTier(s) {
@@ -114,6 +142,64 @@
       .then(function (r) { return r.ok ? r.json() : null; })
       .then(function (d) { if (d && d.csrfToken) csrfToken = d.csrfToken; return csrfToken; })
       .catch(function () { return null; });
+  }
+
+  /* Aggregate vote/review/comment counts for the whole directory, in one call. */
+  function fetchCommunity() {
+    return fetch("/api/community", { credentials: "same-origin", cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) { if (d) COMMUNITY = { votes: d.votes || {}, reviews: d.reviews || {}, comments: d.comments || {} }; })
+      .catch(function () {});
+  }
+
+  /* Full reviews + comments for one product, fetched when its page opens. */
+  function ensureDetail(slug) {
+    if (DETAIL.slug === slug && DETAIL.loaded) return;
+    DETAIL = { slug: slug, reviews: [], comments: [], loaded: false };
+    fetch("/api/community?slug=" + encodeURIComponent(slug), { credentials: "same-origin", cache: "no-store" })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (d) {
+        if (!d || d.slug !== slug) return;
+        DETAIL = { slug: slug, reviews: d.reviews || [], comments: d.comments || [], loaded: true };
+        COMMUNITY.votes[slug] = d.votes || 0;
+        if (parseHash().path === "/startup/" + slug) rerender();
+      })
+      .catch(function () {});
+  }
+
+  /* CSRF-protected write to the community endpoint. */
+  function postCommunity(payload) {
+    return ensureCsrf().then(function () {
+      return fetch("/api/community", {
+        method: "POST", credentials: "same-origin",
+        headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken || "" },
+        body: JSON.stringify(payload)
+      });
+    }).then(function (r) {
+      return r.json().then(function (b) { b.httpOk = r.ok; return b; });
+    }).catch(function () { return null; });
+  }
+
+  /* Upvotes are shared: post the toggle, then trust the server's count. */
+  function toggleVote(slug) {
+    var on = wants.has(slug);
+    if (on) { wants.delete(slug); COMMUNITY.votes[slug] = Math.max(0, (COMMUNITY.votes[slug] || 0) - 1); }
+    else { wants.add(slug); COMMUNITY.votes[slug] = (COMMUNITY.votes[slug] || 0) + 1; }
+    save("lb-wants", Array.prototype.slice.call(wants));
+    rerender();
+    postCommunity({ action: "vote", slug: slug, voter: voterKey }).then(function (res) {
+      if (!res || !res.ok) return;
+      if (res.voted) wants.add(slug); else wants.delete(slug);
+      save("lb-wants", Array.prototype.slice.call(wants));
+      COMMUNITY.votes[slug] = res.votes;
+      rerender();
+    });
+  }
+
+  /* After a successful write, reload the shared data so everyone's view matches. */
+  function afterWrite(slug) {
+    DETAIL = { slug: null, reviews: [], comments: [], loaded: false };
+    fetchCommunity().then(function () { ensureDetail(slug); });
   }
 
   /* ---------------- makers ---------------- */
@@ -270,6 +356,7 @@
 
   function viewDetail(slug) {
     var s = bySlug(slug); if (!s) return notFound();
+    ensureDetail(slug);
     var voted = votes.has(s.slug), saved = bookmarks.has(s.slug), mid = makerId(s.maker.name);
     var revs = reviewsFor(s), alts = STARTUPS.filter(function (o) { return o.category === s.category && o.slug !== s.slug; }).slice(0, 3);
     return '<div class="wrap page"><a class="back-link" href="#/browse" data-link>← Back to browse</a>' +
@@ -486,7 +573,7 @@
 
   function viewProfile() {
     var bm = STARTUPS.filter(function (s) { return bookmarks.has(s.slug); });
-    var myRevCount = Object.keys(userReviews).reduce(function (a, k) { return a + userReviews[k].length; }, 0);
+    var myRevCount = myReviews;
     var stat = function (n, l) { return '<div class="stat"><div class="stat-n">' + n + '</div><div class="stat-l">' + l + "</div></div>"; };
     return '<div class="wrap page"><div class="page-head"><h1>Your activity</h1><p>Everything you\'ve done on Launchboard, saved in this browser.</p></div>' +
       '<div class="stat-row">' + stat(wants.size, "Upvotes") + stat(bookmarks.size, "Saved") + stat(myRevCount, "Reviews") +
@@ -806,16 +893,25 @@
   function handleComment(f) {
     var slug = f.dataset.slug, name = document.getElementById("comment-name").value.trim(), text = document.getElementById("comment-text").value.trim();
     if (!name || !text) { setStatus("comment-status", "Add your name and a comment.", "err"); return; }
-    (localComments[slug] || (localComments[slug] = [])).push({ author: name, initials: name.slice(0, 2).toUpperCase(), text: text, daysAgo: 0 });
-    save("lb-comments", localComments); rerender();
+    setStatus("comment-status", "Posting…", "");
+    postCommunity({ action: "comment", slug: slug, author: name, body: text }).then(function (res) {
+      if (res && res.ok) { setStatus("comment-status", res.message || "Comment posted 💬", "ok"); afterWrite(slug); }
+      else setStatus("comment-status", (res && res.error) || "Could not post the comment.", "err");
+    });
   }
   function handleReview(f) {
     var slug = f.dataset.slug, name = document.getElementById("rv-name").value.trim();
     var rating = parseInt(document.getElementById("rv-rating").value, 10) || 5;
     var pros = document.getElementById("rv-pros").value.trim(), cons = document.getElementById("rv-cons").value.trim(), body = document.getElementById("rv-body").value.trim();
     if (!name) { setStatus("review-status", "Add your name.", "err"); return; }
-    (userReviews[slug] || (userReviews[slug] = [])).push({ author: name, initials: name.slice(0, 2).toUpperCase(), rating: rating, pros: pros, cons: cons, body: body, daysAgo: 0 });
-    save("lb-reviews", userReviews); rerender();
+    setStatus("review-status", "Posting…", "");
+    postCommunity({ action: "review", slug: slug, author: name, rating: rating, pros: pros, cons: cons, body: body }).then(function (res) {
+      if (res && res.ok) {
+        myReviews = myReviews + 1; save("lb-my-reviews", myReviews);
+        setStatus("review-status", res.message || "Review posted ⭐", "ok"); afterWrite(slug);
+      }
+      else setStatus("review-status", (res && res.error) || "Could not post the review.", "err");
+    });
   }
   function handleReply(f) {
     var id = f.dataset.id, name = document.getElementById("reply-name").value.trim(), body = document.getElementById("reply-body").value.trim();
@@ -834,7 +930,7 @@
   document.addEventListener("click", function (e) {
     var el = e.target.closest("[data-action]"); if (!el) return;
     var a = el.dataset.action;
-    if (a === "want") { e.preventDefault(); toggleSet(wants, "lb-wants", el.dataset.slug); rerender(); }
+    if (a === "want") { e.preventDefault(); toggleVote(el.dataset.slug); }
     else if (a === "vote") { e.preventDefault(); toggleSet(votes, "lb-votes", el.dataset.slug); rerender(); }
     else if (a === "bookmark") { e.preventDefault(); toggleSet(bookmarks, "lb-bookmarks", el.dataset.slug); rerender(); }
     else if (a === "share") { e.preventDefault(); shareThing(el, location.origin + location.pathname + "#/startup/" + el.dataset.slug); }
@@ -877,7 +973,7 @@
 
   window.addEventListener("hashchange", render);
   ensureCsrf();
-  fetchData().then(render).catch(function () {
+  fetchData().then(fetchCommunity).then(render).catch(function () {
     app.innerHTML = '<div class="wrap page"><div class="empty-state"><div class="big-emoji">⚠️</div><h3>Could not load data</h3><p class="muted">Please refresh.</p></div></div>';
   });
 })();

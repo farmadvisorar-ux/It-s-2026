@@ -1,39 +1,10 @@
-// POST /api/newsletter — CommonJS (see api/package.json).
-// Subscribes an email to the daily digest; CSRF-validated (X-CSRF-Token header
-// must match the HttpOnly XSRF-TOKEN cookie, constant-time). Demo — no persist.
+// POST /api/newsletter — persists a daily-digest subscription.
+// CSRF-validated. Rows land in lb_subscribers, which is insert-only and has a
+// unique constraint on email, so the public key can neither read the list back
+// nor create duplicates.
 
-const crypto = require("crypto");
-
-function parseCookies(header) {
-  const out = {};
-  if (!header) return out;
-  header.split(";").forEach(function (part) {
-    const idx = part.indexOf("=");
-    if (idx === -1) return;
-    const k = part.slice(0, idx).trim();
-    const v = part.slice(idx + 1).trim();
-    if (k) out[k] = decodeURIComponent(v);
-  });
-  return out;
-}
-
-function safeEqual(a, b) {
-  if (typeof a !== "string" || typeof b !== "string") return false;
-  const ab = Buffer.from(a);
-  const bb = Buffer.from(b);
-  if (ab.length !== bb.length) return false;
-  return crypto.timingSafeEqual(ab, bb);
-}
-
-function readBody(req) {
-  if (req.body && typeof req.body === "object") return Promise.resolve(req.body);
-  return new Promise(function (resolve) {
-    let data = "";
-    req.on("data", function (c) { data += c; if (data.length > 1e6) req.destroy(); });
-    req.on("end", function () { try { resolve(JSON.parse(data || "{}")); } catch (e) { resolve({}); } });
-    req.on("error", function () { resolve({}); });
-  });
-}
+const db = require("./_lib/db.js");
+const { csrfOk, readBody, str, isEmail } = require("./_lib/csrf.js");
 
 module.exports = async function handler(req, res) {
   res.setHeader("Content-Type", "application/json; charset=utf-8");
@@ -43,19 +14,23 @@ module.exports = async function handler(req, res) {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method Not Allowed" });
   }
-
-  const cookies = parseCookies(req.headers.cookie);
-  const cookieToken = cookies["XSRF-TOKEN"];
-  const headerToken = req.headers["x-csrf-token"];
-  if (!cookieToken || !headerToken || !safeEqual(cookieToken, String(headerToken))) {
+  if (!csrfOk(req)) {
     return res.status(403).json({ error: "Invalid or missing CSRF token. Refresh and try again." });
   }
 
   const body = await readBody(req);
-  const email = String(body.email || "").trim();
-  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) {
-    return res.status(400).json({ error: "Please enter a valid email address." });
-  }
+  const email = str(body.email, 160);
+  if (!isEmail(email)) return res.status(400).json({ error: "Please enter a valid email address." });
 
-  return res.status(200).json({ ok: true, message: "You're subscribed 🎉 Check your inbox tomorrow at 8am." });
+  try {
+    const r = await db.insert("lb_subscribers", { email: email });
+    if (r.status === 409) {
+      // Unique-constraint hit: already on the list. Not an error for the reader.
+      return res.status(200).json({ ok: true, message: "You're already subscribed 🎉" });
+    }
+    if (!r.ok) return res.status(502).json({ error: "Could not save your subscription. Please try again." });
+    return res.status(200).json({ ok: true, message: "Subscribed 🎉 Check your inbox tomorrow at 8am." });
+  } catch (e) {
+    return res.status(502).json({ error: "Database unavailable. Please try again." });
+  }
 };
