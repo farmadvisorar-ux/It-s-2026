@@ -31,6 +31,7 @@
   var savedCollections = new Set(store("lb-collections", []));
   var userDiscussions = store("lb-disc-new", []);
   var myReviews = store("lb-my-reviews", 0); // how many reviews this browser has posted
+  var AUTOFILL = {}; // last auto-filled listing suggestions
 
   /* Shared, server-persisted community data (votes, reviews, comments).
      COMMUNITY holds per-product aggregates for the whole directory; DETAIL holds
@@ -600,12 +601,35 @@
   }
   function viewSubmit() {
     var cats = ["AI Assistant", "AI Tools", "Developer Tools", "SaaS", "Analytics", "Marketing Analytics", "Lead Generation", "Content Marketing", "Habit Tracking", "Image Generation", "Tracking", "Productivity"];
-    return '<div class="wrap page narrow"><div class="page-head"><h1>Submit your startup</h1><p>Free and permanent. Your startup joins the directory and the daily digest once approved.</p></div>' +
+    var a = AUTOFILL || {};
+    var pvName = a.name || "Your startup", pvTag = a.tagline || "Your one-line pitch";
+    var chips = function (label, arr) {
+      if (!arr || !arr.length) return "";
+      return '<div class="taxo-row"><span class="taxo-label">' + label + '</span><span class="chips">' +
+        arr.map(function (v) { return '<span class="tag alt">' + esc(v) + "</span>"; }).join("") + "</span></div>";
+    };
+    return '<div class="wrap page narrow"><div class="page-head"><h1>Submit your startup</h1>' +
+      "<p>Paste your URL and we'll write the listing and generate the artwork for you.</p></div>" +
+
+      '<div class="autofill-bar">' +
+      '<input id="af-url" type="url" placeholder="https://yourstartup.com" aria-label="Your website URL" value="' + esc(a.source || "") + '" />' +
+      '<button class="btn btn-primary" type="button" data-action="autofill">✨ Auto-fill</button></div>' +
+      '<p class="form-status small" id="af-status" role="status" aria-live="polite">' + (a.note ? esc(a.note) : "") + "</p>" +
+
+      '<div class="listing-preview">' +
+      '<img class="preview-cover" id="pv-cover" src="' + genCover(pvName, pvTag, a.seed) + '" alt="Generated cover image for this listing" />' +
+      '<div class="preview-row"><img class="preview-logo" id="pv-logo" src="' + genLogo(pvName, a.seed) + '" alt="" width="56" height="56" />' +
+      '<div><div class="preview-name" id="pv-name">' + esc(pvName) + '</div>' +
+      '<div class="muted small" id="pv-tag">' + esc(pvTag) + "</div></div></div>" +
+      chips("Tags", a.tags) + chips("Platforms", a.platforms) + chips("Audiences", a.audiences) +
+      '<p class="muted small">The logo and cover are generated from your name — no upload needed. They update as you type.</p></div>' +
+
       '<form class="form-card" id="submit-form" novalidate>' +
-      '<div class="field"><label for="f-name">Startup name</label><input id="f-name" name="name" type="text" required maxlength="60" placeholder="e.g. Draftly" /></div>' +
-      '<div class="field"><label for="f-url">Website URL</label><input id="f-url" name="url" type="url" required placeholder="https://yourstartup.com" /></div>' +
-      '<div class="field"><label for="f-tagline">One-line pitch</label><input id="f-tagline" name="tagline" type="text" required maxlength="90" placeholder="What does it do, in one sentence?" /></div>' +
-      '<div class="field"><label for="f-category">Topic</label><select id="f-category" name="category" required><option value="">Choose a topic…</option>' + cats.map(function (c) { return "<option>" + esc(c) + "</option>"; }).join("") + "</select></div>" +
+      '<div class="field"><label for="f-name">Startup name</label><input id="f-name" name="name" type="text" required maxlength="60" placeholder="e.g. Draftly" value="' + esc(a.name || "") + '" /></div>' +
+      '<div class="field"><label for="f-url">Website URL</label><input id="f-url" name="url" type="url" required placeholder="https://yourstartup.com" value="' + esc(a.source || "") + '" /></div>' +
+      '<div class="field"><label for="f-tagline">One-line pitch</label><input id="f-tagline" name="tagline" type="text" required maxlength="90" placeholder="What does it do, in one sentence?" value="' + esc(a.tagline || "") + '" /></div>' +
+      '<div class="field"><label for="f-category">Topic</label><select id="f-category" name="category" required><option value="">Choose a topic…</option>' +
+      cats.map(function (c) { return "<option" + (a.category === c ? " selected" : "") + ">" + esc(c) + "</option>"; }).join("") + "</select></div>" +
       '<div class="field"><label for="f-email">Your email <span class="muted">(for launch updates)</span></label><input id="f-email" name="email" type="email" required placeholder="you@example.com" /></div>' +
       '<button class="btn btn-primary btn-lg btn-block" id="submit-btn" type="submit">Submit for review</button>' +
       '<p class="form-status" id="form-status" role="status" aria-live="polite"></p>' +
@@ -660,6 +684,8 @@
       ["⭐", "Top rated", "Highest community ratings", "#/top-rated"],
       ["🏛️", "Hall of Fame", "Award winners", "#/hall-of-fame"],
       ["🏷️", "Deals", "Active discount codes", "#/deals"],
+      ["📊", "Analytics", "Charts across the whole directory", "#/analytics"],
+      ["📡", "Signals", "AI visibility intelligence", "#/signals"],
       ["📡", "Outrank", "Impressions across AI systems", "#/outrank"],
       ["🧑‍🚀", "Makers", "The people behind the launches", "#/makers"],
       ["🔌", "Integrate", "API, llms.txt and AI agents", "#/integrate"]
@@ -792,6 +818,169 @@
       '<div class="faq">' + rules.map(function (r) { return "<details open><summary>" + esc(r[0]) + "</summary><p>" + esc(r[1]) + "</p></details>"; }).join("") + "</div></div>";
   }
 
+  /* ---------------- generated artwork ----------------
+     Listing images are generated deterministically from the product name and a
+     seed, as SVG data URIs. No third-party image service is involved, and
+     img-src 'self' data: already permits them, so the CSP is untouched. */
+  var ART = [["#6d28d9", "#db2777"], ["#2563eb", "#06b6d4"], ["#db2777", "#f59e0b"], ["#059669", "#10b981"],
+    ["#7c3aed", "#2563eb"], ["#e11d48", "#7c3aed"], ["#0891b2", "#22c55e"], ["#ea580c", "#eab308"],
+    ["#4f46e5", "#ec4899"], ["#0f766e", "#3b82f6"]];
+  function seedOf(str) {
+    var h = 7; String(str || "").split("").forEach(function (c) { h = (h * 31 + c.charCodeAt(0)) | 0; });
+    return Math.abs(h) % ART.length;
+  }
+  function monogram(name) {
+    var p = String(name || "?").trim().split(/\s+/);
+    return ((p[0] || "?").charAt(0) + (p[1] ? p[1].charAt(0) : "")).toUpperCase().slice(0, 2);
+  }
+  function xml(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function dataUri(svg) { return "data:image/svg+xml;utf8," + encodeURIComponent(svg); }
+
+  function genLogo(name, seed) {
+    var g = ART[(seed == null ? seedOf(name) : seed) % ART.length];
+    return dataUri('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" width="96" height="96">' +
+      '<defs><linearGradient id="g" x1="0" y1="0" x2="96" y2="96" gradientUnits="userSpaceOnUse">' +
+      '<stop offset="0" stop-color="' + g[0] + '"/><stop offset="1" stop-color="' + g[1] + '"/></linearGradient></defs>' +
+      '<rect width="96" height="96" rx="22" fill="url(#g)"/>' +
+      '<text x="48" y="63" font-family="system-ui,-apple-system,sans-serif" font-size="40" font-weight="700" ' +
+      'fill="#ffffff" text-anchor="middle">' + xml(monogram(name)) + "</text></svg>");
+  }
+  function genCover(name, tagline, seed) {
+    var g = ART[(seed == null ? seedOf(name) : seed) % ART.length];
+    var t = String(tagline || "").slice(0, 68);
+    return dataUri('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 315" width="600" height="315">' +
+      '<defs><linearGradient id="c" x1="0" y1="0" x2="600" y2="315" gradientUnits="userSpaceOnUse">' +
+      '<stop offset="0" stop-color="' + g[0] + '"/><stop offset="1" stop-color="' + g[1] + '"/></linearGradient></defs>' +
+      '<rect width="600" height="315" fill="url(#c)"/>' +
+      '<circle cx="520" cy="60" r="150" fill="#ffffff" fill-opacity="0.08"/>' +
+      '<rect x="40" y="96" width="72" height="72" rx="18" fill="#ffffff" fill-opacity="0.92"/>' +
+      '<text x="76" y="146" font-family="system-ui,sans-serif" font-size="32" font-weight="700" fill="' + g[0] + '" text-anchor="middle">' + xml(monogram(name)) + "</text>" +
+      '<text x="132" y="132" font-family="system-ui,sans-serif" font-size="34" font-weight="800" fill="#ffffff">' + xml(String(name || "").slice(0, 22)) + "</text>" +
+      '<text x="132" y="162" font-family="system-ui,sans-serif" font-size="16" fill="#ffffff" fill-opacity="0.9">' + xml(t) + "</text>" +
+      '<text x="40" y="270" font-family="system-ui,sans-serif" font-size="13" font-weight="600" fill="#ffffff" fill-opacity="0.75">FEATURED ON LAUNCHBOARD</text></svg>');
+  }
+
+  /* ---------------- charts ----------------
+     Hand-rolled inline SVG: a CDN charting library would need script-src to be
+     loosened. Geometry uses SVG presentation attributes (allowed) and colour
+     comes from CSS classes, so no inline styles are needed. Every bar carries a
+     direct value label, and each figure ships a data table for accessibility. */
+  function vizTable(rows, unit) {
+    return '<details class="viz-table"><summary>Data table</summary><div class="table-wrap"><table class="cmp">' +
+      "<thead><tr><th>Item</th><th>" + esc(unit || "Value") + "</th></tr></thead><tbody>" +
+      rows.map(function (r) { return "<tr><td>" + esc(r.label) + "</td><td>" + fmt(r.value) + "</td></tr>"; }).join("") +
+      "</tbody></table></div></details>";
+  }
+  function vizCard(title, sub, svg, rows, unit) {
+    return '<figure class="viz"><figcaption><h3>' + title + "</h3>" +
+      (sub ? '<p class="muted small">' + esc(sub) + "</p>" : "") + "</figcaption>" +
+      svg + vizTable(rows, unit) + "</figure>";
+  }
+  function barsH(rows, suffix) {
+    if (!rows.length) return '<p class="muted small">No data yet.</p>';
+    var max = Math.max.apply(null, rows.map(function (r) { return r.value; }).concat([1]));
+    var rowH = 30, padL = 168, padR = 74, w = 640, h = rows.length * rowH + 10;
+    var out = '<svg class="viz-svg" viewBox="0 0 ' + w + " " + h + '" role="img" preserveAspectRatio="xMinYMin meet">';
+    rows.forEach(function (r, i) {
+      var y = i * rowH + 5;
+      var bw = Math.max(3, Math.round((w - padL - padR) * (r.value / max)));
+      out += '<text class="viz-cat" x="' + (padL - 12) + '" y="' + (y + 15) + '" text-anchor="end">' + esc(r.label) + "</text>";
+      out += '<rect class="viz-bar" x="' + padL + '" y="' + y + '" width="' + bw + '" height="19" rx="4">' +
+        "<title>" + esc(r.label) + ": " + fmt(r.value) + (suffix || "") + "</title></rect>";
+      out += '<text class="viz-val" x="' + (padL + bw + 9) + '" y="' + (y + 15) + '">' + fmt(r.value) + (suffix || "") + "</text>";
+    });
+    return out + "</svg>";
+  }
+  function areaChart(points, suffix) {
+    if (!points.length) return '<p class="muted small">No data yet.</p>';
+    var w = 640, h = 190, padL = 38, padR = 10, padT = 12, padB = 28;
+    var max = Math.max.apply(null, points.map(function (p) { return p.value; }).concat([1]));
+    var iw = w - padL - padR, ih = h - padT - padB;
+    var X = function (i) { return padL + (points.length <= 1 ? iw / 2 : (i / (points.length - 1)) * iw); };
+    var Y = function (v) { return padT + ih - (v / max) * ih; };
+    var line = points.map(function (p, i) { return (i ? "L" : "M") + X(i).toFixed(1) + " " + Y(p.value).toFixed(1); }).join(" ");
+    var area = line + " L " + X(points.length - 1).toFixed(1) + " " + (padT + ih) + " L " + X(0).toFixed(1) + " " + (padT + ih) + " Z";
+    var out = '<svg class="viz-svg" viewBox="0 0 ' + w + " " + h + '" role="img" preserveAspectRatio="xMinYMin meet">';
+    [0, 0.5, 1].forEach(function (f) {
+      var y = padT + ih - f * ih;
+      out += '<line class="viz-gridline" x1="' + padL + '" y1="' + y.toFixed(1) + '" x2="' + (w - padR) + '" y2="' + y.toFixed(1) + '"/>';
+      out += '<text class="viz-tick" x="' + (padL - 8) + '" y="' + (y + 4).toFixed(1) + '" text-anchor="end">' + Math.round(max * f) + "</text>";
+    });
+    out += '<path class="viz-area" d="' + area + '"/><path class="viz-line" d="' + line + '"/>';
+    points.forEach(function (p, i) {
+      out += '<circle class="viz-dot" cx="' + X(i).toFixed(1) + '" cy="' + Y(p.value).toFixed(1) + '" r="8"><title>' +
+        esc(p.label) + ": " + fmt(p.value) + (suffix || "") + "</title></circle>";
+    });
+    [0, Math.floor(points.length / 2), points.length - 1].forEach(function (i) {
+      if (points[i]) out += '<text class="viz-tick" x="' + X(i).toFixed(1) + '" y="' + (h - 8) + '" text-anchor="middle">' + esc(points[i].label) + "</text>";
+    });
+    return out + "</svg>";
+  }
+
+  function countBy(list, keyFn) {
+    var m = {};
+    list.forEach(function (s) { var k = keyFn(s); if (k != null && k !== "") m[k] = (m[k] || 0) + 1; });
+    return Object.keys(m).map(function (k) { return { label: k, value: m[k] }; }).sort(function (a, b) { return b.value - a.value; });
+  }
+  function sumMap(o) {
+    return Object.keys(o || {}).reduce(function (a, k) { var v = o[k]; return a + (typeof v === "number" ? v : (v && v.count) || 0); }, 0);
+  }
+
+  function viewAnalytics() {
+    var S = STARTUPS;
+    var liveVotes = sumMap(COMMUNITY.votes), liveReviews = sumMap(COMMUNITY.reviews), liveComments = sumMap(COMMUNITY.comments);
+    var avgRating = S.length ? (S.reduce(function (a, s) { return a + (s.rating || 0); }, 0) / S.length) : 0;
+
+    var days = [];
+    for (var d = 29; d >= 0; d--) {
+      var n = S.filter(function (s) { return s.daysAgo === d; }).length;
+      days.push({ label: d === 0 ? "Today" : d + "d", value: n });
+    }
+    var ratingRows = (function () {
+      var buckets = {};
+      S.forEach(function (s) { if (!s.rating) return; var b = (Math.floor(s.rating * 2) / 2).toFixed(1); buckets[b] = (buckets[b] || 0) + 1; });
+      return Object.keys(buckets).sort().map(function (k) { return { label: k + " ★", value: buckets[k] }; });
+    })();
+    var taxRows = function (field) { return taxCounts(field).sort(function (a, b) { return b.count - a.count; }).map(function (c) { return { label: c.name, value: c.count }; }); };
+    var topBy = function (field, n) {
+      return S.slice().sort(function (a, b) { return (b[field] || 0) - (a[field] || 0); }).slice(0, n)
+        .map(function (s) { return { label: s.name, value: s[field] || 0 }; });
+    };
+    var aiRows = ["AI Top 1%", "AI Top 5%", "AI Top 10%", "AI Top 25%"].map(function (t) {
+      return { label: t, value: S.filter(function (s) { return aiTier(s) === t; }).length };
+    }).filter(function (r) { return r.value; });
+
+    var stat = function (n, l) { return '<div class="stat"><div class="stat-n">' + n + '</div><div class="stat-l">' + l + "</div></div>"; };
+
+    return '<div class="wrap page"><div class="page-head"><h1>📊 Analytics</h1>' +
+      "<p>Every measurable aspect of the directory. Community numbers are live from the database; product metrics come from each listing.</p></div>" +
+
+      '<div class="stat-row">' + stat(S.length, "Products") + stat(makersList().length, "Makers") +
+      stat(categoryList().length, "Topics") + stat(avgRating.toFixed(2), "Avg rating") +
+      stat(fmt(totalImpressions()), "Impressions") + "</div>" +
+
+      sectionTitle("🟢 Live community activity", "#/signals", "Signals →") +
+      '<div class="stat-row">' + stat(fmt(liveVotes), "Upvotes cast") + stat(fmt(liveReviews), "Reviews written") +
+      stat(fmt(liveComments), "Comments") + stat(fmt(S.reduce(function (a, s) { return a + (s.mrr || 0); }, 0)), "Tracked MRR $") +
+      stat(fmt(S.filter(function (s) { return s.boosted; }).length), "Boosted") + "</div>" +
+      '<p class="muted small">Upvotes, reviews and comments above are real rows in Postgres, shared by every visitor.</p>' +
+
+      '<div class="viz-grid">' +
+      vizCard("Launches over the last 30 days", "When products went live", areaChart(days), days, "Launches") +
+      vizCard("Products by topic", "Where the directory is concentrated", barsH(countBy(S, function (s) { return s.category; })), countBy(S, function (s) { return s.category; }), "Products") +
+      vizCard("Rating distribution", "Community ratings, half-star buckets", barsH(ratingRows), ratingRows, "Products") +
+      vizCard("Pricing mix", "How listed products charge", barsH(countBy(S, function (s) { return s.pricing; })), countBy(S, function (s) { return s.pricing; }), "Products") +
+      vizCard("Platforms", "Where these products run", barsH(taxRows("platforms")), taxRows("platforms"), "Products") +
+      vizCard("Use cases", "What people use them for", barsH(taxRows("useCases")), taxRows("useCases"), "Products") +
+      vizCard("Audiences", "Who they are built for", barsH(taxRows("audiences")), taxRows("audiences"), "Products") +
+      vizCard("AI visibility tiers", "How discoverable each product is to AI assistants", barsH(aiRows), aiRows, "Products") +
+      vizCard("Most impressions (30d)", "Top 10 by reach across AI systems", barsH(topBy("impressions", 10)), topBy("impressions", 10), "Impressions") +
+      vizCard("Public MRR", "Top 10 by self-reported monthly revenue", barsH(topBy("mrr", 10), ""), topBy("mrr", 10), "USD / month") +
+      vizCard("Most upvoted", "Top 10 by community upvotes", barsH(S.slice().sort(function (a, b) { return wantCount(b) - wantCount(a); }).slice(0, 10).map(function (s) { return { label: s.name, value: wantCount(s) }; })), S.slice().sort(function (a, b) { return wantCount(b) - wantCount(a); }).slice(0, 10).map(function (s) { return { label: s.name, value: wantCount(s) }; }), "Upvotes") +
+      vizCard("Highest Launch Score", "Composite engagement across the board", barsH(S.slice().sort(function (a, b) { return launchScore(b) - launchScore(a); }).slice(0, 10).map(function (s) { return { label: s.name, value: launchScore(s) }; })), S.slice().sort(function (a, b) { return launchScore(b) - launchScore(a); }).slice(0, 10).map(function (s) { return { label: s.name, value: launchScore(s) }; }), "Score") +
+      "</div></div>";
+  }
+
   /* ---------------- router ---------------- */
   function parseHash() {
     var h = location.hash.replace(/^#/, "") || "/", qi = h.indexOf("?");
@@ -814,6 +1003,7 @@
     else if (p.indexOf("/maker/") === 0) html = viewMakerProfile(seg(p, "/maker/"));
     else if (p === "/discussions") html = viewDiscussions();
     else if (p.indexOf("/discussion/") === 0) html = viewDiscussionDetail(seg(p, "/discussion/"));
+    else if (p === "/analytics") html = viewAnalytics();
     else if (p === "/discover") html = viewDiscover();
     else if (p === "/platforms") html = viewTaxonomy("💻 Platforms", "Where these products run.", "platforms", "platform", "💻");
     else if (p === "/use-cases") html = viewTaxonomy("🎯 Use cases", "What people actually use them for.", "useCases", "useCase", "🎯");
@@ -847,7 +1037,8 @@
   function setActiveNav(path) {
     var first = path === "/" ? "/" : "/" + (path.split("/")[1] || "");
     var alias = {
-      "/startup": "/browse", "/discussion": "/discussions", "/outrank": "/signals",
+      "/startup": "/browse", "/discussion": "/discussions",
+      "/signals": "/analytics", "/outrank": "/analytics",
       "/collection": "/discover", "/collections": "/discover", "/maker": "/discover", "/makers": "/discover",
       "/topics": "/discover", "/platforms": "/discover", "/use-cases": "/discover", "/audiences": "/discover",
       "/alternatives": "/discover", "/top-rated": "/discover", "/hall-of-fame": "/discover",
@@ -943,6 +1134,39 @@
     else if (a === "save-collection") { e.preventDefault(); toggleSet(savedCollections, "lb-collections", el.dataset.slug); rerender(); }
     else if (a === "copy-code") { e.preventDefault(); shareThing(el, el.dataset.code); }
     else if (a === "copy-embed") { e.preventDefault(); var sp = bySlug(el.dataset.slug); if (sp) shareThing(el, embedSnippet(sp)); }
+    else if (a === "autofill") { e.preventDefault(); runAutofill(); }
+  });
+
+  /* Read the submitted URL server-side and fill the listing from it. */
+  function runAutofill() {
+    var input = document.getElementById("af-url");
+    var url = input ? input.value.trim() : "";
+    if (!url) { setStatus("af-status", "Paste your website URL first.", "err"); return; }
+    setStatus("af-status", "Reading your site…", "");
+    fetch("/api/autofill?url=" + encodeURIComponent(url), { credentials: "same-origin", cache: "no-store" })
+      .then(function (r) { return r.json().then(function (b) { b.httpOk = r.ok; return b; }); })
+      .then(function (d) {
+        if (!d || !d.ok) { setStatus("af-status", (d && d.error) || "Could not read that page.", "err"); return; }
+        AUTOFILL = d;
+        rerender();
+        setStatus("af-status", d.found ? "Filled from your site — edit anything below." : (d.note || "Filled with best-guess defaults."), d.found ? "ok" : "err");
+      })
+      .catch(function () { setStatus("af-status", "Network error. Please try again.", "err"); });
+  }
+
+  /* Regenerate the listing artwork live as the name or pitch is typed. */
+  document.addEventListener("input", function (e) {
+    var t = e.target;
+    if (!t || (t.id !== "f-name" && t.id !== "f-tagline")) return;
+    var nEl = document.getElementById("f-name"), gEl = document.getElementById("f-tagline");
+    var n = (nEl && nEl.value.trim()) || "Your startup";
+    var g = (gEl && gEl.value.trim()) || "Your one-line pitch";
+    var logo = document.getElementById("pv-logo"), cover = document.getElementById("pv-cover");
+    var nm = document.getElementById("pv-name"), tg = document.getElementById("pv-tag");
+    if (logo) logo.setAttribute("src", genLogo(n, AUTOFILL.seed));
+    if (cover) cover.setAttribute("src", genCover(n, g, AUTOFILL.seed));
+    if (nm) nm.textContent = n;
+    if (tg) tg.textContent = g;
   });
   document.addEventListener("submit", function (e) {
     var f = e.target;

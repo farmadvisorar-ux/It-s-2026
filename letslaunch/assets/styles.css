@@ -431,3 +431,64 @@ table.cmp td a:hover { color: var(--brand); }
 /* Footer now carries four columns of destinations */
 .footer-cols { grid-template-columns: repeat(4, 1fr); }
 @media (max-width: 900px) { .footer-cols { grid-template-columns: repeat(2, 1fr); } }
+
+/* ==================== Analytics charts ====================
+   Colour roles come from the validated data-viz palette (categorical slot 1,
+   stepped per mode). Bars are a single series, so no legend is needed and the
+   direct value labels satisfy the relief rule. */
+:root {
+  --viz-series-1: #2a78d6;
+  --viz-grid: #e6e6ef;
+  --viz-ink: #16161d;
+  --viz-ink-muted: #62626f;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --viz-series-1: #3987e5;
+    --viz-grid: #262633;
+    --viz-ink: #ececf3;
+    --viz-ink-muted: #9a9aab;
+  }
+}
+:root[data-theme="dark"] {
+  --viz-series-1: #3987e5;
+  --viz-grid: #262633;
+  --viz-ink: #ececf3;
+  --viz-ink-muted: #9a9aab;
+}
+
+.viz-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 18px; }
+.viz { margin: 0; background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow); }
+.viz figcaption { margin-bottom: 10px; }
+.viz figcaption h3 { margin: 0 0 2px; font-size: 1.02rem; }
+.viz figcaption p { margin: 0; }
+.viz-svg { width: 100%; height: auto; display: block; overflow: visible; }
+
+/* Marks: thin bars, 4px rounded ends, recessive axes, always direct-labelled. */
+.viz-bar { fill: var(--viz-series-1); transition: opacity .12s ease; }
+.viz-bar:hover { opacity: .78; }
+.viz-cat { fill: var(--viz-ink-muted); font-size: 12px; font-family: inherit; }
+.viz-val { fill: var(--viz-ink); font-size: 12px; font-weight: 700; font-family: inherit; font-variant-numeric: tabular-nums; }
+.viz-tick { fill: var(--viz-ink-muted); font-size: 11px; font-family: inherit; }
+.viz-gridline { stroke: var(--viz-grid); stroke-width: 1; }
+.viz-area { fill: var(--viz-series-1); fill-opacity: 0.16; }
+.viz-line { fill: none; stroke: var(--viz-series-1); stroke-width: 2; stroke-linejoin: round; stroke-linecap: round; }
+.viz-dot { fill: var(--viz-series-1); fill-opacity: 0; }
+.viz-dot:hover { fill-opacity: 1; }
+.viz-table { margin-top: 12px; }
+.viz-table summary { cursor: pointer; font-size: 0.82rem; color: var(--muted); font-weight: 600; }
+.viz-table .table-wrap { margin-top: 8px; }
+.viz-table table.cmp { min-width: 0; font-size: 0.86rem; }
+
+/* ==================== Auto-fill + generated listing artwork ==================== */
+.autofill-bar { display: flex; gap: 10px; margin-bottom: 6px; }
+.autofill-bar input { flex: 1; padding: 12px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-alt); color: var(--text); font-family: inherit; font-size: 0.98rem; }
+.autofill-bar input:focus { outline: none; border-color: var(--brand); box-shadow: 0 0 0 3px var(--ring); }
+.listing-preview { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow); margin: 12px 0 18px; }
+.preview-cover { width: 100%; height: auto; border-radius: var(--radius-sm); display: block; border: 1px solid var(--border); }
+.preview-row { display: flex; align-items: center; gap: 12px; margin-top: 14px; }
+.preview-logo { border-radius: 14px; display: block; }
+.preview-name { font-weight: 800; font-size: 1.05rem; letter-spacing: -0.01em; }
+
+@media (max-width: 900px) { .viz-grid { grid-template-columns: 1fr; } }
+@media (max-width: 560px) { .autofill-bar { flex-direction: column; } }
