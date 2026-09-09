@@ -67,10 +67,29 @@ serverless functions, and `vercel.json` applies the headers.
 
 ## What's real vs. demo
 
-- **Real:** all security headers, the CSRF token issue/validate flow, the
-  hardened cookies, client-side validation, the responsive themed UI.
-- **Demo:** the product board is sample data, upvotes are remembered per-browser
-  in `localStorage`, and `/api/submit` validates + echoes but does not persist.
-  Swap in a database and an email/queue step to go fully live.
+- **Real:** all security headers; the CSRF issue/validate flow and hardened
+  cookies; **persistence** — startup submissions, newsletter signups, reviews,
+  comments and upvotes are all stored in Postgres (Supabase) and shared across
+  every visitor; the public product API (`/api/products`) and `llms.txt`.
+- **Demo:** the 15 seed products themselves are sample data, and the ratings,
+  impressions, AI ranks and public MRR shown on them are illustrative rather
+  than measured from real traffic.
+
+## Data & privacy
+
+Community data lives in Postgres behind row-level security. The publishable key
+the API uses can do exactly five things and nothing else:
+
+| Allowed | Blocked |
+| --- | --- |
+| read reviews + comments | reading submitter or subscriber emails |
+| append a review or comment | updating or deleting anything |
+| append a submission / subscriber | reading any other table in the project |
+| read vote counts | deleting another visitor's vote |
+| toggle its own vote via `lb_toggle_vote()` | |
+
+Submissions and subscriber emails are **insert-only**: there is no read path for
+them through the public key. Votes can only change through a `security definer`
+function, so one visitor can never remove another's vote.
 
 <!-- Live deploy via Vercel git integration. -->
