@@ -8,6 +8,9 @@
 
   var app = document.getElementById("app");
   var STARTUPS = [], JOBS = [], COLLECTIONS = [], DISCUSSIONS = [], PH = {}, PP = {};
+  /* Moderation console state. The passphrase lives in memory for this tab only —
+     it is never written to localStorage and never appears in a URL. */
+  var ADMIN = { pass: "", queue: [], loaded: false };
   var csrfToken = null, lastPath = null;
 
   /* ---------------- utilities ---------------- */
@@ -17,6 +20,10 @@
     });
   }
   function gp(n) { return "gp-" + (((n | 0) % 10) + 10) % 10; }
+  /* Only ever emit http(s) in an href. Submitted URLs are validated server-side
+     too; this is the belt to that braces, so a "javascript:" URL can never make
+     it into the page even if something upstream changes. */
+  function safeHref(u) { return /^https?:\/\//i.test(String(u || "")) ? esc(u) : "#"; }
   function store(key, fb) { try { var v = localStorage.getItem(key); return v == null ? fb : JSON.parse(v); } catch (e) { return fb; } }
   function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
   function makerId(name) { return String(name).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""); }
@@ -137,6 +144,48 @@
       });
     });
   }
+  /* An approved submission becomes a full board entry. Everything a listing
+     needs but the submitter did not type — logo, cover, monogram, colour — is
+     generated deterministically from the name and the stored seed, so the same
+     startup always looks the same. */
+  function listingBlurb(l) {
+    var host = "";
+    try { host = new URL(l.url).hostname.replace(/^www\./, ""); } catch (e) { host = ""; }
+    var when = daysSince(l.launched);
+    return l.tagline.replace(/\s*$/, "").replace(/([^.!?\u2026])$/, "$1.") +
+      " " + l.name + " is listed under " + l.category +
+      (host ? " and lives at " + host : "") +
+      ", and was published to Launchboard " +
+      (when <= 1 ? dateLabel(when).toLowerCase() : when <= 6 ? "on " + dateLabel(when) : dateLabel(when)) + ".";
+  }
+  function listingToStartup(l) {
+    var seed = Number(l.seed) || 0;
+    return {
+      slug: l.slug, name: l.name, tagline: l.tagline, category: l.category,
+      website: l.url, description: listingBlurb(l),
+      glyph: monogram(l.name), gp: seed, daysAgo: daysSince(l.launched),
+      subscribers: 0, upvotes: 0, comments: [], reviews: [], screenshots: [],
+      tags: [l.category], stack: [], platforms: [], useCases: [], audiences: [],
+      rating: 0, ratingCount: 0, pricing: "", award: "", aiRank: 0,
+      impressions: 0, mrr: 0, deal: null, updates: [], boosted: false,
+      maker: { name: l.name, initials: monogram(l.name), role: "Submitted to Launchboard" },
+      generated: true, seed: seed,
+      logo: genLogo(l.name, seed), cover: genCover(l.name, l.tagline, seed)
+    };
+  }
+  /* Merge the approved queue into the board. Seed products win a slug clash. */
+  function fetchListings() {
+    return fetchJSON("/api/listings").then(function (d) {
+      var seen = {};
+      STARTUPS.forEach(function (s) { seen[s.slug] = true; });
+      var added = ((d && d.listings) || []).filter(function (l) {
+        if (!l || !l.slug || seen[l.slug]) return false;
+        seen[l.slug] = true; return true;
+      }).map(listingToStartup);
+      if (added.length) STARTUPS = added.concat(STARTUPS);
+    }).catch(function () { /* the seed directory still renders */ });
+  }
+
   function ensureCsrf() {
     if (csrfToken) return Promise.resolve(csrfToken);
     return fetch("/api/csrf", { method: "GET", credentials: "same-origin", cache: "no-store" })
@@ -218,8 +267,11 @@
 
   /* ---------------- shared components ---------------- */
   function logoLink(s, big) {
-    return '<a class="logo ' + (big ? "logo-lg " : "") + gp(s.gp) + '" href="#/startup/' + esc(s.slug) +
-      '" data-link tabindex="-1" aria-hidden="true">' + esc(s.glyph) + "</a>";
+    var inner = s.generated
+      ? '<img src="' + s.logo + '" alt="" width="' + (big ? 88 : 48) + '" height="' + (big ? 88 : 48) + '" />'
+      : esc(s.glyph);
+    return '<a class="logo ' + (big ? "logo-lg " : "") + (s.generated ? "logo-img " : "") + gp(s.gp) +
+      '" href="#/startup/' + esc(s.slug) + '" data-link tabindex="-1" aria-hidden="true">' + inner + "</a>";
   }
   function wantButton(s) {
     var on = wants.has(s.slug);
@@ -244,7 +296,8 @@
   }
   function miniCard(s) {
     return '<a class="mini-card" href="#/startup/' + esc(s.slug) + '" data-link>' +
-      '<div class="mini-top"><span class="logo ' + gp(s.gp) + '" aria-hidden="true">' + esc(s.glyph) + "</span>" +
+      '<div class="mini-top"><span class="logo ' + (s.generated ? "logo-img " : "") + gp(s.gp) + '" aria-hidden="true">' +
+      (s.generated ? '<img src="' + s.logo + '" alt="" width="32" height="32" />' : esc(s.glyph)) + "</span>" +
       '<span class="mini-name">' + esc(s.name) + "</span>" +
       (s.boosted ? '<span class="badge boosted">Boosted</span>' : "") + "</div>" +
       "<p>" + esc(s.tagline) + "</p>" +
@@ -371,9 +424,11 @@
       '<button class="btn btn-primary" data-action="want" data-slug="' + esc(s.slug) + '">' + (wants.has(s.slug) ? "✓ Upvoted" : "▲ Upvote") + " · " + wantCount(s) + "</button>" +
       '<button class="btn btn-ghost' + (voted ? " is-on" : "") + '" data-action="vote" data-slug="' + esc(s.slug) + '">👍 ' + voteCount(s) + "</button>" +
       '<button class="btn btn-ghost' + (saved ? " is-on" : "") + '" data-action="bookmark" data-slug="' + esc(s.slug) + '">' + (saved ? "♥ Saved" : "♡ Save") + "</button>" +
-      '<a class="btn btn-ghost" href="' + esc(s.website) + '" target="_blank" rel="noopener nofollow">Visit ↗</a>' +
+      '<a class="btn btn-ghost" href="' + safeHref(s.website) + '" target="_blank" rel="noopener nofollow">Visit ↗</a>' +
       '<button class="btn btn-ghost" data-action="share" data-slug="' + esc(s.slug) + '">Share</button></div></div></div>' +
-      '<div class="gallery">' + (s.screenshots || []).map(function (sh) { return '<div class="shot ' + gp(sh.gp) + '"><span>' + esc(sh.label) + "</span></div>"; }).join("") + "</div>" +
+      '<div class="gallery">' + (s.generated
+        ? '<img class="cover-img" src="' + s.cover + '" alt="Cover image generated for ' + esc(s.name) + '" width="600" height="315" />'
+        : (s.screenshots || []).map(function (sh) { return '<div class="shot ' + gp(sh.gp) + '"><span>' + esc(sh.label) + "</span></div>"; }).join("")) + "</div>" +
       '<div class="detail-body"><div class="prose">' +
       "<h3>About " + esc(s.name) + "</h3><p>" + esc(s.description) + "</p>" +
       '<div class="chips">' + (s.tags || []).map(function (t) { return '<span class="tag">' + esc(t) + "</span>"; }).join("") + "</div>" +
@@ -981,6 +1036,65 @@
       "</div></div>";
   }
 
+  /* ---------------- moderation console ----------------
+     Everything here is a thin shell over /api/admin. The passphrase is checked
+     by the database (a bcrypt hash in a table the public key cannot read), so
+     nothing on this page — and nothing in this repository — is a credential. */
+  function statusBadge(st) { return '<span class="badge status status-' + esc(st) + '">' + esc(st) + "</span>"; }
+
+  function queueRow(r) {
+    var seed = Number(r.seed) || 0;
+    return '<article class="queue-row">' +
+      '<img class="queue-art" src="' + genLogo(r.name, seed) + '" alt="" width="48" height="48" />' +
+      '<div class="queue-main"><div class="startup-head">' +
+      '<span class="startup-name">' + esc(r.name) + "</span>" + statusBadge(r.status) + "</div>" +
+      '<p class="startup-tagline">' + esc(r.tagline) + "</p>" +
+      '<div class="startup-meta"><span class="tag">' + esc(r.category) + "</span>" +
+      '<a href="' + safeHref(r.url) + '" target="_blank" rel="noopener nofollow">' + esc(r.url) + " ↗</a>" +
+      "<span>" + esc(String(r.created_at || "").slice(0, 10)) + "</span>" +
+      '<span class="muted">' + esc(r.email) + "</span></div></div>" +
+      '<div class="queue-actions">' +
+      '<button class="btn btn-sm btn-primary" type="button" data-action="admin-decide" data-id="' + esc(r.id) +
+      '" data-decision="approve"' + (r.status === "approved" ? " disabled" : "") + ">Approve</button>" +
+      '<button class="btn btn-sm btn-ghost" type="button" data-action="admin-decide" data-id="' + esc(r.id) +
+      '" data-decision="reject"' + (r.status === "rejected" ? " disabled" : "") + ">Reject</button>" +
+      "</div></article>";
+  }
+
+  function viewAdmin() {
+    var head = '<div class="wrap page narrow"><div class="page-head"><h1>🛡️ Submission queue</h1>' +
+      "<p>Approve a startup and it appears on the board straight away, with generated artwork.</p></div>";
+
+    if (!ADMIN.loaded) {
+      return head +
+        '<form class="form-card" id="admin-form" novalidate>' +
+        '<div class="field"><label for="ad-pass">Moderator passphrase</label>' +
+        '<input id="ad-pass" name="pass" type="password" autocomplete="current-password" required placeholder="Passphrase" /></div>' +
+        '<button class="btn btn-primary btn-block" id="admin-btn" type="submit">Open queue</button>' +
+        '<p class="form-status" id="admin-status" role="status" aria-live="polite"></p>' +
+        '<p class="muted small">Checked against a bcrypt hash held in the database. The passphrase is kept in this tab only — never stored, never put in the URL.</p></form></div>';
+    }
+
+    var pending = ADMIN.queue.filter(function (r) { return r.status === "pending"; });
+    var decided = ADMIN.queue.filter(function (r) { return r.status !== "pending"; });
+    var section = function (title, rows, emptyMsg) {
+      return sectionTitle(title) + (rows.length
+        ? '<div class="queue">' + rows.map(queueRow).join("") + "</div>"
+        : '<p class="muted">' + emptyMsg + "</p>");
+    };
+    return head +
+      '<div class="stat-row three">' +
+      '<div class="stat"><div class="stat-n">' + pending.length + '</div><div class="stat-l">Waiting</div></div>' +
+      '<div class="stat"><div class="stat-n">' + ADMIN.queue.filter(function (r) { return r.status === "approved"; }).length + '</div><div class="stat-l">Live</div></div>' +
+      '<div class="stat"><div class="stat-n">' + ADMIN.queue.filter(function (r) { return r.status === "rejected"; }).length + '</div><div class="stat-l">Rejected</div></div>' +
+      "</div>" +
+      '<p class="form-status" id="admin-status" role="status" aria-live="polite"></p>' +
+      section("Waiting for review", pending, "Nothing waiting — the queue is clear. 🎉") +
+      section("Already decided", decided, "No decisions yet.") +
+      '<p><button class="btn btn-ghost btn-sm" type="button" data-action="admin-refresh">Refresh</button> ' +
+      '<button class="btn btn-ghost btn-sm" type="button" data-action="admin-lock">Lock console</button></p></div>';
+  }
+
   /* ---------------- router ---------------- */
   function parseHash() {
     var h = location.hash.replace(/^#/, "") || "/", qi = h.indexOf("?");
@@ -1026,6 +1140,7 @@
     else if (p === "/faq") html = viewFaq();
     else if (p === "/support") html = viewSupport();
     else if (p === "/bookmarks") html = viewBookmarks();
+    else if (p === "/admin") html = viewAdmin();
     else html = notFound();
     app.innerHTML = html;
     setActiveNav(p);
@@ -1118,6 +1233,48 @@
     save("lb-disc-new", userDiscussions); location.hash = "/discussions";
   }
 
+  /* Ask the API for the queue. A wrong passphrase gets the same answer as none. */
+  function adminLoad(pass, statusId, btn) {
+    if (btn) btn.disabled = true;
+    setStatus(statusId, "Checking…", "");
+    return ensureCsrf().then(function () {
+      return fetch("/api/admin", {
+        method: "POST", credentials: "same-origin",
+        headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken || "" },
+        body: JSON.stringify({ action: "queue", pass: pass })
+      });
+    }).then(function (r) { return r.json().then(function (b) { return { ok: r.ok, body: b }; }); })
+      .then(function (res) {
+        if (btn) btn.disabled = false;
+        if (!res.ok) { ADMIN.loaded = false; setStatus(statusId, (res.body && res.body.error) || "Could not open the queue.", "err"); return false; }
+        ADMIN.pass = pass; ADMIN.queue = res.body.queue || []; ADMIN.loaded = true;
+        rerender();
+        setStatus("admin-status", res.body.pending + " waiting for review.", "ok");
+        return true;
+      })
+      .catch(function () { if (btn) btn.disabled = false; setStatus(statusId, "Network error. Please try again.", "err"); return false; });
+  }
+
+  function adminDecide(id, decision, btn) {
+    if (!ADMIN.pass) return;
+    if (btn) btn.disabled = true;
+    setStatus("admin-status", decision === "approve" ? "Approving…" : "Rejecting…", "");
+    ensureCsrf().then(function () {
+      return fetch("/api/admin", {
+        method: "POST", credentials: "same-origin",
+        headers: { "Content-Type": "application/json", "X-CSRF-Token": csrfToken || "" },
+        body: JSON.stringify({ action: decision, pass: ADMIN.pass, id: id })
+      });
+    }).then(function (r) { return r.json().then(function (b) { return { ok: r.ok, body: b }; }); })
+      .then(function (res) {
+        if (!res.ok) { if (btn) btn.disabled = false; setStatus("admin-status", (res.body && res.body.error) || "That did not go through.", "err"); return; }
+        // Pull the board back in so an approval shows up without a reload.
+        ADMIN.queue.forEach(function (r) { if (r.id === res.body.id) r.status = res.body.status; });
+        fetchListings().then(function () { rerender(); setStatus("admin-status", res.body.message, "ok"); });
+      })
+      .catch(function () { if (btn) btn.disabled = false; setStatus("admin-status", "Network error. Please try again.", "err"); });
+  }
+
   document.addEventListener("click", function (e) {
     var el = e.target.closest("[data-action]"); if (!el) return;
     var a = el.dataset.action;
@@ -1135,6 +1292,9 @@
     else if (a === "copy-code") { e.preventDefault(); shareThing(el, el.dataset.code); }
     else if (a === "copy-embed") { e.preventDefault(); var sp = bySlug(el.dataset.slug); if (sp) shareThing(el, embedSnippet(sp)); }
     else if (a === "autofill") { e.preventDefault(); runAutofill(); }
+    else if (a === "admin-decide") { e.preventDefault(); adminDecide(el.dataset.id, el.dataset.decision, el); }
+    else if (a === "admin-refresh") { e.preventDefault(); adminLoad(ADMIN.pass, "admin-status", el); }
+    else if (a === "admin-lock") { e.preventDefault(); ADMIN = { pass: "", queue: [], loaded: false }; rerender(); }
   });
 
   /* Read the submitted URL server-side and fill the listing from it. */
@@ -1178,6 +1338,12 @@
     else if (f.id === "review-form") { e.preventDefault(); handleReview(f); }
     else if (f.id === "reply-form") { e.preventDefault(); handleReply(f); }
     else if (f.id === "discussion-form") { e.preventDefault(); handleNewDiscussion(f); }
+    else if (f.id === "admin-form") {
+      e.preventDefault();
+      var pass = document.getElementById("ad-pass").value;
+      if (!pass) { setStatus("admin-status", "Enter the passphrase.", "err"); return; }
+      adminLoad(pass, "admin-status", document.getElementById("admin-btn"));
+    }
   });
   document.addEventListener("change", function (e) { if (e.target && e.target.dataset && e.target.dataset.action === "browse-control") applyBrowseControls(); });
 
@@ -1197,7 +1363,7 @@
 
   window.addEventListener("hashchange", render);
   ensureCsrf();
-  fetchData().then(fetchCommunity).then(render).catch(function () {
+  fetchData().then(function () { return Promise.all([fetchCommunity(), fetchListings()]); }).then(render).catch(function () {
     app.innerHTML = '<div class="wrap page"><div class="empty-state"><div class="big-emoji">⚠️</div><h3>Could not load data</h3><p class="muted">Please refresh.</p></div></div>';
   });
 })();

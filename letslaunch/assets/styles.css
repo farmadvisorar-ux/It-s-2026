@@ -492,3 +492,39 @@ table.cmp td a:hover { color: var(--brand); }
 
 @media (max-width: 900px) { .viz-grid { grid-template-columns: 1fr; } }
 @media (max-width: 560px) { .autofill-bar { flex-direction: column; } }
+
+/* ---- generated listing artwork ----
+   A submitted startup has no uploaded logo, so the board shows an SVG that is
+   generated from its name. The gradient underneath doubles as the placeholder. */
+.logo-img { overflow: hidden; }
+.logo-img img { width: 100%; height: 100%; display: block; border-radius: inherit; }
+.cover-img { grid-column: 1 / -1; width: 100%; max-width: 720px; height: auto;
+  border-radius: var(--radius); border: 1px solid var(--border); box-shadow: var(--shadow); }
+
+/* ---- moderation console ---- */
+.stat-row.three { grid-template-columns: repeat(3, 1fr); }
+.queue { display: grid; gap: 12px; margin-bottom: 26px; }
+.queue-row { display: grid; grid-template-columns: 48px 1fr auto; gap: 14px; align-items: center;
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  padding: 14px 16px; box-shadow: var(--shadow); }
+.queue-art { border-radius: 12px; display: block; }
+.queue-main { min-width: 0; }
+.queue-main .startup-tagline { margin: 4px 0 6px; }
+.queue-main .startup-meta a { word-break: break-all; }
+.queue-actions { display: flex; flex-direction: column; gap: 6px; }
+.queue-actions .btn { white-space: nowrap; }
+
+.badge.status { text-transform: capitalize; }
+.badge.status-pending  { color: #92400e; background: #fef3c7; }
+.badge.status-approved { color: #14532d; background: #dcfce7; }
+.badge.status-rejected { color: var(--muted); background: var(--surface-2); }
+:root:not([data-theme="light"]) .badge.status-pending  { color: #fcd34d; background: #3b2c07; }
+:root:not([data-theme="light"]) .badge.status-approved { color: #86efac; background: #0e2b19; }
+:root[data-theme="dark"] .badge.status-pending  { color: #fcd34d; background: #3b2c07; }
+:root[data-theme="dark"] .badge.status-approved { color: #86efac; background: #0e2b19; }
+
+@media (max-width: 640px) {
+  .queue-row { grid-template-columns: 48px 1fr; }
+  .queue-actions { grid-column: 1 / -1; flex-direction: row; }
+  .queue-actions .btn { flex: 1; }
+}
