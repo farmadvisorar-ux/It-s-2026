@@ -1,0 +1,1 @@
+import{w as s}from"./form-submit.CpkSsoFa.js";import"./hoisted.w25Wafu0.js";s("contact-form",{successHeading:"Thanks — message received.",successBody:"We will reply shortly. If it is urgent, call us on (903) 720-0194."});
