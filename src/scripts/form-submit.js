@@ -106,7 +106,7 @@ export function wireForm(formId, { successHeading, successBody } = {}) {
           form,
           successHtml(
             successHeading ?? 'Thanks — we have your request.',
-            successBody ?? 'We will come back to you with a written quote. If it is urgent, call us on (903) 690-5969.'
+            successBody ?? 'We will come back to you with a written quote. If it is urgent, call us on (903) 720-0194.'
           )
         );
         return;
@@ -125,7 +125,7 @@ export function wireForm(formId, { successHeading, successBody } = {}) {
       const p = document.createElement('p');
       p.className = 'err form-error';
       p.setAttribute('role', 'alert');
-      p.textContent = `Sorry — that did not send. ${err.message}. Please call (903) 690-5969 or try again.`;
+      p.textContent = `Sorry — that did not send. ${err.message}. Please call (903) 720-0194 or try again.`;
       button?.insertAdjacentElement('afterend', p);
     } finally {
       if (button) {
