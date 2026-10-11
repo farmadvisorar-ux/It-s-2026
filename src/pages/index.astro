@@ -60,10 +60,7 @@ const steps = [
         <p class="eyebrow">Authorized Building Dealer</p>
         <h1 class="hero__title">Buildings that go up fast and stay up for decades</h1>
         <p class="lede">
-          Two lines, one dealer. Engineered <strong>steel building kits</strong> — garages,
-          workshops, barndominiums, commercial — shipped nationwide with stamped drawings.
-          And wood <strong>portable buildings</strong> delivered finished and ready to use,
-          with no assembly and no foundation.
+          Website is currently under construction due to adding new updates, features, and options. Please contact us directly at <a href={`tel:${site.phoneRaw ?? site.phone}`} class="hero-phone-link">{site.phone}</a> for current pricing.
         </p>
         <div class="hero__actions">
           <a class="btn btn--primary" href="/quote/">Get a Free Quote</a>
@@ -298,6 +295,8 @@ const steps = [
   .hero__stats dt { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); }
   .hero__stats dd { margin: 0.25rem 0 0; font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; }
   .hero__media :global(.ph), .hero__media :global(.ph-img) { border-radius: var(--radius-lg); border: 1px solid var(--border); }
+  .hero-phone-link { color: var(--accent); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; }
+  .hero-phone-link:hover { color: var(--accent-hover); }
 
   /* section heads */
   .sec-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 2rem; }
